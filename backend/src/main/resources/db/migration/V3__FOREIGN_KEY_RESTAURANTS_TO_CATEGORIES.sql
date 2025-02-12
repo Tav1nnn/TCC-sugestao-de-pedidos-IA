@@ -1,0 +1,1 @@
+ALTER TABLE `categories` ADD FOREIGN KEY (`restaurant_id`) REFERENCES `restaurants` (`id`);

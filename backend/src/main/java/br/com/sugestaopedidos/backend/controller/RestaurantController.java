@@ -5,8 +5,6 @@ import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.service.RestaurantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
