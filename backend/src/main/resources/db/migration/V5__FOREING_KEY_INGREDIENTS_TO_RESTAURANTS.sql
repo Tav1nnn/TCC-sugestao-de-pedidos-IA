@@ -1,0 +1,1 @@
+ALTER TABLE `ingredients` ADD FOREIGN KEY (`restaurant_id`) REFERENCES `restaurants` (`id`);
