@@ -1,0 +1,120 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+  }
+  
+  /* BoxGeral */
+  .box-geral {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    justify-content: center;
+    background-color: rgb(255, 255, 255);
+  }
+  
+  /* BoxFaleConosco */
+  .box-fale-conosco {
+    background-color: #A10808;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    border-bottom-right-radius: 100px;
+    border-bottom-left-radius: 100px;
+    grid-column: 1 / 2;
+    position: relative;
+  }
+  
+  .box-fale-conosco .content h1 {
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+    margin-top: 4;
+    margin: 2;
+  }
+  
+  .box-fale-conosco .content p {
+    font-size: 14px;
+    margin: 12px;
+    font-style: italic;
+  }
+  
+  /* BoxLogin */
+  .box-login {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    padding: 60px;
+    grid-column: 1 / 2;
+  }
+  
+  .form-box {
+    padding: 8;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+  
+  .form-box h2 {
+    font-size: 36px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 2rem;
+  }
+  
+  .senha-esquecida {
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    cursor: pointer;
+  }
+  
+  /* Responsividade */
+  @media (min-width: 768px) {
+    .box-geral {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .box-fale-conosco {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 200px;
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 200px;
+      padding-right: 22px;
+      padding: 10px;
+    }
+
+    .box-fale-conosco .content h1 {
+        font-size: 40px;
+    }
+  
+    .box-fale-conosco .content p {
+        font-size: 16px;
+      }
+
+    .box-login {
+      margin-top: 0;
+      grid-column: 2 / 3;
+    }
+
+    .form-box h2 {
+      margin-bottom: 1rem;
+    }
+
+    .form-box {
+      max-width: 80%;
+    }
+  }
+  
