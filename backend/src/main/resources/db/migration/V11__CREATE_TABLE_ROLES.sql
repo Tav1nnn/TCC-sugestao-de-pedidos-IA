@@ -1,0 +1,7 @@
+CREATE TABLE `roles` (
+    `id` CHAR(36) PRIMARY KEY,
+    `name` VARCHAR(100) UNIQUE NOT NULL,
+    `description` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    `updated_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
+);

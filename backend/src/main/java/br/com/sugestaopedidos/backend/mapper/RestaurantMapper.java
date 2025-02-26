@@ -12,8 +12,12 @@ import java.util.Set;
 public interface RestaurantMapper {
 
     Restaurant toEntity(RestaurantRequestDto restaurantRequest);
+
     Set<Restaurant> toSetEntities(Set<RestaurantRequestDto> restaurantRequests);
+
     RestaurantResponseDto toDto(Restaurant restaurant);
+
     Set<RestaurantResponseDto> toSetDtos(Set<Restaurant> restaurants);
+
     void updateEntityFromRequest(@MappingTarget Restaurant restaurant, RestaurantRequestDto restaurantRequestDto);
 }

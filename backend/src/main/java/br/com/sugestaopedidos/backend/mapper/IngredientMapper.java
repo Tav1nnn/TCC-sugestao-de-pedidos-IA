@@ -12,8 +12,12 @@ import java.util.Set;
 public interface IngredientMapper {
 
     Ingredient toEntity(IngredientRequestDto ingredientRequest);
+
     Set<Ingredient> toSetEntities(Set<IngredientRequestDto> ingredientRequests);
+
     IngredientResponseDto toDto(Ingredient ingredient);
+
     Set<IngredientResponseDto> toSetDtos(Set<Ingredient> ingredients);
+
     void updateEntityFromRequest(@MappingTarget Ingredient ingredient, IngredientRequestDto ingredientRequestDto);
 }

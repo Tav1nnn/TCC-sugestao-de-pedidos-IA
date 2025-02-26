@@ -5,29 +5,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@Entity(name = "restaurants")
+@Entity(name = "users")
 @Data
 @AllArgsConstructor
-public class Restaurant {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
-    private String description;
-    private String address;
-    private String phone;
-    private String cnpj;
-    private String ie;
-    @Column(name = "image_url")
-    private String imageUrl;
+    private String email;
+    @Column(name = "password_hash")
+    private String password;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Restaurant() {
+    public User() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

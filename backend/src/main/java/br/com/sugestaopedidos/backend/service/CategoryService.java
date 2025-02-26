@@ -19,6 +19,10 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    private static ResourceNotFoundException getResourceNotFoundException(String id) {
+        return new ResourceNotFoundException("Category not found with id: " + id);
+    }
+
     public Set<CategoryResponseDto> findAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toDto)
@@ -48,12 +52,8 @@ public class CategoryService {
     }
 
     public void delete(String id) {
-        if(!categoryRepository.existsById(id)) throw getResourceNotFoundException(id);
+        if (!categoryRepository.existsById(id)) throw getResourceNotFoundException(id);
 
         categoryRepository.deleteById(id);
-    }
-
-    private static ResourceNotFoundException getResourceNotFoundException(String id) {
-        return new ResourceNotFoundException("Category not found with id: " + id);
     }
 }

@@ -19,6 +19,10 @@ public class IngredientService {
     private final IngredientRepository ingredientRepository;
     private final IngredientMapper ingredientMapper;
 
+    private static ResourceNotFoundException getResourceNotFoundException(String id) {
+        return new ResourceNotFoundException("Ingredient not found with id: " + id);
+    }
+
     public Set<IngredientResponseDto> findAllCategories() {
         return ingredientRepository.findAll().stream()
                 .map(ingredientMapper::toDto)
@@ -48,12 +52,8 @@ public class IngredientService {
     }
 
     public void delete(String id) {
-        if(!ingredientRepository.existsById(id)) throw getResourceNotFoundException(id);
+        if (!ingredientRepository.existsById(id)) throw getResourceNotFoundException(id);
 
         ingredientRepository.deleteById(id);
-    }
-
-    private static ResourceNotFoundException getResourceNotFoundException(String id) {
-        return new ResourceNotFoundException("Ingredient not found with id: " + id);
     }
 }

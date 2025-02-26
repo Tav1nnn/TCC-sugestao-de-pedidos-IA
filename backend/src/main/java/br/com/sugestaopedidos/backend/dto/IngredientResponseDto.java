@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class IngredientResponseDto {
     private String id;
     private String name;
-    private  Boolean isGlobal;
+    private Boolean isGlobal;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 }
