@@ -19,6 +19,10 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper restaurantMapper;
 
+    private static ResourceNotFoundException getResourceNotFoundException(String id) {
+        return new ResourceNotFoundException("Restaurant not found with id: " + id);
+    }
+
     public Set<RestaurantResponseDto> findAllRestaurants() {
         return restaurantRepository.findAll().stream()
                 .map(restaurantMapper::toDto)
@@ -48,12 +52,8 @@ public class RestaurantService {
     }
 
     public void delete(String id) {
-        if(!restaurantRepository.existsById(id)) throw getResourceNotFoundException(id);
+        if (!restaurantRepository.existsById(id)) throw getResourceNotFoundException(id);
 
         restaurantRepository.deleteById(id);
-    }
-
-    private static ResourceNotFoundException getResourceNotFoundException(String id) {
-        return new ResourceNotFoundException("Restaurant not found with id: " + id);
     }
 }
