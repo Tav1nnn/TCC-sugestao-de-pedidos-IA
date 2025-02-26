@@ -1,77 +1,36 @@
 import React from 'react';
-import { Box, Input, Button, Image, VStack, Text, Flex } from '@chakra-ui/react';
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import '../styles/Login.css';
+import { Button, Input, VStack } from '@chakra-ui/react';
+import { FormControl } from '@chakra-ui/form-control';
 
-const Login = () => {
+function Login() {
   return (
-    <Box
-      h="100vh"
-      display="grid"
-      gridTemplateColumns= "1fr 1fr"
-      gridTemplateRows="1fr"
-      justifyContent="center"
-      //alignItems="center"
-      bgColor="rgb(255,255,255)"
-    >
-      <Flex
-        bg='#A10808'
-        paddingBottom={8}
-        paddingRight={20}
-        paddingLeft={8}
-        paddingTop={8}
-        display={"grid"}
-        gridTemplateColumns="1fr"
-        justifyContent={"center"}
-        alignItems={"center"}
-        w="full"
-        h="full"
-        textAlign="center"
-        borderTopRightRadius={200}
-        borderBottomRightRadius={200}
-      >
-        <Box>
-          <Text fontSize={40} color="white" fontWeight="bold" mt={4} m={2}>
-            Olá, seja bem vindo ao SugereAI!
-          </Text>
-          <Text m={2}>
-            AI(Artificial Intelligence) que entende sua fome e sugere o que você ama.
-          </Text>
+    <div className="box-geral">
+      <div className="box-fale-conosco">
+        <div className="content">
+          <h1>Olá, seja bem-vindo ao SugereAI!</h1>
+          <p>AI (Artificial Intelligence) que entende sua fome e sugere o que você ama.</p>
           <Button
-              mt={2}
-              bg="#A10808"
-              color="white"
-              _hover={{ bg: "#E5E5E5", color: "#A10808" }}
-              w="max-content"
-              size="lg"
-              rounded="md"
-              border={"2px solid white"}
-            >
-              Fale conosco!
-          </Button>
-        </Box>
-      </Flex>
-      <Box
-        justifyContent={"center"}
-        alignItems={"center"}
-        display={"flex"}>
-        <Box
-          //bg='rgb(237,216,196, 0.3)'
-          p={20}
-          rounded="lg"
-          //boxShadow="lg"
-          //maxW="400px"
-          w="full"
-          textAlign="center"
-          justifyContent={"center"}
-        >
-          <Text fontSize="4xl" mt={4} fontWeight="bold" color="#000000">
-            Login
-          </Text>
+                      mt={2}
+                      bg="#A10808"
+                      color="white"
+                      _hover={{ bg: "#E5E5E5", color: "#A10808" }}
+                      w="max-content"
+                      size="lg"
+                      rounded="md"
+                      border={"2px solid white"}
+                      p = {4}
+                    >
+                      Fale conosco!
+         </Button>
+        </div>
+      </div>
+
+      <div className="box-login">
+        <div className="form-box">
+          <h2>Login</h2>
           <VStack spacing={4} mt={6} alignItems="stretch">
             <FormControl>
-              {/* <FormLabel htmlFor="email" color="#A10808" fontWeight="bold">
-                Email
-              </FormLabel> */}
               <Input
                 id="email"
                 type="email"
@@ -81,31 +40,27 @@ const Login = () => {
                 _hover={{ borderColor: "#A10808" }}
                 _focus={{ borderColor: "#A10808" }}
                 size="lg"
+                p = {4}
                 mb={2}
               />
             </FormControl>
 
-            <FormControl w= {'full'}>
-              {/* <FormLabel htmlFor="password" color="#A10808" fontWeight="bold">
-                Senha
-              </FormLabel> */}
+            <FormControl>
               <Input
                 id="password"
                 type="password"
                 placeholder="Senha"
                 bg="#E5E5E5"
                 borderColor="#E5E5E5"
-                w= {'full'}
-                mt={2}
-                mb={2}
                 _hover={{ borderColor: "#A10808" }}
                 _focus={{ borderColor: "#A10808" }}
                 size="lg"
+                p = {4}
+                mb={2}
               />
             </FormControl>
-            <Text fontSize={'sm'} fontWeight={"semibold"} color="#000000">
-              Esqueceu sua senha?
-            </Text>
+
+            <p className="senha-esquecida">Esqueceu sua senha?</p>
             <Button
               mt={2}
               bg="#A10808"
@@ -118,10 +73,10 @@ const Login = () => {
               Entrar
             </Button>
           </VStack>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
 export default Login;
