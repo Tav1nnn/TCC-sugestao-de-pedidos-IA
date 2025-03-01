@@ -46,7 +46,8 @@ function Login() {
     const isPasswordValid = validatePassword(password);
 
     if (isEmailValid && isPasswordValid) {
-      alert('Login realizado com sucesso!');
+      //alert('Login realizado com sucesso!');
+      window.location.href = '/home';
     }
   };
 
@@ -68,18 +69,18 @@ function Login() {
           <h1>Olá, seja bem-vindo ao SugereAI!</h1>
           <p>AI (Artificial Intelligence) que entende sua fome e sugere o que você ama.</p>
           <Button
-                      mt={2}
-                      bg="#A10808"
-                      color="white"
-                      _hover={{ bg: "#E5E5E5", color: "#A10808" }}
-                      w="max-content"
-                      size="lg"
-                      rounded="md"
-                      border={"2px solid white"}
-                      p = {4}
-                    >
-                      Fale conosco!
-         </Button>
+            className="btn-fale-conosco"
+            mt={2}
+            bg="#A10808"
+            color="white"
+            _hover={{ bg: "#E5E5E5", color: "#A10808" }}
+            w="max-content"
+            size="lg"
+            rounded="md"
+            border={"2px solid white"}
+          >
+            Fale conosco!
+          </Button>
         </div>
       </div>
 
@@ -88,7 +89,7 @@ function Login() {
           <h2>Login</h2>
           <form onSubmit={handleSubmit}>
             <VStack spacing={4} mt={6} alignItems="stretch">
-              <FormControl isInvalid={!!emailError}>
+              <FormControl isInvalid={emailError}>
                 <Input
                   id="email"
                   type="email"
@@ -103,12 +104,12 @@ function Login() {
                   color={"black"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onBlur={() => validateEmail(email)}
+                  onBlur={() => validateEmail(email)} // Permite que o evento de validação seja feito até mesmo com a tecla TAB e não só o clique fora do input
                 />
-                <FormErrorMessage>{emailError}</FormErrorMessage>
+                <FormErrorMessage color='black' marginLeft={4} fontSize={10}>{emailError}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isInvalid={!!passwordError}>
+              <FormControl isInvalid={passwordError}>
                 <Input
                   id="password"
                   type="password"
@@ -125,10 +126,10 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   onBlur={() => validatePassword(password)}
                 />
-                {passwordError}
+                <FormErrorMessage color='black' marginLeft={4} fontSize={10}>{passwordError}</FormErrorMessage>
               </FormControl>
 
-              <p className="senha-esquecida">Esqueceu sua senha?</p>
+              <a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer' className="senha-esquecida">Esqueceu sua senha?</a>
               <Button
                 mt={2}
                 bg="#A10808"
@@ -141,6 +142,7 @@ function Login() {
               >
                 Entrar
               </Button>
+              <a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer' className="criar-conta">Não possui uma conta? Fale Conosco!</a>
             </VStack>
           </form>
         </div>
