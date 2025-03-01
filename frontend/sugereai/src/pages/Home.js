@@ -68,13 +68,15 @@ const Home = () => {
     }
   return (
     <div className="home-container">
-      <h1>Restaurantes</h1>
+      <div className="home-header">
+        <h1>Restaurantes</h1>
+      </div>
       <div className="restaurant-cards">
         {restaurants.map(restaurant => (
           <div key={restaurant.id} className="restaurant-card">
             <img src={restaurant.image} alt={restaurant.name} />
-            <h2>{restaurant.name}</h2>
-            <p>{restaurant.description}</p>
+            <h2>{restaurant.name.toUpperCase()}</h2>
+            {/* <p>{restaurant.description}</p> */}
           </div>
         ))}
       </div>
