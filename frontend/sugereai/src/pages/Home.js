@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Home.css';
 import LoadingAnimation from '../components/LoadingAnimation';
 import {
-  Button, 
-  Input, 
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  Button,
+  Input
 } from "@chakra-ui/react";
+import { FaRobot } from "react-icons/fa";
+import { BsFillSendFill } from "react-icons/bs";
+import { PiOpenAiLogoBold } from "react-icons/pi";
+
+import {
+  DialogBody,
+  DialogActionTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog"
 
 const restaurants = [
   {
@@ -67,7 +73,6 @@ const restaurants = [
 
 const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const {isOpen, onOpen, onClose } = useDisclosure();   
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -97,24 +102,29 @@ const Home = () => {
           </div>
         ))}
       </div>
-      <div className='modal-chat'>
-      {/*<Button onClick={onOpen}>Abrir Chat</Button>
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Você já possui um restaurante em mente?</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Input placeholder="Digite o nome do restaurante" />
-                </ModalBody>
-
-                <ModalFooter>
-                  <Button colorScheme="blue" mr={3} onClick={onClose}>
-                    Fechar
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>*/}
+      <div>
+        <DialogRoot>
+          <DialogTrigger>
+            <Button className='btn-ia'>
+              <FaRobot className='icon-ia'/>
+              {/*<PiOpenAiLogoBold className='icon-ia'/> */}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className='modal-open'>
+            <DialogHeader>
+              <DialogTitle fontSize={'40px'} p={'10px'}>SugereAI</DialogTitle>
+            </DialogHeader>
+            <DialogBody p={'20px'}>
+              <p>Fale pare nós o que você deseja!</p>
+            </DialogBody>
+            <Input placeholder='Você já possui um restaurante em mente?' className='input-chat'></Input>
+            <DialogFooter pt={'10px'} className='btn-send'>
+              <DialogActionTrigger asChild>
+                <Button background={'#2D2C31'} borderRadius={'50%'}><BsFillSendFill color='white'/></Button>
+              </DialogActionTrigger>
+            </DialogFooter>
+          </DialogContent>
+        </DialogRoot>
       </div>
     </div>
   );
