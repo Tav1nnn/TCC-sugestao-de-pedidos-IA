@@ -1,67 +1,88 @@
 .home-container {
-    padding: 20px;
-    background-color: red;
-    text-align: center;
-  }
-  
-  h1 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    color: #000000;
-  }
+  text-align: center;
+  position: relative;
+}
 
-  .home-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f2f2f2;
-    padding: 10px;
-    margin: -20px;
-    margin-bottom: 20px;
-  }
-  
-  .restaurant-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    padding: 20px;
-    background-color: green;
-  }
-  
-  .restaurant-card {
-    background: #e6e6e6;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: auto;
-    height: auto;
-    text-align: center;
-  }
-  
-  .restaurant-card img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    padding: 2px;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-  }
-  
-  .restaurant-card h2 {
-    font-size: auto;
-    margin: 2px;
-    color: black;
-    font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .restaurant-card p {
-    font-size: 1em;
-    margin: 10px;
-    color: #666;
-    font-size: 14px;
-    font-style: italic;
-  }
+h1 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+.home-header {
+  display: flex;
+  justify-content: center;
+  background-image: linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0.8));
+  padding: 10px;
+  width: 100%;
+  height: 10%;
+  position: absolute;
+  z-index: 2;
+}
+
+.home-header h1 {
+  align-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 1.5em;
+  color: #000000;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sugere-ai h2 {
+  font-size: 14px;
+  color: #E5DFC9;
+  font-weight:lighter;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #2D2C31;
+  padding: 20px;
+}
+
+.restaurant-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.restaurant-card {
+  background: #E5E5E5;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: auto;
+  height: auto;
+  text-align: center;
+}
+
+.restaurant-card img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  padding: 2px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.restaurant-card h2 {
+  font-size: auto;
+  margin: 2px;
+  color: black;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.restaurant-card p {
+  font-size: 1em;
+  margin: 10px;
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}

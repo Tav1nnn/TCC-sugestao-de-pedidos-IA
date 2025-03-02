@@ -1,247 +1,250 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #fff;
-  }
-  
-  /* BoxGeral */
-  .box-geral {
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    justify-content: center;
-    background-color: rgb(255, 255, 255);
-    /* Comentar a position caso mude a ideia */
-    position: relative;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  /* BoxFaleConosco antes do Brunão fala*/
-  /* .box-fale-conosco { 
-    background-color: #A10808;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    border-bottom-right-radius: 100px;
-    border-bottom-left-radius: 100px;
-    grid-column: 1 / 2;
-  } */
-  
-  /* BoxFaleConosco */
-  .box-fale-conosco {
-    background-color: #A10808;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    border-bottom-right-radius: 100px;
-    border-bottom-left-radius: 100px;
-    grid-column: 1 / 2;
-    position: absolute;
-    height: auto;
-  } 
-  
-  .box-fale-conosco .content h1 {
-    font-size: 24px;
-    color: white;
-    font-weight: bold;
-    margin-top: 4;
-    margin: 2;
-    /* Comentar a position caso mude a ideia */
-    display: none;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+}
 
-  .btn-fale-conosco {
-    /* Comentar a position caso mude a ideia */
-    display: none;
-    padding: 8px;
-  }
-  
-  .box-fale-conosco .content p {
-    font-size: 14px;
-    margin: 12px;
-    font-style: italic;
-  }
-  
-  /* BoxLogin Antes do Brunão fala*/
-  /* .box-login {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    width: 100%;
-    padding: 60px;
-    grid-column: 1 / 2;
-  } */
-
-  .box-login {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%; 
-    height: 60px; 
-    position: fixed; 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    z-index: 10; 
-    border-radius: 8px; 
-  }
-  
-  .form-box {
-    padding: 8;
-    width: 100%;
-    max-width: 100%;
-    text-align: center;
-  }
-  
-  .form-box h2 {
-    font-size: 36px;
-    font-weight: bold;
-    color: black;
-    margin-bottom: 2rem;
-  }
-  
-  .senha-esquecida {
-    font-size: 14px;
-    font-weight: 600;
-    color: black;
-    cursor: pointer;
-  }
-
-  .criar-conta {
-    font-size: 12px;
-    font-weight: 600;
-    margin: 1rem;
-    color: black;
-    cursor: pointer;
-  }
-
-  /* Estilizando o botão como balão de conversa */
-.chat-bubble-button {
+/* BoxGeral */
+.box-geral {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
+  /* Comentar a position caso mude a ideia */
   position: relative;
-  padding: 20px;
-  border-radius: 50%; /* Tornando o botão circular */
-  border: 1px solid #a10808; /* Borda preta */
-  background-color: transparent; /* Cor de fundo vermelha */
-  font-size: 16px;
-  display: flex;
+}
+
+/* BoxFaleConosco antes do Brunão fala*/
+/* .box-fale-conosco { 
+  background-color: #A10808;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
   justify-content: center;
   align-items: center;
   text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  width: 100%;
+  border-bottom-right-radius: 100px;
+  border-bottom-left-radius: 100px;
+  grid-column: 1 / 2;
+} */
+
+/* BoxFaleConosco */
+.box-fale-conosco {
+  background-color: #A10808;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  border-bottom-right-radius: 100px;
+  border-bottom-left-radius: 100px;
+  grid-column: 1 / 2;
+  position: absolute;
+  height: auto;
+} 
+
+.box-fale-conosco .content h1 {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+  margin-top: 4;
+  margin: 2;
+  /* Comentar a position caso mude a ideia */
+  display: none;
 }
 
-  
-  /* Responsividade */
-  @media (min-width: 768px) {
-    /*.box-geral {
-      grid-template-columns: 1fr 1fr;
-    }*/
+.btn-fale-conosco {
+  /* Comentar a position caso mude a ideia */
+  display: none;
+  padding: 8px;
+}
 
-    .box-geral {
-      grid-template-columns: 1fr 1fr;
-      position:initial;
+.box-fale-conosco .content p {
+  font-size: 14px;
+  margin: 12px;
+  font-style: italic;
+}
+
+/* BoxLogin Antes do Brunão fala*/
+/* .box-login {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  padding: 60px;
+  grid-column: 1 / 2;
+} */
+
+.box-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%; 
+  height: 60px; 
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  z-index: 10; 
+  border-radius: 8px; 
+}
+
+.form-box {
+  padding: 8;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+.form-box h2 {
+  font-size: 36px;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 2rem;
+}
+
+.senha-esquecida {
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  cursor: pointer;
+}
+
+.criar-conta {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 1rem;
+  color: black;
+  cursor: pointer;
+}
+
+/* Estilizando o botão como balão de conversa */
+.chat-bubble-button {
+position: relative;
+padding: 20px;
+border-radius: 50%; /* Tornando o botão circular */
+border: 1px solid #a10808; /* Borda preta */
+background-color: transparent; /* Cor de fundo vermelha */
+font-size: 16px;
+display: flex;
+justify-content: center;
+align-items: center;
+text-align: center;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+
+/* Responsividade */
+@media (min-width: 768px) {
+  /*.box-geral {
+    grid-template-columns: 1fr 1fr;
+  }*/
+
+  .box-geral {
+    grid-template-columns: 1fr 1fr;
+    position:initial;
+  }
+
+  /* Antes do Brunao fala */
+  /*.box-fale-conosco {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 200px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 200px;
+    padding-right: 22px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  }*/
+
+  .box-fale-conosco {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 200px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 200px;
+    padding-right: 22px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    position: unset;
+  }
+
+  .box-fale-conosco:hover .content h1 {
+    animation: saltoTexto 0.5s ease-in-out;
+  }
+
+  .box-fale-conosco:hover p {
+    animation: saltoTexto 0.8s ease-in-out;
+  }
+
+  .box-fale-conosco:hover .btn-fale-conosco {
+    animation: saltoTexto 0.5s ease-in-out;
+  }
+
+  @keyframes saltoTexto {
+    0% {
+        transform: translateY(0);
     }
-  
-    /* Antes do Brunao fala */
-    /*.box-fale-conosco {
-      border-top-left-radius: 0px;
-      border-top-right-radius: 200px;
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 200px;
-      padding-right: 22px;
-      padding: 10px;
-      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
-    }*/
-
-    .box-fale-conosco {
-      border-top-left-radius: 0px;
-      border-top-right-radius: 200px;
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 200px;
-      padding-right: 22px;
-      padding: 10px;
-      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
-      position: unset;
+    50% {
+        transform: translateY(-20px); 
     }
-
-    .box-fale-conosco:hover .content h1 {
-      animation: saltoTexto 0.5s ease-in-out;
-    }
-
-    .box-fale-conosco:hover p {
-      animation: saltoTexto 0.8s ease-in-out;
-    }
-
-    .box-fale-conosco:hover .btn-fale-conosco {
-      animation: saltoTexto 0.5s ease-in-out;
-    }
-
-    @keyframes saltoTexto {
-      0% {
-          transform: translateY(0);
-      }
-      50% {
-          transform: translateY(-20px); 
-      }
-      100% {
-          transform: translateY(0); 
-      }
-    }
-
-    .box-fale-conosco .content h1 {
-        font-size: 40px;
-        display: unset;
-    }
-  
-    .box-fale-conosco .content p {
-        font-size: 16px;
-      }
-
-    .btn-fale-conosco {
-      /* Comentar a position caso mude a ideia */
-      display: unset;
-      padding: 8px;
-    }
-
-    .box-login {
-      margin-top: 0;
-      grid-column: 2 / 3;
-      width: 100%;
-      padding: 60px;
-      height: unset;
-      position: unset;
-      top: unset; 
-      left: unset;
-      transform: unset;
-      z-index: unset; 
-      border-radius: unset;
-    }
-
-    /*.box-login {
-      margin-top: 0;
-      grid-column: 2 / 3;
-    } */
-
-    .form-box h2 {
-      margin-bottom: 1rem;
-    }
-
-    .form-box {
-      max-width: 80%;
+    100% {
+        transform: translateY(0); 
     }
   }
-  
+
+  .box-fale-conosco .content h1 {
+      font-size: 40px;
+      display: unset;
+  }
+
+  .box-fale-conosco .content p {
+      font-size: 16px;
+    }
+
+  .btn-fale-conosco {
+    /* Comentar a position caso mude a ideia */
+    display: unset;
+    padding: 8px;
+  }
+
+  .criar-conta {
+    display: none;
+  }
+
+  .box-login {
+    margin-top: 0;
+    grid-column: 2 / 3;
+    width: 100%;
+    padding: 60px;
+    height: unset;
+    position: unset;
+    top: unset; 
+    left: unset;
+    transform: unset;
+    z-index: unset; 
+    border-radius: unset;
+  }
+
+  /*.box-login {
+    margin-top: 0;
+    grid-column: 2 / 3;
+  } */
+
+  .form-box h2 {
+    margin-bottom: 1rem;
+  }
+
+  .form-box {
+    max-width: 80%;
+  }
+}

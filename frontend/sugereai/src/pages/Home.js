@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Home.css';
 import LoadingAnimation from '../components/LoadingAnimation';
+import {
+  Button, 
+  Input, 
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 
 const restaurants = [
   {
@@ -54,7 +66,8 @@ const restaurants = [
 ];
 
 const Home = () => {
-    const [isLoading, setIsLoading] = useState(true);   
+    const [isLoading, setIsLoading] = useState(true);
+    const {isOpen, onOpen, onClose } = useDisclosure();   
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -71,17 +84,44 @@ const Home = () => {
       <div className="home-header">
         <h1>Restaurantes</h1>
       </div>
+      <div className='sugere-ai'>
+        <img src='https://peraweb.com.br/wp-content/uploads/2024/10/food-5-768x432.webp' alt='Sugere ai' />
+        <h2> ENCONTRE A SUGESTÃO QUE IRÁ TE SURPREENDER!</h2>
+      </div>
       <div className="restaurant-cards">
         {restaurants.map(restaurant => (
           <div key={restaurant.id} className="restaurant-card">
-            <img src={restaurant.image} alt={restaurant.name} />
+            <img src={restaurant.image} alt={restaurant.name} /> 
             <h2>{restaurant.name.toUpperCase()}</h2>
             {/* <p>{restaurant.description}</p> */}
           </div>
         ))}
       </div>
+      <div className='modal-chat'>
+      {/*<Button onClick={onOpen}>Abrir Chat</Button>
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Você já possui um restaurante em mente?</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Input placeholder="Digite o nome do restaurante" />
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={onClose}>
+                    Fechar
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>*/}
+      </div>
     </div>
   );
 };
+
+/* Nunca foi tão fácil saber o que pedir, aqui você não fica na dúvida 
+    Placeholder "Diga ao chat o que você deseja comer".
+*/
 
 export default Home;
