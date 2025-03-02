@@ -71,6 +71,10 @@ const Home = () => {
       <div className="home-header">
         <h1>Restaurantes</h1>
       </div>
+      <div className='sugere-ai'>
+        <img src='https://peraweb.com.br/wp-content/uploads/2024/10/food-5-768x432.webp' alt='Sugere ai' />
+        <h2> ENCONTRE A SUGESTÃO QUE IRÁ TE SURPREENDER!</h2>
+      </div>
       <div className="restaurant-cards">
         {restaurants.map(restaurant => (
           <div key={restaurant.id} className="restaurant-card">
