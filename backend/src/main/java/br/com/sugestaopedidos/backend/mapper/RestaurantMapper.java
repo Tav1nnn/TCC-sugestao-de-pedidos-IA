@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.mapper;
 
+import br.com.sugestaopedidos.backend.dto.RestaurantFormatDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.model.Restaurant;
@@ -16,6 +17,8 @@ public interface RestaurantMapper {
     Set<Restaurant> toSetEntities(Set<RestaurantRequestDto> restaurantRequests);
 
     RestaurantResponseDto toDto(Restaurant restaurant);
+
+    RestaurantFormatDto toFormatDto(Restaurant restaurant);
 
     Set<RestaurantResponseDto> toSetDtos(Set<Restaurant> restaurants);
 
