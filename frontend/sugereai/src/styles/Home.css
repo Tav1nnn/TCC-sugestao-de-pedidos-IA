@@ -119,7 +119,7 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  border: 2px solid #A10800;
+  border: 6px solid #A10800;
   border-radius: 50%;
   animation: rotate-border 2s infinite linear; /* Animação de rotação */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 20% 20%);
