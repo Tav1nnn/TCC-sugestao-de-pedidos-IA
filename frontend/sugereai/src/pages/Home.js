@@ -2,23 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Home.css';
 import LoadingAnimation from '../components/LoadingAnimation';
 import {
-  Button,
-  Input
+  Button
 } from "@chakra-ui/react";
 import { FaRobot } from "react-icons/fa";
-import { BsFillSendFill } from "react-icons/bs";
-import { PiOpenAiLogoBold } from "react-icons/pi";
-
-import {
-  DialogBody,
-  DialogActionTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../components/ui/dialog"
 
 const restaurants = [
   {
@@ -103,28 +89,12 @@ const Home = () => {
         ))}
       </div>
       <div>
-        <DialogRoot>
-          <DialogTrigger>
-            <Button className='btn-ia'>
-              <FaRobot className='icon-ia'/>
-              {/*<PiOpenAiLogoBold className='icon-ia'/> */}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className='modal-open'>
-            <DialogHeader>
-              <DialogTitle fontSize={'40px'} p={'10px'}>SugereAI</DialogTitle>
-            </DialogHeader>
-            <DialogBody p={'20px'}>
-              <p>Fale pare nós o que você deseja!</p>
-            </DialogBody>
-            <Input placeholder='Você já possui um restaurante em mente?' className='input-chat'></Input>
-            <DialogFooter pt={'10px'} className='btn-send'>
-              <DialogActionTrigger asChild>
-                <Button background={'#2D2C31'} borderRadius={'50%'}><BsFillSendFill color='white'/></Button>
-              </DialogActionTrigger>
-            </DialogFooter>
-          </DialogContent>
-        </DialogRoot>
+        <a href='http://localhost:3000/chat' rel='noopener noreferrer'>
+          <Button className='btn-ia'>
+            <FaRobot className='icon-ia'/>
+            {/*<PiOpenAiLogoBold className='icon-ia'/> */}
+          </Button>
+        </a>
       </div>
     </div>
   );
