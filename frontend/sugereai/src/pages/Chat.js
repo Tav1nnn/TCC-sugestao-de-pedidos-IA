@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { BsFillSendFill } from 'react-icons/bs';
-import { Button, Input, Box, Heading, Text, Flex, Image } from "@chakra-ui/react";
+import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
-import logo from '../images/Logo branca escrita.png'
+import logo from '../images/Logo preta escrita.png';
+import { AiOutlineClose } from "react-icons/ai";
 
 const dotsAnimation = keyframes`
   0% { content: ''; }
@@ -22,12 +23,13 @@ export default function ChatPage() {
     if (!inputValue.trim()) return;
 
     const userMessage = { type: 'request', text: inputValue };
+    const responseChat = {type: 'response', text: 'eae meu truta'}
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
 
     setTimeout(() => {
-      const aiResponse = { type: 'response', text: `Resposta para "${userMessage.text}"` };
+      const aiResponse = { type: 'response', text: `SugereAI: "${responseChat.text}"` };
       setMessages((prev) => [...prev, aiResponse]);
       setIsLoading(false);
     }, 1500);
@@ -38,20 +40,18 @@ export default function ChatPage() {
   }, [messages, isLoading]);
 
   return (
-    <Flex direction="column" minH="100vh" p="20px" bg="rgb(45, 44, 48)">
-      <Flex align="center" justify="space-between" mb="20px" w={'100%'}>
-        <Heading display="flex" alignItems="center" fontSize="40px">
-          <Image src={logo} alt = 'Logo SugereAI' width={'40%'} h={'auto'}/>
+    <Flex direction="column" minH="100vh" p="20px">
+      <Flex mb="10px" w={'100%'} justify={'space-between'}>
+          <Image src={logo} alt = 'Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'}/>
           <a href='http://localhost:3000/home' rel='noopener noreferrer'>
-            <Button>
-                X
-                {/*<PiOpenAiLogoBold className='icon-ia'/> */}
+            <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
+              <AiOutlineClose  />
+              {/*<PiOpenAiLogoBold className='icon-ia'/> */}
             </Button>
           </a>
-        </Heading>
       </Flex>
 
-      <Text mb="20px" textAlign="center">
+      <Text mb="20px" textAlign="center" color={'black'}>
         Fale para nós o que você deseja!
       </Text>
 
@@ -59,9 +59,9 @@ export default function ChatPage() {
         flex="1"
         overflowY="auto"
         p="20px"
-        border="1px solid #ddd"
+        border="1px solid #A10808"
         borderRadius="8px"
-        bg="white"
+        bg="#2D2C31"
         mb="20px"
         display="flex"
         flexDirection="column"
@@ -74,8 +74,8 @@ export default function ChatPage() {
             borderRadius="20px"
             mb="10px"
             alignSelf={msg.type === 'request' ? 'flex-end' : 'flex-start'}
-            bg={msg.type === 'request' ? '#d1e7dd' : '#f8d7da'}
-            color={msg.type === 'request' ? '#0f5132' : '#842029'}
+            bg={msg.type === 'request' ? '#A10808' : '#f7bb75'}
+            color={msg.type === 'request' ? '#FFFFFF' : '#FFFFFF'}
             ml={msg.type === 'request' ? 'auto' : '0'}
           >
             {msg.text}
@@ -89,8 +89,8 @@ export default function ChatPage() {
             borderRadius="20px"
             mb="10px"
             alignSelf="flex-start"
-            bg="#f8d7da"
-            color="#842029"
+            bg="#f7bb75"
+            color="#FFFFFF"
             _after={{
               content: '""',
               display: 'inline-block',
@@ -113,10 +113,13 @@ export default function ChatPage() {
           onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
           flex="1"
           p='6px'
+          bg={'#2D2C31'}
+          border={'2px solid #A10808'}
         />
         <Button
           background="#2D2C31"
           borderRadius="50%"
+          border={'2px solid #A10808'}
           onClick={handleSendMessage}
         >
           <BsFillSendFill color="white" />
