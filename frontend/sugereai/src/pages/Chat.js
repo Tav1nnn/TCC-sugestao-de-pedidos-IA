@@ -14,36 +14,16 @@ const dotsAnimation = keyframes`
 `;
 
 export default function ChatPage() {
-
-  const requestBody = [{
-    message: {
-      role: "user",
-      content: "quero comida italiana",
-      refusal: null
-    },
-    restaurantResponseDto: null
-  }];
-
-  const getResult = async () => {
-    try {
-        const response = await axios.post(`http://localhost:8080/api/chat`, requestBody);
-        console.log(response);
-    } catch (error) {
-        console.log(error);
-    }
-}
-
   const [messages, setMessages] = useState([]);
+  //const [chat, setChat] = useState();
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const chatEndRef = useRef(null);
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
 
     const userMessage = { type: 'request', text: inputValue };
-    const responseChat = {type: 'response', text: 'eae meu truta'}
+    const responseChat = {type: 'response', text: requestBody[0].message.role}
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
@@ -53,6 +33,34 @@ export default function ChatPage() {
       setMessages((prev) => [...prev, aiResponse]);
       setIsLoading(false);
     }, 1500);
+  };
+
+  const chatEndRef = useRef(null);
+
+  const requestBody = [{
+    message: {
+      role: "user",
+      content: inputValue,
+      refusal: null
+    },
+    restaurantResponseDto: null
+  }];
+
+  const getResult = async () => {
+    try {
+        const response = await axios.post(`http://localhost:8080/api/chat`, requestBody);
+        console.log(JSON.stringify(response.data));
+        //setChat(JSON.stringify(response.data));
+    } catch (error) {
+        console.log(error);
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      getResult();
+      handleSendMessage();
+    }
   };
 
   useEffect(() => {
@@ -130,7 +138,7 @@ export default function ChatPage() {
           placeholder="Você já possui um restaurante em mente?"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+          onKeyDown={handleKeyDown}
           flex="1"
           p='6px'
           bg={'#2D2C31'}
@@ -140,7 +148,10 @@ export default function ChatPage() {
           background="#2D2C31"
           borderRadius="50%"
           border={'2px solid #A10808'}
-          onClick={()=>getResult()}
+          onClick={(e) => {
+            getResult();
+            handleKeyDown({ key: 'Enter' });
+          }}
         >
           <BsFillSendFill color="white" />
         </Button>
