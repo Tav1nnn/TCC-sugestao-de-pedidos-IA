@@ -21,12 +21,6 @@ public class ConsumeOpenAi {
     private final RestProperties restProperties;
     private final ObjectMapper objectMapper;
     public Mono<ResponseOpenAi> consuteOpenAi(RequestOpenAi requestOpenAi) {
-        try {
-            String requestBody = objectMapper.writeValueAsString(requestOpenAi);
-            log.info("Enviando requisição para OpenAI: {}", requestBody);
-        } catch (Exception e) {
-            log.error("Erro ao serializar a requisição", e);
-        }
 
         return webClient.post()
                 .uri("https://api.openai.com/v1/chat/completions")

@@ -13,6 +13,9 @@ import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ChatProcessingException;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.RestaurantMapper;
+import br.com.sugestaopedidos.backend.model.Category;
+import br.com.sugestaopedidos.backend.model.Restaurant;
+import br.com.sugestaopedidos.backend.repository.CategoryRepository;
 import br.com.sugestaopedidos.backend.repository.RestaurantRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
     @Service
     @Slf4j
@@ -28,6 +33,7 @@ import java.util.StringJoiner;
     public class ChatService {
 
         private final RestaurantRepository restaurantRepository;
+        private final CategoryRepository categoryRepository;
         private final ConsumeOpenAi consumeOpenAi;
         private final RestaurantMapper restaurantMapper;
         private final ObjectMapper objectMapper;
@@ -36,7 +42,7 @@ import java.util.StringJoiner;
             RequestOpenAi requestOpenAi = createRequest(chatDtos);
 
             ResponseOpenAi responseOpenAi = consumeOpenAi.consuteOpenAi(requestOpenAi).block();
-
+            log.info("Request: {}", requestOpenAi);
             log.info("Response: {}", responseOpenAi);
 
             if (responseOpenAi == null) {
@@ -83,18 +89,29 @@ import java.util.StringJoiner;
         }
 
         private String formatRestaurants() {
-            List<RestaurantFormatDto> restaurantFormatDtos = restaurantRepository.findAll()
-                    .stream()
-                    .map(restaurantMapper::toFormatDto)
-                    .toList();
+            List<Restaurant> restaurants = restaurantRepository.findAll();
+            List<RestaurantFormatDto> restaurantFormatDtos = restaurantMapper.toListDtos(restaurants);
+            List<Category> categories = categoryRepository.findByRestaurants(restaurants);
+
+            Map<String, RestaurantFormatDto> restaurantMap = new HashMap<>();
+            for (int i = 0; i < restaurants.size(); i++) {
+                Restaurant restaurant = restaurants.get(i);
+                RestaurantFormatDto dto = restaurantFormatDtos.get(i);
+                restaurantMap.put(restaurant.getId(), dto);
+            }
+
+            for (Category category : categories) {
+                Restaurant restaurant = category.getRestaurant();
+                RestaurantFormatDto dto = restaurantMap.get(restaurant.getId());
+                if (dto != null) {
+                    dto.getCategories().add(category.getName());
+                }
+            }
 
             StringJoiner joiner = new StringJoiner(", ", "Segue a lista de restaurantes: ", ".");
             restaurantFormatDtos.forEach(dto -> joiner.add(dto.toString().replace("RestaurantFormatDto", "")));
 
-            String formattedString = joiner.toString();
-            log.info("Lista de restaurantes formatada: {}", formattedString);
-
-            return formattedString;
+            return joiner.toString();
         }
 
     }
