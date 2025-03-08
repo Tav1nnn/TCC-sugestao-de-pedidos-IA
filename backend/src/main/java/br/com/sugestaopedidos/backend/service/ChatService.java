@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.StringJoiner;
@@ -38,9 +37,12 @@ import java.util.StringJoiner;
 
             ResponseOpenAi responseOpenAi = consumeOpenAi.consuteOpenAi(requestOpenAi).block();
 
+            log.info("Response: {}", responseOpenAi);
+
             if (responseOpenAi == null) {
                 throw new RuntimeException("Falha ao obter resposta do OpenAI");
             }
+
 
             return processResponse(responseOpenAi, chatDtos);
         }
@@ -70,7 +72,7 @@ import java.util.StringJoiner;
 
             RestaurantResponseDto restaurantResponseDto = null;
 
-            if(!contentDto.getTitle().equals("USER COM PREFERÊNCIA")) {
+            if(!contentDto.getTitle().equals("USER COM PREFERÊNCIA") && !contentDto.getTitle().equals("NÃO RELACIONADO")) {
                 restaurantResponseDto = restaurantMapper.toDto(
                         restaurantRepository.findByName(contentDto.getTitle())
                                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + contentDto.getTitle())));
