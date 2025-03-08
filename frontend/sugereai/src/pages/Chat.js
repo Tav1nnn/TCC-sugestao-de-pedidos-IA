@@ -4,6 +4,7 @@ import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
 import logo from '../images/Logo preta escrita.png';
 import { AiOutlineClose } from "react-icons/ai";
+import axios from "axios";
 
 const dotsAnimation = keyframes`
   0% { content: ''; }
@@ -13,6 +14,25 @@ const dotsAnimation = keyframes`
 `;
 
 export default function ChatPage() {
+
+  const requestBody = [{
+    message: {
+      role: "user",
+      content: "quero comida italiana",
+      refusal: null
+    },
+    restaurantResponseDto: null
+  }];
+
+  const getResult = async () => {
+    try {
+        const response = await axios.post(`http://localhost:8080/api/chat`, requestBody);
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -120,7 +140,7 @@ export default function ChatPage() {
           background="#2D2C31"
           borderRadius="50%"
           border={'2px solid #A10808'}
-          onClick={handleSendMessage}
+          onClick={()=>getResult()}
         >
           <BsFillSendFill color="white" />
         </Button>
