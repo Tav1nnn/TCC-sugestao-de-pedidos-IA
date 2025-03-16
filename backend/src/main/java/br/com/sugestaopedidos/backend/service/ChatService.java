@@ -15,8 +15,10 @@ import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundExcepti
 import br.com.sugestaopedidos.backend.mapper.RestaurantMapper;
 import br.com.sugestaopedidos.backend.model.Category;
 import br.com.sugestaopedidos.backend.model.Restaurant;
+import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.CategoryRepository;
 import br.com.sugestaopedidos.backend.repository.RestaurantRepository;
+import br.com.sugestaopedidos.backend.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +39,10 @@ import java.util.StringJoiner;
         private final ConsumeOpenAi consumeOpenAi;
         private final RestaurantMapper restaurantMapper;
         private final ObjectMapper objectMapper;
+        private final UserRepository userRepository;
 
-        public List<ChatDto> consumeChatRestaurant(List<ChatDto> chatDtos){
-            RequestOpenAi requestOpenAi = createRequest(chatDtos);
+        public List<ChatDto> consumeChatRestaurant(List<ChatDto> chatDtos, String userId) {
+            RequestOpenAi requestOpenAi = createRequest(chatDtos, userId);
 
             ResponseOpenAi responseOpenAi = consumeOpenAi.consuteOpenAi(requestOpenAi).block();
             log.info("Request: {}", requestOpenAi);
@@ -49,24 +52,29 @@ import java.util.StringJoiner;
                 throw new RuntimeException("Falha ao obter resposta do OpenAI");
             }
 
-
             return processResponse(responseOpenAi, chatDtos);
         }
 
-        private RequestOpenAi createRequest(List<ChatDto> chatRequestDtos) {
+        private RequestOpenAi createRequest(List<ChatDto> chatRequestDtos, String userId) {
             RequestOpenAi requestOpenAi = new RequestOpenAi();
             requestOpenAi.getMessages().addAll(List.of( //adiciona os scripts
                     Scripts.SCRIPT_RESTAURANT,
-                    Scripts.ERROR_RESTAURANT,
                     Scripts.RETURN_FORMAT,
                     new Message(Role.system, formatRestaurants())
-            ));
+            ));// metodo de instanciacao
             //adiciona conversas anteriores
+
+            String profile = getUserProfile(userId);
+
+            if(profile != null){
+                requestOpenAi.getMessages().add(new Message(Role.system, "Aqui estáo um pouco do perfil do cliente: " + profile));
+            }
+
             requestOpenAi.getMessages().addAll(chatRequestDtos.stream().map(ChatDto::getMessage).toList());
             return requestOpenAi;
         }
 
-        private List<ChatDto> processResponse(ResponseOpenAi responseOpenAi, List<ChatDto> chatRequestDtos){
+        private List<ChatDto> processResponse(ResponseOpenAi responseOpenAi, List<ChatDto> chatRequestDtos) {
 
             ContentDto contentDto;
 
@@ -78,10 +86,11 @@ import java.util.StringJoiner;
 
             RestaurantResponseDto restaurantResponseDto = null;
 
-            if(!contentDto.getTitle().equals("USER COM PREFERÊNCIA") && !contentDto.getTitle().equals("NÃO RELACIONADO")) {
+            System.out.println(contentDto.getRestaurantName());
+            if (!contentDto.getRestaurantName().isBlank() && !contentDto.getRestaurantName().equals("N/A")) {
                 restaurantResponseDto = restaurantMapper.toDto(
-                        restaurantRepository.findByName(contentDto.getTitle())
-                                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + contentDto.getTitle())));
+                        restaurantRepository.findByName(contentDto.getRestaurantName())
+                                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + contentDto.getRestaurantName())));
             }
             chatRequestDtos.add(new ChatDto(responseOpenAi.getChoices().getFirst().getMessage(), restaurantResponseDto));
 
@@ -112,6 +121,13 @@ import java.util.StringJoiner;
             restaurantFormatDtos.forEach(dto -> joiner.add(dto.toString().replace("RestaurantFormatDto", "")));
 
             return joiner.toString();
+
         }
 
+        private String getUserProfile(String userId) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not fount id: " + userId));
+            return user.getProfile() != null ? user.getProfile() : null;
+
+        }
     }
+

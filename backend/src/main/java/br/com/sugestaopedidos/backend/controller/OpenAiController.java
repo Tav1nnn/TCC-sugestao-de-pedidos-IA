@@ -16,7 +16,7 @@ public class OpenAiController {
     private final ChatService chatService;
 
     @PostMapping
-    public List<ChatDto> consultOpenAi(@RequestBody List<ChatDto> chatRequestDtos) throws JsonProcessingException {
-        return chatService.consumeChatRestaurant(chatRequestDtos);
+    public List<ChatDto> consultOpenAi(@RequestBody List<ChatDto> chatRequestDtos, @RequestHeader("userId") String userId ) {
+        return chatService.consumeChatRestaurant(chatRequestDtos, userId);
     }
 }
