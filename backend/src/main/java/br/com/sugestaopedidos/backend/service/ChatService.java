@@ -44,7 +44,7 @@ import java.util.StringJoiner;
         public List<ChatDto> consumeChatRestaurant(List<ChatDto> chatDtos, String userId) {
             RequestOpenAi requestOpenAi = createRequest(chatDtos, userId);
 
-            ResponseOpenAi responseOpenAi = consumeOpenAi.consuteOpenAi(requestOpenAi).block();
+            ResponseOpenAi responseOpenAi = consumeOpenAi.consumeOpenAi(requestOpenAi).block();
             log.info("Request: {}", requestOpenAi);
             log.info("Response: {}", responseOpenAi);
 

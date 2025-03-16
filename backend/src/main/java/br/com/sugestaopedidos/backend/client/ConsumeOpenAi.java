@@ -1,9 +1,7 @@
 package br.com.sugestaopedidos.backend.client;
 
-import br.com.sugestaopedidos.backend.client.schema.Message;
 import br.com.sugestaopedidos.backend.client.schema.RequestOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.ResponseOpenAi;
-import br.com.sugestaopedidos.backend.client.schema.Role;
 import br.com.sugestaopedidos.backend.config.RestProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,7 @@ public class ConsumeOpenAi {
     private final WebClient webClient;
     private final RestProperties restProperties;
     private final ObjectMapper objectMapper;
-    public Mono<ResponseOpenAi> consuteOpenAi(RequestOpenAi requestOpenAi) {
+    public Mono<ResponseOpenAi> consumeOpenAi(RequestOpenAi requestOpenAi) {
 
         return webClient.post()
                 .uri("https://api.openai.com/v1/chat/completions")
