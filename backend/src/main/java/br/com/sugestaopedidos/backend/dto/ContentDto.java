@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContentDto {
     private String title;
+    private String restaurantName;
     private String message;
 }

@@ -7,6 +7,7 @@ import br.com.sugestaopedidos.backend.model.Restaurant;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
@@ -20,7 +21,7 @@ public interface RestaurantMapper {
 
     RestaurantFormatDto toFormatDto(Restaurant restaurant);
 
-    Set<RestaurantResponseDto> toSetDtos(Set<Restaurant> restaurants);
+    List<RestaurantFormatDto> toListDtos(List<Restaurant> restaurants);
 
     void updateEntityFromRequest(@MappingTarget Restaurant restaurant, RestaurantRequestDto restaurantRequestDto);
 }

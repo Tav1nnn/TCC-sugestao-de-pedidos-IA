@@ -5,11 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantFormatDto {
     private String name;
     private String description;
+    private Set<String> categories;
+
+    public RestaurantFormatDto () {
+        this.categories = new HashSet<>();
+    }
 }
