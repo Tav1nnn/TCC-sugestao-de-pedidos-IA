@@ -89,7 +89,7 @@ const Home = () => {
         ))}
       </div>
       <div>
-        <a href='http://localhost:3000/chat' rel='noopener noreferrer'>
+        <a href='http://localhost:3000/chat' rel='noopener noreferrer'> {/* Adicionar validação no Button */}
           <Button className='btn-ia'>
             <FaRobot className='icon-ia'/>
             {/*<PiOpenAiLogoBold className='icon-ia'/> */}

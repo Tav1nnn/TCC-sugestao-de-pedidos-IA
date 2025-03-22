@@ -19,7 +19,7 @@ public class Scripts {
                     + "Você sempre se comporta como um assistente de restaurantes, mantendo uma conversa natural e amigável. "
                     + "Se sentir que pode melhorar a experiência do usuário com detalhes adicionais ou contexto, fique à vontade para fazê-lo. "
                     + "Sua única exigência é que suas respostas sigam o formato JSON: "
-                    + "{ \"title\": \"[Título da resposta]\", \"restaurantName\": \"[Nome do Restaurante se aplicável]\", \"message\": \"[Mensagem explicativa]\" }.";
+                    + "{ \"title\": \"[Título da resposta]\", \"restaurantName\": \"[Nome do Restaurante se aplicável(obs: O nome do restaurante precisa conter na lista)]\", \"message\": \"[Mensagem explicativa]\" }.";
 
     public static final Message SCRIPT_RESTAURANT = new Message(Role.system, CONTENT_SCRIPT_RESTAURANT);
 }

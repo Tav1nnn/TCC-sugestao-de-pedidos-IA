@@ -3,6 +3,7 @@ import { BsFillSendFill } from 'react-icons/bs';
 import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
 import logo from '../images/Logo preta escrita.png';
+import { BiSolidFoodMenu } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 
@@ -17,7 +18,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState([]); 
+  const [chatHistory, setChatHistory] = useState([]);
 
   const chatEndRef = useRef(null);
 
@@ -46,10 +47,23 @@ export default function ChatPage() {
       if (latestAssistantResponse?.message?.role === "assistant") {
         const parsedContent = JSON.parse(latestAssistantResponse.message.content);
 
-        const assistantMessage = {
-          type: 'response',
-          text: `SugereAI: ${parsedContent.title} \n ${parsedContent.message}`
+        let assistantMessage = {
+          type: "response",
+          text: `SugereAI: ${parsedContent.title} \n ${parsedContent.restaurantName} \n ${parsedContent.message}`,
+          imageUrl: null,
+          action: null
         };
+
+        if (latestAssistantResponse?.restaurantResponseDto) {
+          const restaurant = latestAssistantResponse.restaurantResponseDto;
+          assistantMessage.imageUrl = latestAssistantResponse.restaurantResponseDto.imageUrl;
+
+          assistantMessage.action = {
+            label: "PROSSEGUIR",
+            restaurantId: restaurant.id,
+            restaurantName: restaurant.name
+          };
+        }
 
         setMessages((prev) => [...prev, assistantMessage]);
 
@@ -58,6 +72,8 @@ export default function ChatPage() {
           { message: latestAssistantResponse.message, restaurantResponseDto: latestAssistantResponse.restaurantResponseDto }
         ]);
       }
+
+
 
     } catch (error) {
       console.error('Erro ao buscar resposta:', error);
@@ -71,7 +87,15 @@ export default function ChatPage() {
     try {
       console.log("Envia o histórico para o back:", JSON.stringify(updatedHistory, null, 2));
 
-      const response = await axios.post(`http://localhost:8080/api/chat`, updatedHistory);
+      const response = await axios.post(
+        `http://localhost:8080/api/ai/chat`,
+        updatedHistory,
+        {
+          headers: {
+            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
+          }
+        }
+      );
 
       console.log("Retorno do back:", JSON.stringify(response.data, null, 2));
 
@@ -88,6 +112,12 @@ export default function ChatPage() {
     }
   };
 
+  const handleProceed = (restaurantId) => {
+    console.log("Usuário quer prosseguir para o restaurante:", restaurantId);
+    window.location.href = `/restaurant`;
+  };
+  
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
@@ -95,7 +125,7 @@ export default function ChatPage() {
   return (
     <Flex direction="column" minH="100vh" p="20px">
       <Flex mb="10px" w={'100%'} justify={'space-between'}>
-        <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'}/>
+        <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'} />
         <a href='http://localhost:3000/home' rel='noopener noreferrer'>
           <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
             <AiOutlineClose />
@@ -109,8 +139,8 @@ export default function ChatPage() {
 
       <Box
         minHeight="400px" // Quebrar a cabeça para o responsivo.
-        maxHeight="480px" 
-        overflowY="auto" 
+        maxHeight="calc(90vh - 100px)" // Define o uso máximo da tela em 90% retirando 100px para não ultrapassar outras BOX
+        overflowY="auto"
         p="20px"
         border="1px solid #A10808"
         borderRadius="8px"
@@ -118,6 +148,7 @@ export default function ChatPage() {
         mb="4px"
         display="flex"
         flexDirection="column"
+        flexGrow={1}
       >
         {messages.map((msg, index) => (
           <Box
@@ -134,6 +165,26 @@ export default function ChatPage() {
           >
             <Box style={{ whiteSpace: 'pre-line' }}>
               {msg.text}
+            </Box>
+            <Box justifyItems={'center'} mt={'10px'}>
+              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100" />}
+            </Box>
+            <Box justifyItems={'center'} >
+              {msg.action && (
+                <Button 
+                  onClick={() => handleProceed(msg.action.restaurantId)} 
+                  color={'white'} 
+                  bg= '#A10808' 
+                  p={'10px'}
+                  marginTop={'10px'}
+                  fontSize={'10px'}
+                  maxW={'80%'}
+                  display={'flex'}
+                  alignItems={'center'}
+                >
+                  {msg.action.label} <BiSolidFoodMenu color='white'/>
+                </Button>
+              )}
             </Box>
           </Box>
         ))}
@@ -157,7 +208,7 @@ export default function ChatPage() {
             Digitando
           </Box>
         )}
-
+        <Box></Box>
         <div ref={chatEndRef} />
       </Box>
 
