@@ -66,8 +66,9 @@ import java.util.StringJoiner;
 
             String profile = getUserProfile(userId);
 
-            if(profile != null){
-                requestOpenAi.getMessages().add(new Message(Role.system, "Aqui estáo um pouco do perfil do cliente: " + profile));
+            if (profile != null && !profile.isBlank()) {
+                requestOpenAi.getMessages().add(new Message(Role.system,
+                        "Este é o perfil atualizado do cliente com base em interações anteriores: " + profile));
             }
 
             requestOpenAi.getMessages().addAll(chatRequestDtos.stream().map(ChatDto::getMessage).toList());

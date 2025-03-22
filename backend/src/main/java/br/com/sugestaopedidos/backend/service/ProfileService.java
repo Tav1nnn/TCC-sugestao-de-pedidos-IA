@@ -27,11 +27,9 @@ public class ProfileService {
 
 
     public void generateProfile (List<ChatDto> chatDtoList, String userId) {
-
         RequestOpenAi requestOpenAi = createRequest(chatDtoList, getUserProfile(userId));
 
         ResponseOpenAi responseOpenAi = consumeOpenAi.consumeOpenAi(requestOpenAi).block();
-
 
         log.info("Request: {}", requestOpenAi);
         log.info("Response: {}", responseOpenAi);
@@ -45,20 +43,19 @@ public class ProfileService {
     private RequestOpenAi createRequest (List<ChatDto> chatDtoList, String userProfile) {
         RequestOpenAi requestOpenAi = new RequestOpenAi();
 
-        for(ChatDto chatDto : chatDtoList) {
-            chatDto.setRestaurantResponseDto(null);
-        }
+        chatDtoList.forEach(chatDto -> chatDto.setRestaurantResponseDto(null));
 
-        String message = "Preciso que voce me retorno como é o perfil " +
-                "do meu clite com base na conversa que ele teve com meu bot, " +
-                "me retorne apenas o perfil no maximo 1000 caracteres";
+        StringBuilder message = new StringBuilder("Resuma o perfil do cliente com base na conversa com o bot. "+
+            "Organize a resposta em dois tópicos: 'Restrições Alimentares' e 'Preferências'. " +
+            "O perfil deve ter no máximo 300 caracteres, ser direto e objetivo.");
 
-        if(userProfile != null) {
-            message += " esse é seu perfil antigo entao atualize ele: " + userProfile;
+
+        if(userProfile != null && !userProfile.isBlank()) {
+           message.append(" Perfil anterior: ").append(userProfile).append(". Atualize conforme necessário.");
         }
 
         requestOpenAi.getMessages().addAll(List.of(
-                new Message(Role.system, message),
+                new Message(Role.system, message.toString()),
                 new Message(Role.system, "Conversa com o bot: " + chatDtoList.toString())
         ));
 
