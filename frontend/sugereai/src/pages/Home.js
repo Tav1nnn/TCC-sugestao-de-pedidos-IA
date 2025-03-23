@@ -79,15 +79,17 @@ const Home = () => {
         <img src='https://peraweb.com.br/wp-content/uploads/2024/10/food-5-768x432.webp' alt='Sugere ai' />
         <h2> ENCONTRE A SUGESTÃO QUE IRÁ TE SURPREENDER!</h2>
       </div>
-      <div className="restaurant-cards">
-        {restaurants.map(restaurant => (
-          <div key={restaurant.id} className="restaurant-card">
-            <img src={restaurant.image} alt={restaurant.name} /> 
-            <h2>{restaurant.name.toUpperCase()}</h2>
-            {/* <p>{restaurant.description}</p> */}
-          </div>
-        ))}
-      </div>
+      <a href='http://localhost:3000/restaurant/x' rel='noopener noreferrer'>
+        <div className="restaurant-cards">
+          {restaurants.map(restaurant => (
+            <div key={restaurant.id} className="restaurant-card">
+              <img src={restaurant.image} alt={restaurant.name} /> 
+              <h2>{restaurant.name.toUpperCase()}</h2>
+              {/* <p>{restaurant.description}</p> */}
+            </div>
+          ))}
+        </div>
+      </a>
       <div>
         <a href='http://localhost:3000/chat' rel='noopener noreferrer'> {/* Adicionar validação no Button */}
           <Button className='btn-ia'>
