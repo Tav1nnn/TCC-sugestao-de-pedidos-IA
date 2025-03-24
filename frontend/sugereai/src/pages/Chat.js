@@ -92,7 +92,7 @@ export default function ChatPage() {
         updatedHistory,
         {
           headers: {
-            'UserId': '71b363e6-0208-11f0-a7fd-988389f07807c',
+            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
           }
         }
       );
