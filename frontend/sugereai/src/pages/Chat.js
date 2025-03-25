@@ -92,7 +92,7 @@ export default function ChatPage() {
         updatedHistory,
         {
           headers: {
-            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
+            'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5',
           }
         }
       );
@@ -112,9 +112,25 @@ export default function ChatPage() {
     }
   };
 
-  const handleProceed = (restaurantId) => {
+  const handleProceed = async (restaurantId) => {
     console.log("Usuário quer prosseguir para o restaurante:", restaurantId);
-    window.location.href = `/restaurant`;
+    
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/ai/restaurant/${restaurantId}`,
+        chatHistory,
+        {
+          headers: {
+            'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5',
+          },
+        }
+      )
+
+      console.log(response.data);
+      window.location.href = `/restaurant/${restaurantId}`;
+    } catch (error) {
+      console.error(error);
+    }
   };
   
 
@@ -166,8 +182,8 @@ export default function ChatPage() {
             <Box style={{ whiteSpace: 'pre-line' }}>
               {msg.text}
             </Box>
-            <Box justifyItems={'center'} mt={'10px'}>
-              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100" />}
+            <Box justifyItems={'center'} style={msg.imageUrl ? { marginTop: '10px' } : { display: 'none' }}>
+              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100"/>}
             </Box>
             <Box justifyItems={'center'} >
               {msg.action && (
