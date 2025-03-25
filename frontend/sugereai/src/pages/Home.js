@@ -5,8 +5,9 @@ import {
   Button
 } from "@chakra-ui/react";
 import { FaRobot } from "react-icons/fa";
+import axios from 'axios';
 
-const restaurants = [
+/*const restaurants = [
   {
     id: 1,
     name: 'Restaurante A',
@@ -55,21 +56,29 @@ const restaurants = [
     description: 'Descrição do Restaurante H',
     image: 'https://images.vexels.com/content/172815/preview/restaurant-logo-design-5460fc.png'
   }
-];
+];*/
 
 const Home = () => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [restaurants, setRestaurants] = useState([]);
+
+    const getRestaurants = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/restaurants`);
+          console.log(response.data);
+          setRestaurants(response.data);
+      } catch (error) {
+          console.log(error);
+      }
+    };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-        setIsLoading(false);
-        }, 2000);
-        return () => clearTimeout(timer);
+        getRestaurants();
     }, []);
 
-    if (isLoading) {
+    if (restaurants.length === 0) {
         return <LoadingAnimation />;
     }
+
   return (
     <div className="home-container">
       <div className="home-header">
@@ -79,17 +88,17 @@ const Home = () => {
         <img src='https://peraweb.com.br/wp-content/uploads/2024/10/food-5-768x432.webp' alt='Sugere ai' />
         <h2> ENCONTRE A SUGESTÃO QUE IRÁ TE SURPREENDER!</h2>
       </div>
-      <a href='http://localhost:3000/restaurant/x' rel='noopener noreferrer'>
-        <div className="restaurant-cards">
+      <div className="restaurant-cards">
           {restaurants.map(restaurant => (
-            <div key={restaurant.id} className="restaurant-card">
-              <img src={restaurant.image} alt={restaurant.name} /> 
+            <a href={`http://localhost:3000/restaurant/${restaurant.id}`} rel='noopener noreferrer'>
+              <div key={restaurant.id} className="restaurant-card">
+              <img src={restaurant.imageUrl} alt={restaurant.name} /> 
               <h2>{restaurant.name.toUpperCase()}</h2>
               {/* <p>{restaurant.description}</p> */}
             </div>
+            </a>
           ))}
         </div>
-      </a>
       <div>
         <a href='http://localhost:3000/chat' rel='noopener noreferrer'> {/* Adicionar validação no Button */}
           <Button className='btn-ia'>
