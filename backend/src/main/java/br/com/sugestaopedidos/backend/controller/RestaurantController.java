@@ -15,7 +15,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("api/restaurants")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;

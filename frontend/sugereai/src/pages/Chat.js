@@ -92,7 +92,8 @@ export default function ChatPage() {
         updatedHistory,
         {
           headers: {
-            'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5',
+            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
+            /*'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5', NOT*/
           }
         }
       );
@@ -117,11 +118,12 @@ export default function ChatPage() {
     
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/ai/restaurant/${restaurantId}`,
+        `http://localhost:8080/api/ai/profile`,
         chatHistory,
         {
           headers: {
-            'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5',
+            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
+            /*'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5' NOT*/
           },
         }
       )
