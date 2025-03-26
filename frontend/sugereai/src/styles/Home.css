@@ -39,6 +39,11 @@ h1 {
   padding: 30px;
 }
 
+.home-image {
+  overflow-y: auto;
+  height: 100%;
+}
+
 .restaurant-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;

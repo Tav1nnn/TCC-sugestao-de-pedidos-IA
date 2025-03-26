@@ -1,16 +1,38 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
 import "../styles/Restaurant.css"; // Importando o CSS separado
 import { Button } from "@chakra-ui/react";
 import { FaRobot } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
-//import axios from "axios";
+import axios from "axios";
 
 const Restaurant = () => {
+    const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [menuData, setMenuData] = useState([]); // Estado para armazenar o cardápio comentar caso utilize os menus diretos
 
     useEffect(() => {
+        const fetchMenu = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/menuItem/${id}`);
+                console.log("Menu:", response.data.menu);
+                setMenuData(response.data.menu); // Pegamos a lista de menus da API
+            } catch (error) {
+                console.error("Erro ao buscar o menu:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchMenu();
+    }, [id]); // Executa toda vez que o ID mudar
+
+    if (isLoading) {
+        return <LoadingAnimation />;
+    }
+
+    /*useEffect(() => {
         setTimeout(() => {
             setIsLoading(false);
             // Simulando os dados do cardápio (sem API) comentar ate o 2000 caso utilizar direto.
@@ -70,7 +92,7 @@ const Restaurant = () => {
 
     if (isLoading) {
         return <LoadingAnimation />;
-    }
+    }*/
 
     return (
         <div className="home-container">
@@ -100,9 +122,8 @@ const Restaurant = () => {
                     <div key={index} className="menu-item">
                         <h3>{category.category}</h3>
 
-                        {category.dishes.map((dish, dishIndex) => (
+                        {category.menuItem.map((dish, dishIndex) => (
                             <div key={dishIndex} className="dish-row">
-                                {/*Imagem */}
                                 <div className="dish-image">
                                     <img src={dish.image} alt={dish.name} />
                                 </div>
@@ -111,6 +132,7 @@ const Restaurant = () => {
                                 <div className="dish-info">
                                     <p className="dish-name"><strong>{dish.name}</strong></p>
                                     <p className="dish-ingredients">{dish.ingredients.join(", ")}.</p>
+                                    <p className="dish-price">R$ {dish.price.toFixed(2)}</p>
                                 </div>
                             </div>
                         ))}
