@@ -21,12 +21,14 @@ h1 {
     top: 20px;
 }
 
+.restaurant-description {
+    overflow-y: auto;
+}
+
 .restaurant-image {
     max-width: 100vh;
-    /* Tamanho fixo da imagem */
     max-height: 160px;
-    /* Defina uma altura fixa para manter a proporção */
-    overflow: hidden;
+    min-height: 160px;
 }
 
 .restaurant-header {
@@ -38,6 +40,7 @@ h1 {
     height: 80px;
     position: absolute;
     z-index: 2;
+    overflow: hidden;
 }
 
 .restaurant-header h1 {
@@ -165,6 +168,20 @@ h1 {
     width: 30px;
     height: 30px;
     color: white;
+}
+
+@media (min-width: 530px) {
+    .btn-ia {
+        width: 60px;
+        height: 60px;
+        bottom: 100px;
+        right: 120px;
+    }
+
+    .icon-ia {
+        width: 30px;
+        height: 30px;
+    }
 }
 
 @keyframes rotate-border {
