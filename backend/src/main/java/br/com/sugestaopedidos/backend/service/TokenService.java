@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.service;
 
+import br.com.sugestaopedidos.backend.exception.resource.InvalidTokenException;
 import br.com.sugestaopedidos.backend.model.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -35,7 +36,7 @@ public class TokenService {
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while generating token", exception);
+            throw new InvalidTokenException("Error while generating token");
         }
     }
 
@@ -48,7 +49,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            return "";
+            throw new InvalidTokenException(exception.getMessage());
         }
     }
 
