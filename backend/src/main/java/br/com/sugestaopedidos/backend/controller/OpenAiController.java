@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/ai")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000/")
 public class OpenAiController {
     private final ChatService chatService;
     private final ProfileService profileService;
