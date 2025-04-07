@@ -5,6 +5,7 @@ import { Provider } from "./components/ui/provider";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Chat from './pages/Chat';
 import Restaurant from './pages/Restaurant';
+import ProtectedRoute from './components/ProtectedRouted';
 
 const router = createBrowserRouter([
   {
@@ -13,15 +14,27 @@ const router = createBrowserRouter([
   },
   {
     path: "/home",
-    element: <Home/>,
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: "chat",
-    element: <Chat/>,
+    path: "/chat",
+    element: (
+      <ProtectedRoute>
+        <Chat/>
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/restaurant/:id",
-    element: <Restaurant/>,
+    element: (
+      <ProtectedRoute>
+        <Restaurant/>
+      </ProtectedRoute>
+    ),
   }
 ]);
 

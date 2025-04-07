@@ -4,7 +4,6 @@
     height: 100vh;
     margin: 0;
     overflow: hidden;
-
     display: flex;
     flex-direction: column;
 }
@@ -43,7 +42,7 @@ h1 {
     overflow: hidden;
 }
 
-.restaurant-header h1 {
+.restaurant-headerRest h1 {
     align-content: center;
     width: 100%;
     height: 100%;
@@ -134,7 +133,7 @@ h1 {
     color: #666;
 }
 
-.btn-ia {
+.btn-iaRest {
     border: 2px solid #ffffff;
     background-color: #2D2C31;
     border-radius: 50%;
@@ -171,7 +170,7 @@ h1 {
 }
 
 @media (min-width: 530px) {
-    .btn-ia {
+    .btn-iaRest {
         width: 60px;
         height: 60px;
         bottom: 100px;

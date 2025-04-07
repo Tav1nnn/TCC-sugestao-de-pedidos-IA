@@ -3,6 +3,7 @@ import '../styles/Login.css';
 import { Button, Input, VStack } from '@chakra-ui/react';
 import { FormControl, FormErrorMessage } from '@chakra-ui/form-control';
 import LoadingAnimation from '../components/LoadingAnimation';
+import axios from 'axios';
 
 function Login() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,8 +31,8 @@ function Login() {
     if (!password) {
       setPasswordError('Senha é obrigatória.');
       return false;
-    } else if (password.length < 6) {
-      setPasswordError('A senha deve ter pelo menos 6 caracteres.');
+    } else if (password.length < 3) {
+      setPasswordError('A senha deve ter pelo menos 3 caracteres.');
       return false;
     } else {
       setPasswordError('');
@@ -39,7 +40,7 @@ function Login() {
     }
   };
 
-  const handleSubmit = (e) => {
+  /*const handleSubmit = (e) => {
     e.preventDefault();
 
     const isEmailValid = validateEmail(email);
@@ -49,7 +50,37 @@ function Login() {
       //alert('Login realizado com sucesso!');
       window.location.href = '/home';
     }
-  };
+  };*/
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const isEmailValid = validateEmail(email);
+  const isPasswordValid = validatePassword(password);
+
+  if (isEmailValid && isPasswordValid) {
+    try {
+      const response = await axios.post('http://localhost:8080/api/users/login', {
+        email,
+        password
+      });
+
+      const authorization/*{ authorization , userId  }*/ = response.data.token;
+
+      if (authorization /*&& userId*/) {
+        localStorage.setItem('authToken', authorization);
+        //localStorage.setItem('userId', userId);
+        window.location.href = '/home';
+      } else {
+        throw new Error('Dados de autenticação incompletos');
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Erro ao fazer login';
+      console.error('Erro durante o login:', msg);
+      alert(msg);
+    }
+  }
+};
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
