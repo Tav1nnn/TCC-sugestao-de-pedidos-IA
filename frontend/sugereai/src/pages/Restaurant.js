@@ -15,16 +15,33 @@ const Restaurant = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const token = localStorage.getItem('authToken');
+            /*const userId = localStorage.getItem('userId');*/
+
             try {
-                const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${id}`);
+                const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
+                    headers: {
+                        /*'UserId': userId,*/
+                        Authorization: `Bearer ${token}`
+                      }
+                    });
                 console.log("Restaurante:", restaurantResponse.data);
                 setRestaurantData(restaurantResponse.data);
 
-                const response = await axios.get(`http://localhost:8080/api/menuItem/${id}`);
+                const response = await axios.get(`http://localhost:8080/api/menuItem/${id}`, {
+                    headers: {
+                        /*'UserId': userId,*/
+                        Authorization: `Bearer ${token}`
+                      }
+                    });
                 console.log("Menu:", response.data.menu);
                 setMenuData(response.data.menu);
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
+                if (error.response?.status === 401) {
+                    alert('Sessão expirada. Faça login novamente.');
+                    window.location.href = '/';
+                  }
             } finally {
                 setIsLoading(false);
             }
@@ -39,7 +56,7 @@ const Restaurant = () => {
 
     return (
         <div className="home-container">
-            <div className="restaurant-header">
+            <div className="restaurant-headerRest">
                 <div className="close-btn">
                     <a href='http://localhost:3000/home' rel='noopener noreferrer'>
                         <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
@@ -84,7 +101,7 @@ const Restaurant = () => {
                 </div>
                 <div>
                     <a href='http://localhost:3000/chat' rel='noopener noreferrer'> {/* Adicionar validação no Button */}
-                        <Button className='btn-ia'>
+                        <Button className='btn-iaRest'>
                             <FaRobot className='icon-ia' />
                         </Button>
                     </a>

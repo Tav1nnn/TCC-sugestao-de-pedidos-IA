@@ -86,14 +86,17 @@ export default function ChatPage() {
   const getResult = async (updatedHistory) => {
     try {
       console.log("Envia o histórico para o back:", JSON.stringify(updatedHistory, null, 2));
+      const token = localStorage.getItem('authToken');
+      /*const userId = localStorage.getItem('userId');*/
 
       const response = await axios.post(
         `http://localhost:8080/api/ai/chat`,
         updatedHistory,
         {
           headers: {
+            /*'UserId': userId,*/
             'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
-            /*'UserId': '40d48940-090c-11f0-bc90-fc4596fb5bc5', NOT*/
+            Authorization: `Bearer ${token}`
           }
         }
       );

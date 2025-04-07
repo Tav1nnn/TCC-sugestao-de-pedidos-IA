@@ -10,14 +10,38 @@ import logo from '../images/Logo preta escrita.png';
 
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
+  
 
-  const getRestaurants = async () => {
+  /*const getRestaurants = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/restaurants`);
       console.log(response.data);
       setRestaurants(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };*/
+  const getRestaurants = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      /* const userId = localStorage.getItem('userId'); Utilizar quando mudar o retorno API*/
+  
+      const response = await axios.get('http://localhost:8080/api/restaurants', {
+        headers: {
+          /*'UserId': userId,*/
+          'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      console.log(response.data);
+      setRestaurants(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar restaurantes:', error);
+      if (error.response?.status === 401) {
+        alert('Sessão expirada. Faça login novamente.');
+        window.location.href = '/';
+      }
     }
   };
 
@@ -33,7 +57,6 @@ const Home = () => {
     <div className="home-container">
       <div className="home-header">
         <img src={logo} alt="Logo" className="logo" />
-        <h1>RESTAURANTES</h1>
       </div>
       <div className="home-image">
         <div className='sugere-ai'>
