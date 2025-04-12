@@ -18,6 +18,7 @@ public class RestaurantResponseDto {
     private String cnpj;
     private String ie;
     private String imageUrl;
+    private String coverUrl;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 }

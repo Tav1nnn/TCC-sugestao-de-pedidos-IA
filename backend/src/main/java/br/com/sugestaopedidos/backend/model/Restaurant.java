@@ -22,6 +22,8 @@ public class Restaurant {
     private String ie;
     @Column(name = "image_url")
     private String imageUrl;
+    @Column(name = "cover_url")
+    private String coverUrl;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
