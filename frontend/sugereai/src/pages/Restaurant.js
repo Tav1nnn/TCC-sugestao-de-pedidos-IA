@@ -69,7 +69,7 @@ const Restaurant = () => {
             <div className="restaurant-description">
                 <div className="restaurant-image">
                     <img
-                        src={restaurantData?.imageUrl || "https://img.restaurantguru.com/ra34-Turbo-Lanches-interior-2021-09-2.jpg"}
+                        src={restaurantData?.coverUrl || "https://img.restaurantguru.com/ra34-Turbo-Lanches-interior-2021-09-2.jpg"}
                         alt={restaurantData?.name || "Imagem do Restaurante"}
                     />
                 </div>
