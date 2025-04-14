@@ -1,16 +1,17 @@
 package br.com.sugestaopedidos.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "menu_items")
-@Data
 @AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class MenuItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -51,5 +52,16 @@ public class MenuItem {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", category=" + category +
+                ", ingredients=" + ingredients +
+                '}';
     }
 }

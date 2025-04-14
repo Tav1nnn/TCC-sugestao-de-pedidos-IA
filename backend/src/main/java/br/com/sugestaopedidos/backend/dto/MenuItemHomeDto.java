@@ -1,4 +1,4 @@
-package br.com.sugestaopedidos.backend.model;
+package br.com.sugestaopedidos.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class MenuDto {
+public class MenuItemHomeDto {
 
     private List<CategoryDto> menu;
 
