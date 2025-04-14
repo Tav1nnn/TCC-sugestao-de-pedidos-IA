@@ -2,7 +2,7 @@ package br.com.sugestaopedidos.backend.service;
 
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.model.Ingredient;
-import br.com.sugestaopedidos.backend.model.MenuDto;
+import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.model.MenuItem;
 import br.com.sugestaopedidos.backend.model.Restaurant;
 import br.com.sugestaopedidos.backend.repository.MenuItemRepository;
@@ -17,38 +17,38 @@ import java.util.*;
 public class MenuItemService {
     private final MenuItemRepository menuItemRepository;
     private final RestaurantRepository restaurantRepository;
-    public MenuDto getMenu(String restaurantId) {
+    public MenuItemHomeDto getMenu(String restaurantId) {
         Restaurant restaurant = restaurantRepository.
                 findById(restaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant Id not found"));
 
         List<MenuItem> menuItemList = menuItemRepository.findMenuItemByRestaurant(restaurant);
 
-        Map<String, MenuDto.CategoryDto> categotyToMenuItemMap = new HashMap<>();
+        Map<String, MenuItemHomeDto.CategoryDto> categotyToMenuItemMap = new HashMap<>();
 
         for(MenuItem menuItem : menuItemList) {
             String categoryName = menuItem.getCategory().getName();
 
             if(!categotyToMenuItemMap.containsKey(categoryName)){
-                MenuDto.CategoryDto categoryDto = new MenuDto.CategoryDto();
+                MenuItemHomeDto.CategoryDto categoryDto = new MenuItemHomeDto.CategoryDto();
                 categoryDto.setCategory(categoryName);
                 categoryDto.setMenuItem(new ArrayList<>());
                 categotyToMenuItemMap.put(categoryName, categoryDto);
             }
 
-            MenuDto.MenuItemDto menuItemDto = convertToMenuItemDto(menuItem);
+            MenuItemHomeDto.MenuItemDto menuItemDto = convertToMenuItemDto(menuItem);
             categotyToMenuItemMap.get(categoryName).getMenuItem().add(menuItemDto);
         }
 
-        List<MenuDto.CategoryDto> categoryDtoList = new ArrayList<>(categotyToMenuItemMap.values());
+        List<MenuItemHomeDto.CategoryDto> categoryDtoList = new ArrayList<>(categotyToMenuItemMap.values());
 
-        MenuDto menuDto = new MenuDto();
+        MenuItemHomeDto menuDto = new MenuItemHomeDto();
         menuDto.setMenu(categoryDtoList);
 
         return menuDto;
     }
 
-    private MenuDto.MenuItemDto convertToMenuItemDto(MenuItem menuItem) {
-        MenuDto.MenuItemDto menuItemDto = new MenuDto.MenuItemDto();
+    private MenuItemHomeDto.MenuItemDto convertToMenuItemDto(MenuItem menuItem) {
+        MenuItemHomeDto.MenuItemDto menuItemDto = new MenuItemHomeDto.MenuItemDto();
         menuItemDto.setName(menuItem.getName());
         menuItemDto.setImageUrl(menuItem.getImageURL());
         menuItemDto.setPrice(menuItem.getPrice());

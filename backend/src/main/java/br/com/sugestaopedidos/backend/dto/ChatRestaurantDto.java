@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatDto {
+public class ChatRestaurantDto {
     private Message message;
     private RestaurantResponseDto restaurantResponseDto;
 }

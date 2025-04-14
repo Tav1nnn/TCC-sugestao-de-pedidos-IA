@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentDto {
+public class ContentRestaurantDto {
     private String title;
     private String restaurantName;
     private String message;
