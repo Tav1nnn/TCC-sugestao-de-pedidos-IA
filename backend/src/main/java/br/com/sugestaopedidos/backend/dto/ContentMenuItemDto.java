@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ContentMenuItemDto {
     private String title;
-    private String dishesName;
+    private String dishName;
     private List<String> sides;
     private String message;
 

@@ -72,11 +72,11 @@ public class ChatMenuItemService {
         MenuItem menuItem = null;
 
         if(
-                contentMenuItemDto.getDishesName() != null &&
-                !contentMenuItemDto.getDishesName().isBlank() &&
-                !contentMenuItemDto.getDishesName().equals("N/A")
+                contentMenuItemDto.getDishName() != null &&
+                !contentMenuItemDto.getDishName().isBlank() &&
+                !contentMenuItemDto.getDishName().equals("N/A")
         ) {
-            menuItem = menuItemRepository.findMenuItemByRestaurantAndName(this.restaurant, contentMenuItemDto.getDishesName());
+            menuItem = menuItemRepository.findMenuItemByRestaurantAndName(this.restaurant, contentMenuItemDto.getDishName());
         }
 
         List<MenuItem> menuItemList = new ArrayList<>();
@@ -151,8 +151,8 @@ public class ChatMenuItemService {
         menuItemResponseDto.setDescription(menuItem.getDescription());
         menuItemResponseDto.setPrice(menuItem.getPrice());
         menuItemResponseDto.setImageURL(menuItem.getImageURL());
-        menuItemResponseDto.setRestaurant(restaurantMapper.toDto(menuItem.getRestaurant()));
-        menuItemResponseDto.setCategory(categoryMapper.toDto(menuItem.getCategory()));
+        menuItemResponseDto.setRestaurantId(menuItem.getRestaurant().getId());
+        menuItemResponseDto.setRestaurantId(menuItem.getCategory().getId());
         menuItemResponseDto.setIngredients(ingredientMapper.toSetDtos(menuItem.getIngredients()));
         menuItemResponseDto.setCreatedAt(menuItem.getCreatedAt());
         menuItemResponseDto.setUpdatedAt(menuItem.getUpdatedAt());

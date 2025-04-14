@@ -18,8 +18,8 @@ public class MenuItemResponseDto {
     private String description;
     private Double price;
     private String imageURL;
-    private RestaurantResponseDto restaurant;
-    private CategoryResponseDto category;
+    private String restaurantId;
+    private String categoryId;
     private Set<IngredientResponseDto> ingredients;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
