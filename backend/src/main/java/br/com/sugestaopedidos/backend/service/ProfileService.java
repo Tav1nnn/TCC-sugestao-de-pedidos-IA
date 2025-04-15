@@ -5,7 +5,7 @@ import br.com.sugestaopedidos.backend.client.schema.Message;
 import br.com.sugestaopedidos.backend.client.schema.RequestOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.ResponseOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.Role;
-import br.com.sugestaopedidos.backend.dto.ChatDto;
+import br.com.sugestaopedidos.backend.dto.ChatRestaurantDto;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
@@ -24,9 +24,7 @@ public class ProfileService {
     private final ConsumeOpenAi consumeOpenAi;
     private User user;
 
-
-
-    public void generateProfile (List<ChatDto> chatDtoList, String userId) {
+    public void generateProfile (List<ChatRestaurantDto> chatDtoList, String userId) {
         RequestOpenAi requestOpenAi = createRequest(chatDtoList, getUserProfile(userId));
 
         ResponseOpenAi responseOpenAi = consumeOpenAi.consumeOpenAi(requestOpenAi).block();
@@ -40,14 +38,14 @@ public class ProfileService {
         updateProfileUser(responseOpenAi);
     }
 
-    private RequestOpenAi createRequest (List<ChatDto> chatDtoList, String userProfile) {
+    private RequestOpenAi createRequest (List<ChatRestaurantDto> chatDtoList, String userProfile) {
         RequestOpenAi requestOpenAi = new RequestOpenAi();
 
         chatDtoList.forEach(chatDto -> chatDto.setRestaurantResponseDto(null));
 
         StringBuilder message = new StringBuilder("Resuma o perfil do cliente com base na conversa com o bot. "+
             "Organize a resposta em dois tópicos: 'Restrições Alimentares' e 'Preferências'. " +
-            "O perfil deve ter no máximo 300 caracteres, ser direto e objetivo.");
+            "O perfil deve ter no máximo 300 caracteres, ser direto e objetivo com retorno de apenas texto simples.");
 
 
         if(userProfile != null && !userProfile.isBlank()) {

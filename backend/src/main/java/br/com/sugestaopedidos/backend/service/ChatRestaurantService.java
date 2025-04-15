@@ -1,13 +1,12 @@
 package br.com.sugestaopedidos.backend.service;
 
 import br.com.sugestaopedidos.backend.client.ConsumeOpenAi;
-import br.com.sugestaopedidos.backend.client.Scripts;
 import br.com.sugestaopedidos.backend.client.schema.Message;
 import br.com.sugestaopedidos.backend.client.schema.RequestOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.ResponseOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.Role;
-import br.com.sugestaopedidos.backend.dto.ChatDto;
-import br.com.sugestaopedidos.backend.dto.ContentDto;
+import br.com.sugestaopedidos.backend.dto.ChatRestaurantDto;
+import br.com.sugestaopedidos.backend.dto.ContentRestaurantDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantFormatDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ChatProcessingException;
@@ -32,7 +31,7 @@ import java.util.StringJoiner;
     @Service
     @Slf4j
     @RequiredArgsConstructor
-    public class ChatService {
+    public class ChatRestaurantService {
 
         private final RestaurantRepository restaurantRepository;
         private final CategoryRepository categoryRepository;
@@ -41,7 +40,7 @@ import java.util.StringJoiner;
         private final ObjectMapper objectMapper;
         private final UserRepository userRepository;
 
-        public List<ChatDto> consumeChatRestaurant(List<ChatDto> chatDtos, String userId) {
+        public List<ChatRestaurantDto> consumeChatRestaurant(List<ChatRestaurantDto> chatDtos, String userId) {
             RequestOpenAi requestOpenAi = createRequest(chatDtos, userId);
 
             ResponseOpenAi responseOpenAi = consumeOpenAi.consumeOpenAi(requestOpenAi).block();
@@ -55,14 +54,9 @@ import java.util.StringJoiner;
             return processResponse(responseOpenAi, chatDtos);
         }
 
-        private RequestOpenAi createRequest(List<ChatDto> chatRequestDtos, String userId) {
-            RequestOpenAi requestOpenAi = new RequestOpenAi();
-            requestOpenAi.getMessages().addAll(List.of( //adiciona os scripts
-                    Scripts.SCRIPT_RESTAURANT,
-                    Scripts.RETURN_FORMAT,
-                    new Message(Role.system, formatRestaurants())
-            ));// metodo de instanciacao
-            //adiciona conversas anteriores
+        private RequestOpenAi createRequest(List<ChatRestaurantDto> chatRequestDtos, String userId) {
+            String restaurantsStringFormat = formatRestaurants();
+            RequestOpenAi requestOpenAi = RequestOpenAi.REQUEST_RESTAURANT(new Message(Role.system, restaurantsStringFormat));
 
             String profile = getUserProfile(userId);
 
@@ -71,29 +65,28 @@ import java.util.StringJoiner;
                         "Este é o perfil atualizado do cliente com base em interações anteriores: " + profile));
             }
 
-            requestOpenAi.getMessages().addAll(chatRequestDtos.stream().map(ChatDto::getMessage).toList());
+            requestOpenAi.getMessages().addAll(chatRequestDtos.stream().map(ChatRestaurantDto::getMessage).toList());
             return requestOpenAi;
         }
 
-        private List<ChatDto> processResponse(ResponseOpenAi responseOpenAi, List<ChatDto> chatRequestDtos) {
+        private List<ChatRestaurantDto> processResponse(ResponseOpenAi responseOpenAi, List<ChatRestaurantDto> chatRequestDtos) {
 
-            ContentDto contentDto;
+            ContentRestaurantDto contentDto;
 
             try {
-                contentDto = objectMapper.readValue(responseOpenAi.getChoices().getFirst().getMessage().getContent(), ContentDto.class);
+                contentDto = objectMapper.readValue(responseOpenAi.getChoices().getFirst().getMessage().getContent(), ContentRestaurantDto.class);
             } catch (JsonProcessingException e) {
                 throw new ChatProcessingException(e.getMessage());
             }
 
             RestaurantResponseDto restaurantResponseDto = null;
 
-            System.out.println(contentDto.getRestaurantName());
             if (!contentDto.getRestaurantName().isBlank() && !contentDto.getRestaurantName().equals("N/A")) {
                 restaurantResponseDto = restaurantMapper.toDto(
                         restaurantRepository.findByName(contentDto.getRestaurantName())
                                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + contentDto.getRestaurantName())));
             }
-            chatRequestDtos.add(new ChatDto(responseOpenAi.getChoices().getFirst().getMessage(), restaurantResponseDto));
+            chatRequestDtos.add(new ChatRestaurantDto(responseOpenAi.getChoices().getFirst().getMessage(), restaurantResponseDto));
 
             return chatRequestDtos;
         }
