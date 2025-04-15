@@ -16,24 +16,21 @@ const Restaurant = () => {
     useEffect(() => {
         const fetchData = async () => {
             const token = localStorage.getItem('authToken');
-            /*const userId = localStorage.getItem('userId');*/
 
             try {
                 const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
                     headers: {
-                        /*'UserId': userId,*/
                         Authorization: `Bearer ${token}`
-                      }
-                    });
+                    }
+                });
                 console.log("Restaurante:", restaurantResponse.data);
                 setRestaurantData(restaurantResponse.data);
 
                 const response = await axios.get(`http://localhost:8080/api/menuItem/${id}`, {
                     headers: {
-                        /*'UserId': userId,*/
                         Authorization: `Bearer ${token}`
-                      }
-                    });
+                    }
+                });
                 console.log("Menu:", response.data.menu);
                 setMenuData(response.data.menu);
             } catch (error) {
@@ -41,7 +38,7 @@ const Restaurant = () => {
                 if (error.response?.status === 401) {
                     alert('Sessão expirada. Faça login novamente.');
                     window.location.href = '/';
-                  }
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -55,44 +52,40 @@ const Restaurant = () => {
     }
 
     return (
-        <div className="home-container">
-            <div className="restaurant-headerRest">
-                <div className="close-btn">
-                    <a href='http://localhost:3000/home' rel='noopener noreferrer'>
-                        <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
-                            <AiOutlineClose />
-                        </Button>
-                    </a>
-                </div>
-                <h1>{restaurantData?.name || "Restaurante"}</h1>
-            </div>
-            <div className="restaurant-description">
-                <div className="restaurant-image">
+        <div className="homeRest-container">
+            <div className="restaurantRest-description">
+                <div className="restaurantRest-image-capa">
                     <img
-                        src={restaurantData?.coverUrl || "https://img.restaurantguru.com/ra34-Turbo-Lanches-interior-2021-09-2.jpg"}
+                        src={restaurantData?.coverUrl || "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/56/71/59/atmosphere.jpg"}
                         alt={restaurantData?.name || "Imagem do Restaurante"}
                     />
-                </div>
-                <div className="restaurant-menutitle">
-                    <h2>Cardápio</h2>
+                    <div className="restaurantRest-text-info">
+                        <h1 >{restaurantData?.name || "Restaurante"}</h1>
+                        <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
+                        <h2>Cardápio</h2>
+                        <a className="restaurantRest-close-mobile" href='http://localhost:3000/home' rel='noopener noreferrer'>
+                            <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
+                                <AiOutlineClose />
+                            </Button>
+                        </a>
+                    </div>
                 </div>
 
-                <div className="menu-section">
+                <div className="menuRest-section">
                     {menuData.map((category, index) => (
-                        <div key={index} className="menu-item">
+                        <div key={index} className="menuRest-item">
                             <h3>{category.category}</h3>
 
                             {category.menuItem.map((dish, dishIndex) => (
-                                <div key={dishIndex} className="dish-row">
-                                    <div className="dish-image">
+                                <div key={dishIndex} className="dishRest-row">
+                                    <div className="dishRest-image">
                                         <img src={dish.imageUrl} alt={dish.name} />
                                     </div>
 
-                                    {/*Texto */}
-                                    <div className="dish-info">
-                                        <p className="dish-name"><strong>{dish.name}</strong></p>
-                                        <p className="dish-ingredients">{dish.ingredients.join(", ")}.</p>
-                                        <p className="dish-price">R$ {dish.price.toFixed(2)}</p>
+                                    <div className="dishRest-info">
+                                        <p className="dishRest-name"><strong>{dish.name}</strong></p>
+                                        <p className="dishRest-ingredients">{dish.ingredients.join(", ")}</p>
+                                        <p className="dishRest-price">R$ {dish.price.toFixed(2)}</p>
                                     </div>
                                 </div>
                             ))}
@@ -100,9 +93,9 @@ const Restaurant = () => {
                     ))}
                 </div>
                 <div>
-                    <a href='http://localhost:3000/chat' rel='noopener noreferrer'> {/* Adicionar validação no Button */}
-                        <Button className='btn-iaRest'>
-                            <FaRobot className='icon-ia' />
+                    <a href='http://localhost:3000/chat' rel='noopener noreferrer'>
+                        <Button className='btnRest-ia'>
+                            <FaRobot className='iconRest-ia' />
                         </Button>
                     </a>
                 </div>
