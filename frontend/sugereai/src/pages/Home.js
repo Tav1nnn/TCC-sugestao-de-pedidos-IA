@@ -76,8 +76,8 @@ const Home = () => {
         </div>
         <div>
           <a href='http://localhost:3000/chat' rel='noopener noreferrer'> {/* Adicionar validação no Button */}
-            <Button className='btn-ia'>
-              <FaRobot className='icon-ia' />
+            <Button className='btn-ia-home'>
+              <FaRobot className='icon-ia-home' />
             </Button>
           </a>
         </div>
