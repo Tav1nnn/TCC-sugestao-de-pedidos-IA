@@ -3,13 +3,14 @@ import '../styles/Login.css';
 import { Button, Input, VStack } from '@chakra-ui/react';
 import { FormControl, FormErrorMessage } from '@chakra-ui/form-control';
 import LoadingAnimation from '../components/LoadingAnimation';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
@@ -40,17 +41,6 @@ function Login() {
     }
   };
 
-  /*const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
-
-    if (isEmailValid && isPasswordValid) {
-      //alert('Login realizado com sucesso!');
-      window.location.href = '/home';
-    }
-  };*/
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -64,12 +54,11 @@ const handleSubmit = async (e) => {
         password
       });
 
-      const authorization/*{ authorization , userId  }*/ = response.data.token;
+      const authorization = response.data.token;
 
-      if (authorization /*&& userId*/) {
+      if (authorization) {
         localStorage.setItem('authToken', authorization);
-        //localStorage.setItem('userId', userId);
-        window.location.href = '/home';
+        navigate('/home', { replace: true });
       } else {
         throw new Error('Dados de autenticação incompletos');
       }
