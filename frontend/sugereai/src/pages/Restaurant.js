@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
 import "../styles/Restaurant.css";
 import { Button } from "@chakra-ui/react";
@@ -9,6 +9,7 @@ import axios from "axios";
 
 const Restaurant = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [menuData, setMenuData] = useState([]);
     const [restaurantData, setRestaurantData] = useState(null);
@@ -60,14 +61,21 @@ const Restaurant = () => {
                         alt={restaurantData?.name || "Imagem do Restaurante"}
                     />
                     <div className="restaurantRest-text-info">
-                        <h1 >{restaurantData?.name || "Restaurante"}</h1>
+                        <h1>{restaurantData?.name || "Restaurante"}</h1>
                         <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
                         <h2>Cardápio</h2>
-                        <a className="restaurantRest-close-mobile" href='http://localhost:3000/home' rel='noopener noreferrer'>
-                            <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
+                        <Button
+                                bg={'#2D2C31'}
+                                border={'2px solid #A10808'}
+                                borderRadius={'50%'}
+                                color={'white'}
+                                position={'absolute'}
+                                top={'10px'}
+                                right={'20px'}
+                                onClick={() => navigate(-1)}
+                            >
                                 <AiOutlineClose />
                             </Button>
-                        </a>
                     </div>
                 </div>
 
@@ -93,11 +101,11 @@ const Restaurant = () => {
                     ))}
                 </div>
                 <div>
-                    <a href='http://localhost:3000/chat' rel='noopener noreferrer'>
-                        <Button className='btnRest-ia'>
+                    <div>
+                        <Button className='btnRest-ia' onClick={() => navigate(`/chatRest/${id}`)}>
                             <FaRobot className='iconRest-ia' />
                         </Button>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>

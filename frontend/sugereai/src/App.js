@@ -6,6 +6,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Chat from './pages/Chat';
 import Restaurant from './pages/Restaurant';
 import ProtectedRoute from './components/ProtectedRouted';
+import ChatRest from './pages/ChatRest';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Chat/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/chatRest/:id",
+    element: (
+      <ProtectedRoute>
+        <ChatRest/>
       </ProtectedRoute>
     ),
   },

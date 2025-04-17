@@ -3,10 +3,10 @@ import { BsFillSendFill } from 'react-icons/bs';
 import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
 import logo from '../images/Logo preta escrita.png';
-import { BiSolidFoodMenu } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
-import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 const dotsAnimation = keyframes`
   0% { content: ''; }
@@ -15,14 +15,28 @@ const dotsAnimation = keyframes`
   100% { content: '...'; }
 `;
 
-export default function ChatPage() {
+export default function ChatRest() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);  
+  const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
+  const [welcomeSent, setWelcomeSent] = useState(false);
+  const emojis = ['😊','😎','😍','🥰','❤️','💖','🔥','🚀','🌟','💃','🕺','🥳','🎉','🍀','🌸','✨','🙌','😂','✔','😉'];
+  const {id} = useParams();
   const navigate = useNavigate();
-
   const chatEndRef = useRef(null);
+
+  const getRandomEmoji = () => {
+    const numEmojis = Math.floor(Math.random() * 3) + 1; // 1 a 3 emojis
+    let randomEmojis = '';
+    
+    for (let i = 0; i < numEmojis; i++) {
+      const randomIndex = Math.floor(Math.random() * emojis.length);
+      randomEmojis += emojis[randomIndex];
+    }
+
+    return randomEmojis;
+  };
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -32,7 +46,7 @@ export default function ChatPage() {
 
     const updatedHistory = [
       ...chatHistory,
-      { message: { role: "user", content: inputValue, refusal: null }, restaurantResponseDto: null }
+      { message: { role: "user", content: inputValue, refusal: null }, menuItemResponseDto: null, sides: []}
     ];
 
     setChatHistory(updatedHistory);
@@ -51,27 +65,33 @@ export default function ChatPage() {
 
         let assistantMessage = {
           type: "response",
-          text: `SugereAI: ${parsedContent.title} \n ${parsedContent.restaurantName} \n ${parsedContent.message}`,
+          text: `SugereAI: ${parsedContent.title} \n ${parsedContent.dishName} \n ${parsedContent.sides}  ${parsedContent.message}`,
           imageUrl: null,
-          action: null
+          menuId: null,
+          menuName: null,
+          menuDescription: null,
+          menuPrice: null,
+          menuIngredients: parsedContent.ingredients || [],
         };
 
-        if (latestAssistantResponse?.restaurantResponseDto) {
-          const restaurant = latestAssistantResponse.restaurantResponseDto;
-          assistantMessage.imageUrl = latestAssistantResponse.restaurantResponseDto.imageUrl;
-
-          assistantMessage.action = {
-            label: "PROSSEGUIR",
-            restaurantId: restaurant.id,
-            restaurantName: restaurant.name
-          };
+        if (latestAssistantResponse?.menuItemResponseDto) {
+          assistantMessage.imageUrl = latestAssistantResponse.menuItemResponseDto.imageURL;
+          assistantMessage.menuId = latestAssistantResponse.menuItemResponseDto.id;
+          assistantMessage.menuName = latestAssistantResponse.menuItemResponseDto.name;
+          assistantMessage.menuDescription = latestAssistantResponse.menuItemResponseDto.description;
+          assistantMessage.menuPrice = latestAssistantResponse.menuItemResponseDto.price;
+          assistantMessage.menuIngredients = latestAssistantResponse.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', '); 
         }
 
         setMessages((prev) => [...prev, assistantMessage]);
 
         setChatHistory([
           ...updatedHistory,
-          { message: latestAssistantResponse.message, restaurantResponseDto: latestAssistantResponse.restaurantResponseDto }
+          { 
+            message: latestAssistantResponse.message, 
+            menuItemResponseDto: latestAssistantResponse.menuItemResponseDto,
+            sides: latestAssistantResponse.sides || []
+          }
         ]);
       }
 
@@ -91,7 +111,7 @@ export default function ChatPage() {
       const token = localStorage.getItem('authToken');
 
       const response = await axios.post(
-        `http://localhost:8080/api/ai/chat`,
+        `http://localhost:8080/api/ai/chat/${id}`,
         updatedHistory,
         {
           headers: {
@@ -99,7 +119,6 @@ export default function ChatPage() {
           }
         }
       );
-
       console.log("Retorno do back:", JSON.stringify(response.data, null, 2));
 
       return response.data;
@@ -115,29 +134,39 @@ export default function ChatPage() {
     }
   };
 
-  const handleProceed = async (restaurantId) => {
-    console.log("Usuário quer prosseguir para o restaurante:", restaurantId);
-    
-    try {
+  useEffect(() => {
+    const fetchRestaurantName = async () => {
       const token = localStorage.getItem('authToken');
-      const response = await axios.post(
-        `http://localhost:8080/api/ai/profile`,
-        chatHistory,
-        {
-          headers: {
-            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
-            Authorization: `Bearer ${token}`
-          },
-        }
-      )
-
-      console.log(response.data);
-      navigate(`/restaurant/${restaurantId}`);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      if (!token) {
+        alert('Sessão expirada. Faça login novamente.');
+        window.location.href = '/';
+        return;
+      }
   
+      try {
+        const response = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+  
+        const name = response.data.name;
+  
+        if (!welcomeSent) {
+          setMessages([{
+            type: 'response',
+            text: `Olá, bem-vindo ao ${name}! Você pode pedir sugestões de pratos ou do restaurante. ${getRandomEmoji()}`,
+          }]);
+          setWelcomeSent(true);
+        }
+  
+      } catch (error) {
+        console.error("Erro ao buscar nome do restaurante:", error);
+      }
+    };
+  
+    fetchRestaurantName();
+  }, [id, welcomeSent]);  
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -147,20 +176,23 @@ export default function ChatPage() {
     <Flex direction="column" minH="100vh" p="20px">
       <Flex mb="10px" w={'100%'} justify={'space-between'}>
         <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'} />
-        <a href='http://localhost:3000/home' rel='noopener noreferrer'>
-          <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
+        <Button 
+            onClick={() => navigate(-1)}
+            bg={'#2D2C31'} 
+            border={'2px solid #A10808'} 
+            borderRadius={'50%'} 
+            color={'white'}
+          >
             <AiOutlineClose />
-          </Button>
-        </a>
+        </Button>
       </Flex>
-
-      <Text mb="10px" fontWeight={'lighter'} fontSize={16} textAlign="center" color={'black'}>
-        Fale para nós qual tipo de restaurante deseja?
+      <Text mb="10px" fontSize={16} fontWeight={'lighter'} textAlign="center" color={'black'}>
+        Fale para nós qual tipo de prato deseja?
       </Text>
 
       <Box
-        minHeight="400px" // Quebrar a cabeça para o responsivo.
-        maxHeight="calc(90vh - 100px)" // Define o uso máximo da tela em 90% retirando 100px para não ultrapassar outras BOX
+        minHeight="400px" 
+        maxHeight="calc(90vh - 100px)" 
         overflowY="auto"
         p="20px"
         border="1px solid #A10808"
@@ -187,24 +219,17 @@ export default function ChatPage() {
             <Box style={{ whiteSpace: 'pre-line' }}>
               {msg.text}
             </Box>
-            <Box justifyItems={'center'} style={msg.imageUrl ? { marginTop: '10px' } : { display: 'none' }}>
-              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100"/>}
+            <Box style={msg.menuId ? { marginTop: '10px' } : { display: 'none' }}>
+              {msg.menuName && <Text fontSize={'14px'} fontWeight={'bold'}>{msg.menuName}</Text>}
             </Box>
-            <Box justifyItems={'center'} >
-              {msg.action && (
-                <Button 
-                  onClick={() => handleProceed(msg.action.restaurantId)} 
-                  color={'white'} 
-                  bg= '#A10808' 
-                  p={'10px'}
-                  marginTop={'10px'}
-                  fontSize={'10px'}
-                  maxW={'80%'}
-                  display={'flex'}
-                  alignItems={'center'}
-                >
-                  {msg.action.label} <BiSolidFoodMenu color='white'/>
-                </Button>
+            <Box justifyItems={'center'} style={msg.imageUrl ? { marginTop: '0px' } : { display: 'none' }}>
+              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100"/>} 
+            </Box>
+            <Box style={msg.menuId ? { marginTop: '4px' } : { display: 'none' }}>
+              {msg.menuDescription && <Text fontSize={'12px'}>{msg.menuDescription}</Text>}
+              {msg.menuPrice && <Text fontSize={'12px'}>R$ {msg.menuPrice}</Text>}
+              {msg.menuIngredients && msg.menuIngredients.length > 0 && (
+                <Text fontSize={'12px'}>Ingredientes: {msg.menuIngredients}</Text>
               )}
             </Box>
           </Box>
