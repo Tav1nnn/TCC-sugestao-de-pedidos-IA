@@ -58,4 +58,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Ocorreu um erro interno no servidor: " + ex.getMessage());
     }
+
+    @ExceptionHandler(EmailAlreadyRegisteredException.class)
+    public ResponseEntity<String> handleEmailAlreadyRegisteredException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Email já possui um cadastro: " + ex.getMessage());
+    }
 }

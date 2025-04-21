@@ -36,6 +36,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/users/update").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.GET,"/api/users/getUser").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.GET, "/api/restaurants/**").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.GET, "/api/menuItem/**").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/api/ai/**").hasRole("CLIENT")
