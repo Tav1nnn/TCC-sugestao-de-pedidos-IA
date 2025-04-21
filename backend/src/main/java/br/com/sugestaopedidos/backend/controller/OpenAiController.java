@@ -19,8 +19,8 @@ public class OpenAiController {
     private final ProfileService profileService;
 
     @PostMapping("/chat")
-    public List<ChatRestaurantDto> consultOpenAi(@RequestBody List<ChatRestaurantDto> chatRequestDtos, @RequestHeader("userId") String userId ) {
-        return chatRestaurantService.consumeChatRestaurant(chatRequestDtos, userId);
+    public List<ChatRestaurantDto> consultOpenAi(@RequestBody List<ChatRestaurantDto> chatRequestDtos) {
+        return chatRestaurantService.consumeChatRestaurant(chatRequestDtos);
     }
 
     @PostMapping("/chat/{id}")
@@ -29,7 +29,7 @@ public class OpenAiController {
     }
 
     @PostMapping("/profile")
-    public void consultOpenAiProfile(@RequestBody List<ChatRestaurantDto> chatDtoList, @RequestHeader("userId") String userId){
-        profileService.generateProfile(chatDtoList, userId);
+    public void consultOpenAiProfile(@RequestBody List<ChatRestaurantDto> chatDtoList){
+        profileService.generateProfile(chatDtoList);
     }
 }

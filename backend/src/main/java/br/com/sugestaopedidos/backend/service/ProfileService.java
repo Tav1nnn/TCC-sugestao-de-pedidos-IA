@@ -9,6 +9,7 @@ import br.com.sugestaopedidos.backend.dto.ChatRestaurantDto;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
+import br.com.sugestaopedidos.backend.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,9 @@ public class ProfileService {
     private final ConsumeOpenAi consumeOpenAi;
     private User user;
 
-    public void generateProfile (List<ChatRestaurantDto> chatDtoList, String userId) {
-        RequestOpenAi requestOpenAi = createRequest(chatDtoList, getUserProfile(userId));
+    public void generateProfile (List<ChatRestaurantDto> chatDtoList) {
+        this.user = AuthUtils.getCurrentUser();
+        RequestOpenAi requestOpenAi = createRequest(chatDtoList);
 
         ResponseOpenAi responseOpenAi = consumeOpenAi.consumeOpenAi(requestOpenAi).block();
 
@@ -38,7 +40,7 @@ public class ProfileService {
         updateProfileUser(responseOpenAi);
     }
 
-    private RequestOpenAi createRequest (List<ChatRestaurantDto> chatDtoList, String userProfile) {
+    private RequestOpenAi createRequest (List<ChatRestaurantDto> chatDtoList) {
         RequestOpenAi requestOpenAi = new RequestOpenAi();
 
         chatDtoList.forEach(chatDto -> chatDto.setRestaurantResponseDto(null));
@@ -48,8 +50,8 @@ public class ProfileService {
             "O perfil deve ter no máximo 300 caracteres, ser direto e objetivo com retorno de apenas texto simples.");
 
 
-        if(userProfile != null && !userProfile.isBlank()) {
-           message.append(" Perfil anterior: ").append(userProfile).append(". Atualize conforme necessário.");
+        if(this.user.getProfile() != null && !this.user.getProfile().isBlank()) {
+           message.append(" Perfil anterior: ").append(this.user.getProfile()).append(". Atualize conforme necessário.");
         }
 
         requestOpenAi.getMessages().addAll(List.of(
@@ -58,12 +60,6 @@ public class ProfileService {
         ));
 
         return requestOpenAi;
-    }
-
-    private String getUserProfile(String userId) {
-        this.user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not fount id: " + userId));
-        return user.getProfile() != null ? user.getProfile() : null;
-
     }
 
     private void updateProfileUser (ResponseOpenAi responseOpenAi) {

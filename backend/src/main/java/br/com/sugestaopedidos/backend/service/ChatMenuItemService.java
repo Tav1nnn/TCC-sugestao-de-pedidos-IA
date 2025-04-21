@@ -39,8 +39,6 @@ public class ChatMenuItemService {
     private final ObjectMapper objectMapper;
     private final ConsumeOpenAi consumeOpenAi;
     private final IngredientMapper ingredientMapper;
-    private final CategoryMapper categoryMapper;
-    private final RestaurantMapper restaurantMapper;
     private Restaurant restaurant;
 
     public List<ChatMenuItemDto> consumeChatMenuItem(List<ChatMenuItemDto> chatDtos, String restaurantId) {

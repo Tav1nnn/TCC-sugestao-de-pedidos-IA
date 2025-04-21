@@ -18,6 +18,7 @@ import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.CategoryRepository;
 import br.com.sugestaopedidos.backend.repository.RestaurantRepository;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
+import br.com.sugestaopedidos.backend.util.AuthUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,10 @@ import java.util.StringJoiner;
         private final ObjectMapper objectMapper;
         private final UserRepository userRepository;
 
-        public List<ChatRestaurantDto> consumeChatRestaurant(List<ChatRestaurantDto> chatDtos, String userId) {
-            RequestOpenAi requestOpenAi = createRequest(chatDtos, userId);
+        public List<ChatRestaurantDto> consumeChatRestaurant(List<ChatRestaurantDto> chatDtos) {
+            User user = AuthUtils.getCurrentUser();
+
+            RequestOpenAi requestOpenAi = createRequest(chatDtos, user);
 
             ResponseOpenAi responseOpenAi = consumeOpenAi.consumeOpenAi(requestOpenAi).block();
             log.info("Request: {}", requestOpenAi);
@@ -54,15 +57,13 @@ import java.util.StringJoiner;
             return processResponse(responseOpenAi, chatDtos);
         }
 
-        private RequestOpenAi createRequest(List<ChatRestaurantDto> chatRequestDtos, String userId) {
+        private RequestOpenAi createRequest(List<ChatRestaurantDto> chatRequestDtos, User user) {
             String restaurantsStringFormat = formatRestaurants();
             RequestOpenAi requestOpenAi = RequestOpenAi.REQUEST_RESTAURANT(new Message(Role.system, restaurantsStringFormat));
 
-            String profile = getUserProfile(userId);
-
-            if (profile != null && !profile.isBlank()) {
+            if (user.getProfile() != null && !user.getProfile().isBlank()) {
                 requestOpenAi.getMessages().add(new Message(Role.system,
-                        "Este é o perfil atualizado do cliente com base em interações anteriores: " + profile));
+                        "Este é o perfil atualizado do cliente com base em interações anteriores: " + user.getProfile()));
             }
 
             requestOpenAi.getMessages().addAll(chatRequestDtos.stream().map(ChatRestaurantDto::getMessage).toList());
@@ -118,10 +119,5 @@ import java.util.StringJoiner;
 
         }
 
-        private String getUserProfile(String userId) {
-            User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not fount id: " + userId));
-            return user.getProfile() != null ? user.getProfile() : null;
-
-        }
     }
 
