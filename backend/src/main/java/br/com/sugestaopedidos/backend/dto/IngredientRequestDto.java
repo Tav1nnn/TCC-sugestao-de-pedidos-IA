@@ -11,9 +11,4 @@ public class IngredientRequestDto {
 
     //@NotBlank(message = "name cannot be null")
     private String name;
-
-    private Boolean isGlobal;
-
-    //@NotBlank(message = "restaurantId cannot be null")
-    private String restaurantId;
 }

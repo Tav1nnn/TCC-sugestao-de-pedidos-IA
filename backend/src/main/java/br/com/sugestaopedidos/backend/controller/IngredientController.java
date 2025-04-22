@@ -21,12 +21,12 @@ public class IngredientController {
 
     @GetMapping
     public Set<IngredientResponseDto> getAllCategories() {
-        return ingredientService.findAllCategories();
+        return ingredientService.findAllIngredients();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<IngredientResponseDto> getByIdIngredient(@PathVariable String id) {
-        return ResponseEntity.ok(ingredientService.findByIdCategories(id));
+        return ResponseEntity.ok(ingredientService.findByIdIngredients(id));
     }
 
     @PostMapping
