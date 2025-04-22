@@ -64,4 +64,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Email já possui um cadastro: " + ex.getMessage());
     }
+
+    @ExceptionHandler(RelatedObjectException.class)
+    public ResponseEntity<String> handleRelatedObjectException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
 }

@@ -11,7 +11,4 @@ public class CategoryRequestDto {
 
     //@NotBlank(message = "name cannot be null")
     private String name;
-
-    //@NotBlank(message = "restaurantId cannot be null")
-    private String restaurantId;
 }
