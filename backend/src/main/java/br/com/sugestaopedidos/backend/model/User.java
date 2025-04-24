@@ -33,6 +33,11 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+    private String document;
+    private String address;
+    private String phone;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     public User() {
         this.createdAt = LocalDateTime.now();
