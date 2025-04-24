@@ -88,7 +88,7 @@ const handleSubmit = async (e) => {
         <div className="content">
           <h1>Olá, seja bem-vindo ao SugereAI!</h1>
           <p>AI (Artificial Intelligence) que entende sua fome e sugere o que você ama.</p>
-          <a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer'>
+          {/*<a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer'>
             <Button
               className="btn-fale-conosco"
               mt={2}
@@ -102,7 +102,7 @@ const handleSubmit = async (e) => {
             >
               Fale conosco!
             </Button>
-          </a>
+          </a>*/}
         </div>
       </div>
 
@@ -164,7 +164,7 @@ const handleSubmit = async (e) => {
               >
                 Entrar
               </Button>
-              <a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer' className="criar-conta">Não possui uma conta? Fale Conosco!</a>
+              <a onClick={() => navigate(`/register`)} target="_blank" rel='noopener noreferrer' className="criar-conta">Não possui uma conta? Fale Conosco!</a>
             </VStack>
           </form>
         </div>

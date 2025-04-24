@@ -18,7 +18,7 @@ const dotsAnimation = keyframes`
 export default function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);  
+  const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const navigate = useNavigate();
 
@@ -117,7 +117,7 @@ export default function ChatPage() {
 
   const handleProceed = async (restaurantId) => {
     console.log("Usuário quer prosseguir para o restaurante:", restaurantId);
-    
+
     try {
       const token = localStorage.getItem('authToken');
       const response = await axios.post(
@@ -137,7 +137,7 @@ export default function ChatPage() {
       console.error(error);
     }
   };
-  
+
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -147,11 +147,15 @@ export default function ChatPage() {
     <Flex direction="column" minH="100vh" p="20px">
       <Flex mb="10px" w={'100%'} justify={'space-between'}>
         <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'} />
-        <a href='http://localhost:3000/home' rel='noopener noreferrer'>
-          <Button bg={'#2D2C31'} border={'2px solid #A10808'} borderRadius={'50%'} color={'white'}>
-            <AiOutlineClose />
-          </Button>
-        </a>
+        <Button
+          onClick={() => navigate(-1)}
+          bg={'#2D2C31'}
+          border={'2px solid #A10808'}
+          borderRadius={'50%'}
+          color={'white'}
+        >
+          <AiOutlineClose />
+        </Button>
       </Flex>
 
       <Text mb="10px" fontWeight={'lighter'} fontSize={16} textAlign="center" color={'black'}>
@@ -188,14 +192,14 @@ export default function ChatPage() {
               {msg.text}
             </Box>
             <Box justifyItems={'center'} style={msg.imageUrl ? { marginTop: '10px' } : { display: 'none' }}>
-              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100"/>}
+              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100" />}
             </Box>
             <Box justifyItems={'center'} >
               {msg.action && (
-                <Button 
-                  onClick={() => handleProceed(msg.action.restaurantId)} 
-                  color={'white'} 
-                  bg= '#A10808' 
+                <Button
+                  onClick={() => handleProceed(msg.action.restaurantId)}
+                  color={'white'}
+                  bg='#A10808'
                   p={'10px'}
                   marginTop={'10px'}
                   fontSize={'10px'}
@@ -203,7 +207,7 @@ export default function ChatPage() {
                   display={'flex'}
                   alignItems={'center'}
                 >
-                  {msg.action.label} <BiSolidFoodMenu color='white'/>
+                  {msg.action.label} <BiSolidFoodMenu color='white' />
                 </Button>
               )}
             </Box>
