@@ -1,0 +1,4 @@
+ALTER TABLE `users` ADD COLUMN `document` VARCHAR(11) NOT NULL;
+ALTER TABLE `users` ADD COLUMN `address` TEXT;
+ALTER TABLE `users` ADD COLUMN `phone` VARCHAR(255);
+ALTER TABLE `users` ADD COLUMN `image_url` TEXT;
