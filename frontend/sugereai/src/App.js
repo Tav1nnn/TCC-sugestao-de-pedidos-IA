@@ -7,6 +7,8 @@ import Chat from './pages/Chat';
 import Restaurant from './pages/Restaurant';
 import ProtectedRoute from './components/ProtectedRouted';
 import ChatRest from './pages/ChatRest';
+import Profile from './pages/Profile';
+import Register from './pages/Register';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +44,22 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Restaurant/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile/:id",
+    element: (
+      <ProtectedRoute>
+        <Profile/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <ProtectedRoute>
+        <Register/>
       </ProtectedRoute>
     ),
   }

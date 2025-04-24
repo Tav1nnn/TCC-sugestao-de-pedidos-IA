@@ -1,0 +1,125 @@
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-header {
+    background-color: #f7bb75;
+    padding: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    max-height: 100px;
+  }
+  
+  .register-header-image {
+    width: 15%;
+    height: 15%;
+    border-radius: 50%;
+    border: 6px solid #f7bb75;
+    overflow: hidden;
+    max-height: 80px;
+    max-width: 80px;
+  }
+  
+  .register-header-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .register-logo {
+    width: 30%;
+    color: black;
+    max-width: 200px;
+    max-height: 100px;
+  }
+  
+  .register-back-button {
+    border-radius: 50%;
+    background: transparent;
+    color: black;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    top: 0;
+    right: 0;
+  }
+  
+  .register-content {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .register-image-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 6px solid #f7bb75;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  
+  .register-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .register-info-container {
+    width: 100%;
+    max-width: 300px;
+    gap: 1rem;
+  }
+  
+  .register-info-item {
+    width: 100%;
+    padding: 0.6rem;
+    border-bottom: 2px solid #f7bb75;
+    align-items: center;
+  }
+  
+  .register-info-icon {
+    margin-right: 0.75rem;
+    color: black;
+  }
+
+  .register-info-input {
+    color: black;
+    border: none;
+  }
+
+  .register-info-input:focus {
+    outline: none;
+    border: none;
+  }
+  
+  .register-footer {
+    background-color: #f7bb75;
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .register-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.6rem;
+    background-color: #f7bb75;
+    border-radius: 8px;
+    border: none;
+    color: black;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .register-footer-contact,
+  .register-footer-email {
+    font-weight: bold;
+    color: black;
+    font-size: smaller;
+    font-weight: lighter;
+  }
