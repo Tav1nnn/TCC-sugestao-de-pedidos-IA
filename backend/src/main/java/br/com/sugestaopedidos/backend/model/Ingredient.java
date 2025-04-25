@@ -29,6 +29,10 @@ public class Ingredient {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Ingredient(String id) {
+        this.id = id;
+    }
+
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();

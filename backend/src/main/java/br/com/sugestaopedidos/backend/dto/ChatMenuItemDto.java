@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatMenuItemDto {
     private Message message;
-    private MenuItemResponseDto menuItemResponseDto;
-    private List<MenuItemResponseDto> sides;
+    private MenuItemResponseChatDto menuItemResponseDto;
+    private List<MenuItemResponseChatDto> sides;
 
     public ChatMenuItemDto () {
         this.sides = new ArrayList<>();

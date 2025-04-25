@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuItemResponseDto {
+public class MenuItemResponseChatDto {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

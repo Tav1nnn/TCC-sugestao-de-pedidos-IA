@@ -65,6 +65,12 @@ public class GlobalExceptionHandler {
                 .body("Email já possui um cadastro: " + ex.getMessage());
     }
 
+    @ExceptionHandler(DocumentAlreadyRegisteredException.class)
+    public ResponseEntity<String> handleDocumentAlreadyRegisteredException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Documento já possui um cadastro: " + ex.getMessage());
+    }
+
     @ExceptionHandler(RelatedObjectException.class)
     public ResponseEntity<String> handleRelatedObjectException(Exception ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
