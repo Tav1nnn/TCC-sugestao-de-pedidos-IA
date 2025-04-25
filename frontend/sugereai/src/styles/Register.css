@@ -60,7 +60,6 @@
     border-radius: 50%;
     border: 6px solid #f7bb75;
     overflow: hidden;
-    margin-bottom: 1.5rem;
   }
   
   .register-image-container img {
@@ -72,7 +71,6 @@
   .register-info-container {
     width: 100%;
     max-width: 300px;
-    gap: 1rem;
   }
   
   .register-info-item {
@@ -123,3 +121,13 @@
     font-size: smaller;
     font-weight: lighter;
   }
+
+  @media (min-width: 1000px) {
+  
+  .register-alert {
+    position: absolute;
+    top: 120px;
+    right: 20px;
+    max-width: 400px;
+  }
+}

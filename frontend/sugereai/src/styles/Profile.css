@@ -68,6 +68,11 @@
     height: 100%;
     object-fit: cover;
   }
+
+  .profile-image-wrapper {
+    display: inline-block;
+    position: relative;
+  }
   
   .profile-info-container {
     width: 100%;
@@ -91,11 +96,29 @@
     font-weight: 500;
     color: black;
   }
+
+  .info-input {
+    color: black;
+    border: none;
+  }
+
+  .info-input:focus {
+    outline: none;
+    border: none;
+  }
   
   .profile-footer {
     background-color: #f7bb75;
     padding: 1rem;
     flex-direction: column;
+  }
+
+  .edit-button {
+    color: black;
+    border: 4px solid #f7bb75;
+    border-radius: 5px;
+    background-color: rgba(300, 300, 300, 0.8);
+    cursor: pointer;
   }
   
   .footer-contact,
