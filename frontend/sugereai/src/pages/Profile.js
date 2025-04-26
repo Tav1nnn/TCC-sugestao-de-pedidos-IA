@@ -1,5 +1,9 @@
-import { Box, Flex, Heading, Image, Text, VStack, Icon, Button } from "@chakra-ui/react";
-import { FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import {
+    Box, Flex, Heading, Image, Text, VStack, Icon, Button, Input
+} from "@chakra-ui/react";
+import {
+    FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt, FaEdit
+} from "react-icons/fa";
 import "../styles/Profile.css";
 import logo from '../images/Logo preta escrita.png';
 import { AiOutlineClose } from "react-icons/ai";
@@ -8,36 +12,34 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { jwtDecode } from "jwt-decode";
+import { IoMdLock } from "react-icons/io";
 
 const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [editing, setEditing] = useState(false);
+    const [editedData, setEditedData] = useState({});
+    const [currentPassword, setCurrentPassword] = useState('');
 
     const getUser = async () => {
         try {
             const token = localStorage.getItem('authToken');
-
             if (!token) {
                 alert('Sessão expirada. Faça login novamente.');
                 navigate('/');
                 return;
             }
 
-           const decodedPayload = jwtDecode(token);
-           console.log("JWT payload decodificado:", decodedPayload);
-
+            const decodedPayload = jwtDecode(token);
             const response = await axios.get('http://localhost:8080/api/users/getUser', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
 
-            console.log(response.data);
-            setUser(response.data);
-            setUser({
-                  ...response.data,
-                  ...decodedPayload
-               });
+            const userData = { ...response.data, ...decodedPayload };
+            setUser(userData);
+            setEditedData(userData);
         } catch (error) {
             console.error('Erro ao buscar usuário:', error);
             if (error.response?.status === 401) {
@@ -47,18 +49,52 @@ const Profile = () => {
         }
     };
 
+    const handleChange = (field, value) => {
+        setEditedData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSave = async () => {
+        if (!currentPassword) {
+            alert("Por favor, digite sua senha atual para confirmar.");
+            return;
+        }
+
+        try {
+            const dataToSend = {
+                ...editedData,
+                password: currentPassword,
+            };
+
+            await axios.put("http://localhost:8080/api/users/update", dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("authToken")}`
+                }
+            });
+
+            setUser(editedData);
+            setEditing(false);
+            setCurrentPassword('');
+            alert("Dados atualizados com sucesso!");
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+            alert("Erro ao salvar alterações.");
+        }
+    };
+
+
+
     useEffect(() => {
         getUser();
     }, []);
 
     if (!user) {
         return <LoadingAnimation />;
-      }
+    }
 
     return (
         <Box className="profile-container">
             <Flex className="profile-header">
-                <Box className="profile-header-image">
+                <Box className="profile-header-image" position="relative">
                     <Image
                         src={user?.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
                         alt="Foto do usuário"
@@ -68,6 +104,7 @@ const Profile = () => {
                 <Heading className="profile-logo">
                     <Image src={logo} alt='Logo SugereAI' />
                 </Heading>
+
                 <Button
                     onClick={() => navigate(-1)}
                     bg={'#2D2C31'}
@@ -80,39 +117,71 @@ const Profile = () => {
             </Flex>
 
             <Flex className="profile-content">
-                <Box className="profile-image-container">
-                    <Image
-                        src= {user?.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
-                        alt="Foto do usuário"
-                        className="profile-image"
-                    />
+                <Box className="profile-image-wrapper" position="relative">
+                    <Box className="profile-image-container">
+                        <Image
+                            src={user?.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
+                            alt="Foto do usuário"
+                            className="profile-image"
+                        />
+                    </Box>
+                    <Button
+                        position="absolute"
+                        bottom="24px"
+                        right="4px"
+                        borderRadius="full"
+                        className="edit-button"
+                        size="sm"
+                        onClick={() => setEditing(!editing)}
+                        zIndex="1"
+                    >
+                        <FaEdit/>
+                    </Button>
                 </Box>
 
+
                 <VStack className="profile-info-container">
-                    <Flex className="profile-info-item">
-                        <Icon as={FaUser} className="info-icon" />
-                        <Text className="info-text">{user?.name || '—————————'}</Text>
-                    </Flex>
+                    {[
+                        { icon: FaUser, label: "name", placeholder: "Nome" },
+                        { icon: FaEnvelope, label: "email", placeholder: "Email" },
+                        { icon: FaIdCard, label: "document", placeholder: "CPF ou RG" },
+                        { icon: FaPhone, label: "phone", placeholder: "Telefone" },
+                        { icon: FaMapMarkerAlt, label: "address", placeholder: "Endereço" },
+                    ].map(({ icon, label, placeholder }) => (
+                        <Flex key={label} className="profile-info-item">
+                            <Icon as={icon} className="info-icon" />
+                            {editing ? (
+                                <Input
+                                    value={editedData[label] || ''}
+                                    onChange={(e) => handleChange(label, e.target.value)}
+                                    placeholder={placeholder}
+                                    className="info-input"
+                                />
+                            ) : (
+                                <Text className="info-text">{user?.[label] || '—————————'}</Text>
+                            )}
+                        </Flex>
+                    ))}
 
-                    <Flex className="profile-info-item">
-                        <Icon as={FaEnvelope} className="info-icon" />
-                        <Text className="info-text">{user?.email || '—————————'}</Text>
-                    </Flex>
+                    {editing && (
+                        <Flex className="profile-info-item">
+                            <Icon as={IoMdLock} className="info-icon" />
+                            <Input
+                                type="password"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                placeholder="Digite sua senha atual"
+                                className="info-input"
+                            />
+                        </Flex>
+                    )}
 
-                    <Flex className="profile-info-item">
-                        <Icon as={FaIdCard} className="info-icon" />
-                        <Text className="info-text">{user?.document || '—————————'}</Text>
-                    </Flex>
 
-                    <Flex className="profile-info-item">
-                        <Icon as={FaPhone} className="info-icon" />
-                        <Text className="info-text">{user?.phone || '—————————'}</Text>
-                    </Flex>
-
-                    <Flex className="profile-info-item">
-                        <Icon as={FaMapMarkerAlt} className="info-icon" />
-                        <Text className="info-text">{user?.address || '—————————'}</Text>
-                    </Flex>
+                    {editing && (
+                        <Button colorScheme="orange" onClick={handleSave}>
+                            Salvar alterações
+                        </Button>
+                    )}
                 </VStack>
             </Flex>
 
