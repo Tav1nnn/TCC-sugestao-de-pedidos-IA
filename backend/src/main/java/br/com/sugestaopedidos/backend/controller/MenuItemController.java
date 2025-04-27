@@ -1,10 +1,8 @@
 package br.com.sugestaopedidos.backend.controller;
 
-import br.com.sugestaopedidos.backend.dto.CategoryResponseDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemRequestDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
-import br.com.sugestaopedidos.backend.model.MenuItem;
 import br.com.sugestaopedidos.backend.service.MenuItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

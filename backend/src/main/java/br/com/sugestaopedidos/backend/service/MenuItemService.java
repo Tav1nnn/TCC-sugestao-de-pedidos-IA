@@ -1,12 +1,12 @@
 package br.com.sugestaopedidos.backend.service;
 
-import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
+import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemRequestDto;
+import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.MenuItemMapper;
 import br.com.sugestaopedidos.backend.model.Category;
 import br.com.sugestaopedidos.backend.model.Ingredient;
-import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.model.MenuItem;
 import br.com.sugestaopedidos.backend.model.Restaurant;
 import br.com.sugestaopedidos.backend.repository.CategoryRepository;

@@ -10,7 +10,6 @@ import br.com.sugestaopedidos.backend.model.UserRole;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
 import br.com.sugestaopedidos.backend.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
