@@ -20,13 +20,15 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     @GetMapping
-    public Set<IngredientResponseDto> getAllCategories() {
-        return ingredientService.findAllIngredients();
+    public ResponseEntity<Set<IngredientResponseDto>> getAllIngredients() {
+        Set<IngredientResponseDto> ingredients = ingredientService.findAllIngredients();
+        return ResponseEntity.ok(ingredients);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<IngredientResponseDto> getByIdIngredient(@PathVariable String id) {
-        return ResponseEntity.ok(ingredientService.findByIdIngredients(id));
+        IngredientResponseDto ingredient = ingredientService.findByIdIngredients(id);
+        return ResponseEntity.ok(ingredient);
     }
 
     @PostMapping
@@ -44,7 +46,7 @@ public class IngredientController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateIngredient(@PathVariable String id, @Valid @RequestBody IngredientRequestDto ingredientRequestDto) {
         ingredientService.updateIngredient(id, ingredientRequestDto);
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

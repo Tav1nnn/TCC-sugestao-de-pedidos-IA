@@ -23,15 +23,17 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RequestMapping("api/users")
 public class UserController {
+
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDto authenticationDto){
-        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDto.getEmail(), authenticationDto.getPassword());
-        Authentication auth = this.authenticationManager.authenticate(usernamePassword);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid AuthenticationDto authenticationDto) {
+        UsernamePasswordAuthenticationToken usernamePassword =
+                new UsernamePasswordAuthenticationToken(authenticationDto.getEmail(), authenticationDto.getPassword());
 
+        Authentication auth = authenticationManager.authenticate(usernamePassword);
         String token = tokenService.generateToken((User) auth.getPrincipal());
 
         return ResponseEntity.ok(new LoginResponseDto(token));
@@ -52,14 +54,12 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<Void> update(@Valid @RequestBody UserRequestDto userRequestDto) {
         userService.updateUser(userRequestDto);
-
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getUser")
-    public ResponseEntity<UserResponseDto> get() {
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getUser() {
         UserResponseDto userResponseDto = userService.getUserByAuthenticated();
-
         return ResponseEntity.ok(userResponseDto);
     }
 }

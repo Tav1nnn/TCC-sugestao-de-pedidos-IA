@@ -20,8 +20,9 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping
-    public Set<RestaurantResponseDto> getAllRestaurants() {
-        return restaurantService.findAllRestaurants();
+    public ResponseEntity<Set<RestaurantResponseDto>> getAllRestaurants() {
+        Set<RestaurantResponseDto> response = restaurantService.findAllRestaurants();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
@@ -44,7 +45,7 @@ public class RestaurantController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
         restaurantService.updateRestaurant(id, restaurantRequestDto);
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
