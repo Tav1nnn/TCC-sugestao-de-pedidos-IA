@@ -1,12 +1,12 @@
 package br.com.sugestaopedidos.backend.service;
 
-import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
+import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemRequestDto;
+import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.MenuItemMapper;
 import br.com.sugestaopedidos.backend.model.Category;
 import br.com.sugestaopedidos.backend.model.Ingredient;
-import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.model.MenuItem;
 import br.com.sugestaopedidos.backend.model.Restaurant;
 import br.com.sugestaopedidos.backend.repository.CategoryRepository;
@@ -42,7 +42,7 @@ public class MenuItemService {
         menuItem.setIngredients(ingredients);
 
         Category category = categoryRepository.findById(menuItemResquestDto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException(menuItemResquestDto.getCategoryId()));
         menuItem.setCategory(category);
 
         MenuItem saved = menuItemRepository.save(menuItem);
@@ -50,7 +50,7 @@ public class MenuItemService {
     }
 
     public MenuItemResponseDto findByIdMenuItem(String id) {
-        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MenuItem not found: " + id));
+        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 
         return menuItemMapper.toDto(menuItem);
     }
@@ -74,7 +74,7 @@ public class MenuItemService {
     public MenuItemHomeDto getMenu(String restaurantId) {
         Restaurant restaurant = restaurantRepository
                 .findById(restaurantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Restaurant Id not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(restaurantId));
 
         List<MenuItem> menuItemList = menuItemRepository.findMenuItemByRestaurant(restaurant);
 
@@ -107,7 +107,7 @@ public class MenuItemService {
     public void updateMenuItem(MenuItemRequestDto menuItemResquestDto, String id) {
 
         if(!menuItemRepository.existsById(id)){
-            throw new ResourceNotFoundException("Id not found: " + id);
+            throw new ResourceNotFoundException(id);
         }
 
         MenuItem menuItem = menuItemMapper.toEntity(menuItemResquestDto);
@@ -121,7 +121,7 @@ public class MenuItemService {
         menuItem.setIngredients(ingredients);
 
         Category category = categoryRepository.findById(menuItemResquestDto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException(menuItemResquestDto.getCategoryId()));
         menuItem.setCategory(category);
 
         menuItemRepository.save(menuItem);

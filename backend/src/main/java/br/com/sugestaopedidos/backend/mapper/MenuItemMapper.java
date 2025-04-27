@@ -1,8 +1,7 @@
 package br.com.sugestaopedidos.backend.mapper;
 
-import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemRequestDto;
-import br.com.sugestaopedidos.backend.model.Category;
+import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
 import br.com.sugestaopedidos.backend.model.Ingredient;
 import br.com.sugestaopedidos.backend.model.MenuItem;
 import org.mapstruct.Mapper;
@@ -10,7 +9,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

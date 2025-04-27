@@ -6,7 +6,7 @@ import br.com.sugestaopedidos.backend.client.schema.RequestOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.ResponseOpenAi;
 import br.com.sugestaopedidos.backend.client.schema.Role;
 import br.com.sugestaopedidos.backend.dto.ChatRestaurantDto;
-import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
+import br.com.sugestaopedidos.backend.exception.resource.OpenAiRequestException;
 import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
 import br.com.sugestaopedidos.backend.util.AuthUtils;
@@ -35,7 +35,7 @@ public class ProfileService {
         log.info("Response: {}", responseOpenAi);
 
         if (responseOpenAi == null) {
-            throw new RuntimeException("Falha ao obter resposta do OpenAI");
+            throw new OpenAiRequestException();
         }
         updateProfileUser(responseOpenAi);
     }

@@ -20,13 +20,15 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public Set<CategoryResponseDto> getAllCategories() {
-        return categoryService.findAllCategories();
+    public ResponseEntity<Set<CategoryResponseDto>> getAllCategories() {
+        Set<CategoryResponseDto> categories = categoryService.findAllCategories();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> getByIdCategory(@PathVariable String id) {
-        return ResponseEntity.ok(categoryService.findByIdCategories(id));
+        CategoryResponseDto category = categoryService.findByIdCategories(id);
+        return ResponseEntity.ok(category);
     }
 
     @PostMapping
@@ -44,7 +46,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCategory(@PathVariable String id, @Valid @RequestBody CategoryRequestDto categoryRequestDto) {
         categoryService.updateCategory(id, categoryRequestDto);
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

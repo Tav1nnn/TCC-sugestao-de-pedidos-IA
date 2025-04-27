@@ -6,6 +6,7 @@ import br.com.sugestaopedidos.backend.service.ChatMenuItemService;
 import br.com.sugestaopedidos.backend.service.ChatRestaurantService;
 import br.com.sugestaopedidos.backend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,22 +15,26 @@ import java.util.List;
 @RequestMapping("api/ai")
 @RequiredArgsConstructor
 public class OpenAiController {
+
     private final ChatRestaurantService chatRestaurantService;
     private final ChatMenuItemService chatMenuItemService;
     private final ProfileService profileService;
 
     @PostMapping("/chat")
-    public List<ChatRestaurantDto> consultOpenAi(@RequestBody List<ChatRestaurantDto> chatRequestDtos) {
-        return chatRestaurantService.consumeChatRestaurant(chatRequestDtos);
+    public ResponseEntity<List<ChatRestaurantDto>> consultOpenAi(@RequestBody List<ChatRestaurantDto> chatRequestDtos) {
+        List<ChatRestaurantDto> response = chatRestaurantService.consumeChatRestaurant(chatRequestDtos);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/chat/{id}")
-    public List<ChatMenuItemDto> consultOpenAiMenuItem(@RequestBody List<ChatMenuItemDto> chatMenuItemDto,  @PathVariable String id){
-        return chatMenuItemService.consumeChatMenuItem(chatMenuItemDto, id);
+    public ResponseEntity<List<ChatMenuItemDto>> consultOpenAiMenuItem(@RequestBody List<ChatMenuItemDto> chatMenuItemDtos, @PathVariable String id) {
+        List<ChatMenuItemDto> response = chatMenuItemService.consumeChatMenuItem(chatMenuItemDtos, id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/profile")
-    public void consultOpenAiProfile(@RequestBody List<ChatRestaurantDto> chatDtoList){
+    public ResponseEntity<Void> consultOpenAiProfile(@RequestBody List<ChatRestaurantDto> chatDtoList) {
         profileService.generateProfile(chatDtoList);
+        return ResponseEntity.ok().build();
     }
 }

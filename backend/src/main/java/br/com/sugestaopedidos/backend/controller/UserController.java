@@ -10,7 +10,6 @@ import br.com.sugestaopedidos.backend.service.TokenService;
 import br.com.sugestaopedidos.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,22 +23,24 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RequestMapping("api/users")
 public class UserController {
+
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDto authenticationDto){
-        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDto.getEmail(), authenticationDto.getPassword());
-        Authentication auth = this.authenticationManager.authenticate(usernamePassword);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid AuthenticationDto authenticationDto) {
+        UsernamePasswordAuthenticationToken usernamePassword =
+                new UsernamePasswordAuthenticationToken(authenticationDto.getEmail(), authenticationDto.getPassword());
 
+        Authentication auth = authenticationManager.authenticate(usernamePassword);
         String token = tokenService.generateToken((User) auth.getPrincipal());
 
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<Void> register(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserResponseDto responseDto = userService.registerUser(userRequestDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -51,16 +52,14 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<Void> update(@Valid @RequestBody UserRequestDto userRequestDto) {
         userService.updateUser(userRequestDto);
-
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getUser")
-    public ResponseEntity<UserResponseDto> get() {
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getUser() {
         UserResponseDto userResponseDto = userService.getUserByAuthenticated();
-
         return ResponseEntity.ok(userResponseDto);
     }
 }

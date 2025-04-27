@@ -9,6 +9,7 @@ import br.com.sugestaopedidos.backend.dto.ChatMenuItemDto;
 import br.com.sugestaopedidos.backend.dto.ContentMenuItemDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemResponseChatDto;
 import br.com.sugestaopedidos.backend.exception.resource.ChatProcessingException;
+import br.com.sugestaopedidos.backend.exception.resource.OpenAiRequestException;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.IngredientMapper;
 import br.com.sugestaopedidos.backend.model.MenuItem;
@@ -50,7 +51,7 @@ public class ChatMenuItemService {
         log.info("Response: {}", responseOpenAi);
 
         if (responseOpenAi == null) {
-            throw new RuntimeException("Falha ao obter resposta do OpenAI");
+            throw new OpenAiRequestException();
         }
 
         return processResponse(responseOpenAi, chatDtos);
@@ -137,7 +138,7 @@ public class ChatMenuItemService {
     }
 
     private Restaurant getRestaurant(String restaurantId) {
-        return restaurantRepository.findById(restaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant not found: " + restaurantId));
+        return restaurantRepository.findById(restaurantId).orElseThrow(() -> new ResourceNotFoundException(restaurantId));
     }
 
     private MenuItemResponseChatDto menuItemEntityToDto(MenuItem menuItem){

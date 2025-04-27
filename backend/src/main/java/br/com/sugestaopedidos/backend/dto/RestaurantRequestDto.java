@@ -1,5 +1,7 @@
 package br.com.sugestaopedidos.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,24 +11,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RestaurantRequestDto {
 
-    //@NotBlank(message = "name cannot be null")
+    @NotBlank
     private String name;
-
-    //@NotBlank(message = "description cannot be null")
+    @NotBlank
     private String description;
-
-    //@NotBlank(message = "address cannot be null")
+    @NotBlank
     private String address;
-
-    //@NotBlank(message = "phone cannot be null")
+    @NotBlank
     private String phone;
-
-    //@NotBlank(message = "cnpj cannot be null")
+    @NotBlank
     private String cnpj;
-
-    //@NotBlank(message = "ie cannot be null")
+    @NotBlank
     private String ie;
-
-    //@NotBlank(message = "name cannot be null")
+    @NotBlank
     private String imageUrl;
 }

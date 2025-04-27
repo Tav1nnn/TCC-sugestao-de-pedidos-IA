@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,13 +69,13 @@ public class CategoryService {
             String ids = listMenuItem.stream()
                     .map(MenuItem::getId)
                     .collect(Collectors.joining(","));
-            throw new RelatedObjectException("Existem MenuItems relacionado a essa categoria: " + ids);
+            throw new RelatedObjectException(ids);
         }
 
         categoryRepository.deleteById(id);
     }
 
     private static ResourceNotFoundException getResourceNotFoundException(String id) {
-        return new ResourceNotFoundException("Category not found with id: " + id);
+        return new ResourceNotFoundException(id);
     }
 }

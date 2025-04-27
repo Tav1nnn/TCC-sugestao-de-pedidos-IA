@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryRequestDto {
 
-    //@NotBlank(message = "name cannot be null")
+    @NotBlank
     private String name;
 }
