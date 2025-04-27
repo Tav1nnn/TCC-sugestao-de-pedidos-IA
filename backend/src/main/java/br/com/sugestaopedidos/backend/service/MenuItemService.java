@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,31 +49,54 @@ public class MenuItemService {
         return menuItemMapper.toDto(saved);
     }
 
+    public MenuItemResponseDto findByIdMenuItem(String id) {
+        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MenuItem not found: " + id));
 
+        return menuItemMapper.toDto(menuItem);
+    }
+
+    public List<MenuItemResponseDto> findAll() {
+        List<MenuItem> menuItemList = menuItemRepository.findAll();
+
+        return menuItemList.stream()
+                .map(menuItemMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public void delete(String id) {
+        if(!menuItemRepository.existsById(id)){
+            throw new ResourceNotFoundException("Id not found: " + id);
+        }
+
+        menuItemRepository.deleteById(id);
+    }
 
     public MenuItemHomeDto getMenu(String restaurantId) {
-        Restaurant restaurant = restaurantRepository.
-                findById(restaurantId).orElseThrow(() -> new ResourceNotFoundException("Restaurant Id not found"));
+        Restaurant restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant Id not found"));
 
         List<MenuItem> menuItemList = menuItemRepository.findMenuItemByRestaurant(restaurant);
 
-        Map<String, MenuItemHomeDto.CategoryDto> categotyToMenuItemMap = new HashMap<>();
+        Map<String, MenuItemHomeDto.CategoryDto> categoryToMenuItemMap = new HashMap<>();
 
-        for(MenuItem menuItem : menuItemList) {
+        for (MenuItem menuItem : menuItemList) {
             String categoryName = menuItem.getCategory().getName();
+            String categoryId = menuItem.getCategory().getId();
 
-            if(!categotyToMenuItemMap.containsKey(categoryName)){
+            if (!categoryToMenuItemMap.containsKey(categoryId)) {
                 MenuItemHomeDto.CategoryDto categoryDto = new MenuItemHomeDto.CategoryDto();
+                categoryDto.setCategoryId(categoryId);
                 categoryDto.setCategory(categoryName);
                 categoryDto.setMenuItem(new ArrayList<>());
-                categotyToMenuItemMap.put(categoryName, categoryDto);
+                categoryToMenuItemMap.put(categoryId, categoryDto);
             }
 
             MenuItemHomeDto.MenuItemDto menuItemDto = convertToMenuItemDto(menuItem);
-            categotyToMenuItemMap.get(categoryName).getMenuItem().add(menuItemDto);
+            categoryToMenuItemMap.get(categoryId).getMenuItem().add(menuItemDto);
         }
 
-        List<MenuItemHomeDto.CategoryDto> categoryDtoList = new ArrayList<>(categotyToMenuItemMap.values());
+        List<MenuItemHomeDto.CategoryDto> categoryDtoList = new ArrayList<>(categoryToMenuItemMap.values());
 
         MenuItemHomeDto menuDto = new MenuItemHomeDto();
         menuDto.setMenu(categoryDtoList);
@@ -80,20 +104,48 @@ public class MenuItemService {
         return menuDto;
     }
 
+    public void updateMenuItem(MenuItemRequestDto menuItemResquestDto, String id) {
+
+        if(!menuItemRepository.existsById(id)){
+            throw new ResourceNotFoundException("Id not found: " + id);
+        }
+
+        MenuItem menuItem = menuItemMapper.toEntity(menuItemResquestDto);
+        menuItem.setId(id);
+
+        menuItem.setRestaurant(AuthUtils.getCurrentUser().getRestaurant());
+
+        Set<Ingredient> ingredients = new HashSet<>(
+                ingredientRepository.findAllById(menuItemResquestDto.getIngredientIds())
+        );
+        menuItem.setIngredients(ingredients);
+
+        Category category = categoryRepository.findById(menuItemResquestDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
+        menuItem.setCategory(category);
+
+        menuItemRepository.save(menuItem);
+    }
+
     private MenuItemHomeDto.MenuItemDto convertToMenuItemDto(MenuItem menuItem) {
         MenuItemHomeDto.MenuItemDto menuItemDto = new MenuItemHomeDto.MenuItemDto();
+        menuItemDto.setMenuItemId(menuItem.getId());
         menuItemDto.setName(menuItem.getName());
         menuItemDto.setImageUrl(menuItem.getImageURL());
         menuItemDto.setPrice(menuItem.getPrice());
-        menuItemDto.setIngredients(extractIngredientNames(menuItem.getIngredients()));
+        menuItemDto.setIngredients(extractIngredientDtos(menuItem.getIngredients()));
         return menuItemDto;
     }
 
-    private List<String> extractIngredientNames(Set<Ingredient> ingredients) {
-        List<String> ingredientNames = new ArrayList<>();
+    private List<MenuItemHomeDto.IngredientsDto> extractIngredientDtos(Set<Ingredient> ingredients) {
+        List<MenuItemHomeDto.IngredientsDto> ingredientDtoList = new ArrayList<>();
         for (Ingredient ingredient : ingredients) {
-            ingredientNames.add(ingredient.getName());
+            MenuItemHomeDto.IngredientsDto ingredientDto = new MenuItemHomeDto.IngredientsDto();
+            ingredientDto.setIngredientId(ingredient.getId());
+            ingredientDto.setIngredient(ingredient.getName());
+            ingredientDtoList.add(ingredientDto);
         }
-        return ingredientNames;
+        return ingredientDtoList;
     }
+
  }

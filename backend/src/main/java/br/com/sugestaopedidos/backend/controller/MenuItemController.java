@@ -4,6 +4,7 @@ import br.com.sugestaopedidos.backend.dto.CategoryResponseDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemHomeDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemRequestDto;
 import br.com.sugestaopedidos.backend.dto.MenuItemResponseDto;
+import br.com.sugestaopedidos.backend.model.MenuItem;
 import br.com.sugestaopedidos.backend.service.MenuItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/menuItem")
@@ -19,9 +21,19 @@ import java.net.URI;
 public class MenuItemController {
     private final MenuItemService menuItemService;
 
-    @GetMapping("/{id}")
-    public MenuItemHomeDto consultOpenAi(@PathVariable String id) {
+    @GetMapping("/restaurant/{id}")
+    public MenuItemHomeDto findByRestaurant(@PathVariable String id) {
         return menuItemService.getMenu(id);
+    }
+
+    @GetMapping("/{id}")
+    public MenuItemResponseDto findById(@PathVariable String id) {
+        return menuItemService.findByIdMenuItem(id);
+    }
+
+    @GetMapping
+    public List<MenuItemResponseDto> findAll () {
+        return menuItemService.findAll();
     }
 
     @PostMapping
@@ -34,5 +46,19 @@ public class MenuItemController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMenuItem(@PathVariable String id) {
+        menuItemService.delete(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateMenuItem(@RequestBody MenuItemRequestDto menuItemRequestDto,@PathVariable String id) {
+        menuItemService.updateMenuItem(menuItemRequestDto, id);
+
+        return ResponseEntity.ok().build();
     }
 }

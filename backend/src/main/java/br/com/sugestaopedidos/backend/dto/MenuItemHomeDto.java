@@ -15,6 +15,7 @@ public class MenuItemHomeDto {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CategoryDto {
+        private String categoryId;
         private String category;
         private List<MenuItemDto> menuItem;
     }
@@ -22,9 +23,17 @@ public class MenuItemHomeDto {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class MenuItemDto {
+        private String menuItemId;
         private String name;
-        private List<String> ingredients;
+        private List<IngredientsDto> ingredients;
         private String imageUrl;
         private Double price;
+    }
+
+    @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class IngredientsDto {
+        private String ingredientId;
+        private String ingredient;
     }
 }

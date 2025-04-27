@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ public interface MenuItemMapper {
     @Mapping(target = "restaurantId", source = "restaurant.id")
     @Mapping(target = "ingredientIds", source = "ingredients", qualifiedByName = "extractIngredientIds")
     MenuItemResponseDto toDto(MenuItem entity);
+
 
     @Named("extractIngredientIds")
     default Set<String> extractIngredientIds(Set<Ingredient> ingredients) {
