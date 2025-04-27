@@ -27,7 +27,7 @@ const Restaurant = () => {
                 console.log("Restaurante:", restaurantResponse.data);
                 setRestaurantData(restaurantResponse.data);
 
-                const response = await axios.get(`http://localhost:8080/api/menuItem/${id}`, {
+                const response = await axios.get(`http://localhost:8080/api/menuItem/restaurant/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -65,17 +65,17 @@ const Restaurant = () => {
                         <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
                         <h2>Cardápio</h2>
                         <Button
-                                bg={'#2D2C31'}
-                                border={'2px solid #A10808'}
-                                borderRadius={'50%'}
-                                color={'white'}
-                                position={'absolute'}
-                                top={'10px'}
-                                right={'20px'}
-                                onClick={() => navigate(-1)}
-                            >
-                                <AiOutlineClose />
-                            </Button>
+                            bg={'#2D2C31'}
+                            border={'2px solid #A10808'}
+                            borderRadius={'50%'}
+                            color={'white'}
+                            position={'absolute'}
+                            top={'10px'}
+                            right={'20px'}
+                            onClick={() => navigate(-1)}
+                        >
+                            <AiOutlineClose />
+                        </Button>
                     </div>
                 </div>
 
@@ -92,7 +92,9 @@ const Restaurant = () => {
 
                                     <div className="dishRest-info">
                                         <p className="dishRest-name"><strong>{dish.name}</strong></p>
-                                        <p className="dishRest-ingredients">{dish.ingredients.join(", ")}</p>
+                                        <p className="dishRest-ingredients">
+                                            {dish.ingredients.map(ingredient => ingredient.ingredient).join(", ")}
+                                        </p>
                                         <p className="dishRest-price">R$ {dish.price.toFixed(2)}</p>
                                     </div>
                                 </div>
@@ -100,12 +102,11 @@ const Restaurant = () => {
                         </div>
                     ))}
                 </div>
+
                 <div>
-                    <div>
-                        <Button className='btnRest-ia' onClick={() => navigate(`/chatRest/${id}`)}>
-                            <FaRobot className='iconRest-ia' />
-                        </Button>
-                    </div>
+                    <Button className='btnRest-ia' onClick={() => navigate(`/chatRest/${id}`)}>
+                        <FaRobot className='iconRest-ia' />
+                    </Button>
                 </div>
             </div>
         </div>

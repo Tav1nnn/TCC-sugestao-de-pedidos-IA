@@ -1,8 +1,5 @@
 package br.com.sugestaopedidos.backend.dto;
-
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +10,9 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuItemResponseDto {
-
+public class MenuItemResponseChatDto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
     private String description;
@@ -22,7 +20,7 @@ public class MenuItemResponseDto {
     private String imageURL;
     private String restaurantId;
     private String categoryId;
-    private Set<String> ingredientIds;
+    private Set<IngredientResponseDto> ingredients;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

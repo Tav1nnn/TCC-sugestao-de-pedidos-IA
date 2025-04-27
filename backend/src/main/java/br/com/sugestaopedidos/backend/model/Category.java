@@ -28,6 +28,10 @@ public class Category {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Category(String id) {
+        this.id = id;
+    }
+
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
