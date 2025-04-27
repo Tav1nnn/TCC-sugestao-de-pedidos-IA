@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<Void> register(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserResponseDto responseDto = userService.registerUser(userRequestDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<Void> update(@Valid @RequestBody UserRequestDto userRequestDto) {
         userService.updateUser(userRequestDto);
 
         return ResponseEntity.ok().build();

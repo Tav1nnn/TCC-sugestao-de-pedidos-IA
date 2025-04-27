@@ -1,10 +1,13 @@
 package br.com.sugestaopedidos.backend.exception;
 
 import br.com.sugestaopedidos.backend.exception.model.StandardError;
+import br.com.sugestaopedidos.backend.exception.model.ValidationError;
 import br.com.sugestaopedidos.backend.exception.resource.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -13,8 +16,8 @@ import java.time.Instant;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-        @ExceptionHandler(ResourceNotFoundException.class)
-        public ResponseEntity<StandardError> handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<StandardError> handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(HttpStatus.NOT_FOUND.value());
@@ -25,8 +28,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-        @ExceptionHandler(RelatedObjectException.class)
-        public ResponseEntity<StandardError> handleRelatedObject(RelatedObjectException ex, WebRequest request) {
+    @ExceptionHandler(RelatedObjectException.class)
+    public ResponseEntity<StandardError> handleRelatedObject(RelatedObjectException ex, WebRequest request) {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(HttpStatus.CONFLICT.value());
@@ -37,8 +40,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
-        @ExceptionHandler(Exception.class)
-        public ResponseEntity<StandardError> handleGeneric(Exception ex, WebRequest request) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardError> handleGeneric(Exception ex, WebRequest request) {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -123,7 +126,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<StandardError> handleInvalidTokenException(InvalidTokenException ex, WebRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST; // ou HttpStatus.UNAUTHORIZED dependendo do seu caso
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
         StandardError err = new StandardError();
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
@@ -133,4 +136,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, WebRequest request){
+        ValidationError err = new ValidationError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        err.setError("Validation exception");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getDescription(false).replace("uri=", ""));
+
+        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+            err.addError(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
+    }
 }

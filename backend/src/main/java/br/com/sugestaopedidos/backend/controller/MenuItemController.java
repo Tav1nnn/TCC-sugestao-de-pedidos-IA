@@ -54,7 +54,7 @@ public class MenuItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateMenuItem(@RequestBody MenuItemRequestDto menuItemRequestDto,@PathVariable String id) {
+    public ResponseEntity<Void> updateMenuItem(@Valid @RequestBody MenuItemRequestDto menuItemRequestDto,@PathVariable String id) {
         menuItemService.updateMenuItem(menuItemRequestDto, id);
 
         return ResponseEntity.ok().build();
