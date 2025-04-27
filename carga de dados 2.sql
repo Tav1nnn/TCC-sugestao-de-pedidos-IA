@@ -1565,3 +1565,226 @@ UPDATE restaurants SET description = 'Um paraíso de bebidas naturais e saudáve
 UPDATE restaurants SET description = 'Pizzas artesanais com toques gourmet, feitas com ingredientes frescos e combinações criativas. Além das tradicionais, oferece sabores exclusivos como abobrinha com brie e cordeiro com hortelã. Calzones recheados, bebidas e sobremesas italianas completam o cardápio.' WHERE id = '1a2b3c4d-0015';
 UPDATE restaurants SET description = 'Cozinha brasileira raiz com pratos fartos e temperos da roça. Feijão tropeiro, frango com quiabo, vaca atolada e arroz com pequi trazem o sabor de Minas e Goiás. Sobremesas como bolo de fubá e goiabada com queijo garantem o toque final da tradição.' WHERE id = 'res-001';
 
+-- placehold colorido
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/FFC300/FFFFFF?text=Gastronomia+Suprema',
+  cover_url = 'https://placehold.co/1980x300/33FF8F/FFFFFF?text=Gastronomia+Suprema'
+WHERE id = '1a2b3c4d-0002';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Paladar+Refinado',
+  cover_url = 'https://placehold.co/1980x300/1ABC9C/FFFFFF?text=Paladar+Refinado'
+WHERE id = '1a2b3c4d-0003';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/33FFF0/FFFFFF?text=Tempero+Caseiro',
+  cover_url = 'https://placehold.co/1980x300/1ABC9C/FFFFFF?text=Tempero+Caseiro'
+WHERE id = '1a2b3c4d-0004';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Cantinho+Italiano',
+  cover_url = 'https://placehold.co/1980x300/E67E22/FFFFFF?text=Cantinho+Italiano'
+WHERE id = '1a2b3c4d-0005';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Delícias+do+Chef',
+  cover_url = 'https://placehold.co/1980x300/8F33FF/FFFFFF?text=Delícias+do+Chef'
+WHERE id = '1a2b3c4d-0006';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Bistrô+Elegante',
+  cover_url = 'https://placehold.co/1980x300/3498DB/FFFFFF?text=Bistrô+Elegante'
+WHERE id = '1a2b3c4d-0007';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Comida+%26+Tradição',
+  cover_url = 'https://placehold.co/1980x300/3357FF/FFFFFF?text=Comida+%26+Tradição'
+WHERE id = '1a2b3c4d-0008';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/FFC300/FFFFFF?text=Mar+%26+Terra',
+  cover_url = 'https://placehold.co/1980x300/33FF57/FFFFFF?text=Mar+%26+Terra'
+WHERE id = '1a2b3c4d-0009';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Sabores+Rústicos',
+  cover_url = 'https://placehold.co/1980x300/3357FF/FFFFFF?text=Sabores+Rústicos'
+WHERE id = '1a2b3c4d-0010';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Green+Heaven',
+  cover_url = 'https://placehold.co/1980x300/28B463/FFFFFF?text=Green+Heaven'
+WHERE id = '1a2b3c4d-0011';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/2ECC71/FFFFFF?text=Oriente+Saboroso',
+  cover_url = 'https://placehold.co/1980x300/33FFF0/FFFFFF?text=Oriente+Saboroso'
+WHERE id = '1a2b3c4d-0012';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Especiarias+da+Índia',
+  cover_url = 'https://placehold.co/1980x300/E67E22/FFFFFF?text=Especiarias+da+Índia'
+WHERE id = '1a2b3c4d-0013';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Oásis+Refrescante',
+  cover_url = 'https://placehold.co/1980x300/E67E22/FFFFFF?text=Oásis+Refrescante'
+WHERE id = '1a2b3c4d-0014';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Piazzaria',
+  cover_url = 'https://placehold.co/1980x300/900C3F/FFFFFF?text=Piazzaria'
+WHERE id = '1a2b3c4d-0015';
+
+UPDATE restaurants SET 
+  image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Sabor+da+Fazenda',
+  cover_url = 'https://placehold.co/1980x300/1ABC9C/FFFFFF?text=Sabor+da+Fazenda'
+WHERE id = 'res-001';
+
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF57/FFFFFF?text=Bolinho+de+Bacalhau' WHERE id = 'item-0002-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FFC300/FFFFFF?text=Lasanha+Bolonhesa' WHERE id = 'item-0002-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Picanha+Grelhada' WHERE id = 'item-0002-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/8F33FF/FFFFFF?text=Refrigerante+Lata' WHERE id = 'item-0002-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Pudim+de+Leite' WHERE id = 'item-0002-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Patê+de+Atum' WHERE id = 'item-0002-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Espaguete+Carbonara' WHERE id = 'item-0002-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Picanha+Grelhada' WHERE id = 'item-0002-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Refrigerante' WHERE id = 'item-0002-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FFF0/FFFFFF?text=Pudim+de+Leite' WHERE id = 'item-0002-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Carpaccio+de+Salmão' WHERE id = 'item-0003-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FFC300/FFFFFF?text=Ravioli+de+Mozzarella' WHERE id = 'item-0003-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/2ECC71/FFFFFF?text=Pato+Confitado' WHERE id = 'item-0003-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Vinho+Tinto+Reserva' WHERE id = 'item-0003-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Crème+Brûlée+de+Lavanda' WHERE id = 'item-0003-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Bruschetta' WHERE id = 'item-0003-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Penne+Quatro+Queijos' WHERE id = 'item-0003-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/16A085/FFFFFF?text=Medalhão+de+Frango' WHERE id = 'item-0003-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Água+Mineral' WHERE id = 'item-0003-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Mousse+de+Chocolate' WHERE id = 'item-0003-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Isca+de+Peixe' WHERE id = 'item-0004-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Rondelli+de+Ricota' WHERE id = 'item-0004-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Costela+no+Bafo' WHERE id = 'item-0004-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Suco+de+Morango' WHERE id = 'item-0004-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/F1C40F/FFFFFF?text=Arroz+Doce' WHERE id = 'item-0004-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Bolinho+de+Bacalhau' WHERE id = 'item-0004-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/2ECC71/FFFFFF?text=Nhoque+ao+Sugo' WHERE id = 'item-0004-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Lombo+Assado' WHERE id = 'item-0004-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Chá+Mate+Natural' WHERE id = 'item-0004-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Tiramisu' WHERE id = 'item-0004-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Carpaccio' WHERE id = 'item-0005-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/8F33FF/FFFFFF?text=Ravioli+de+Espinafre' WHERE id = 'item-0005-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FFF0/FFFFFF?text=Ossobuco' WHERE id = 'item-0005-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Vinho+da+Casa' WHERE id = 'item-0005-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/8F33FF/FFFFFF?text=Torta+Caprese' WHERE id = 'item-0005-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Croquete+de+Carne' WHERE id = 'item-0005-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Lasagna+Bolonhesa' WHERE id = 'item-0005-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Cordeiro+ao+Vinho' WHERE id = 'item-0005-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Cerveja+Artesanal' WHERE id = 'item-0005-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Petit+Gateau' WHERE id = 'item-0005-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Carpaccio+de+Carne' WHERE id = 'item-0006-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Penne+ao+Pesto' WHERE id = 'item-0006-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Costelinha+Suína' WHERE id = 'item-0006-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Limonada+Suíça' WHERE id = 'item-0006-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FFC300/FFFFFF?text=Mousse+de+Maracujá' WHERE id = 'item-0006-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Carpaccio+de+Abacaxi' WHERE id = 'item-0006-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Espaguete+ao+Frutos+do+Mar' WHERE id = 'item-0006-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Filé+Mignon+com+Crosta+de+Castanhas' WHERE id = 'item-0006-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/F1C40F/FFFFFF?text=Drink+da+Casa' WHERE id = 'item-0006-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF57/FFFFFF?text=Crème+Brûlée+de+Lavanda' WHERE id = 'item-0006-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF3333/FFFFFF?text=Bolinho+de+Queijo' WHERE id = 'item-0007-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/2ECC71/FFFFFF?text=Tagliatelle+ao+Funghi' WHERE id = 'item-0007-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=T-Bone+Steak' WHERE id = 'item-0007-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FFF0/FFFFFF?text=Mate+Gelado' WHERE id = 'item-0007-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Brownie+de+Chocolate' WHERE id = 'item-0007-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Camarão+Empanado' WHERE id = 'item-0008-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Spaghetti+ao+Pomodoro' WHERE id = 'item-0008-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Frango+Grelhado' WHERE id = 'item-0008-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Refrigerante+Zero' WHERE id = 'item-0008-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Sorvete+Artesanal' WHERE id = 'item-0008-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Casquinha+de+Siri' WHERE id = 'item-0009-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Linguine+ao+Pesto' WHERE id = 'item-0009-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Moqueca+de+Camarão' WHERE id = 'item-0009-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF57/FFFFFF?text=Filé+Mignon+ao+Molho+Madeira' WHERE id = 'item-0009-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Petit+Gâteau' WHERE id = 'item-0009-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Pão+de+Queijo+Recheado' WHERE id = 'item-0010-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF8F33/FFFFFF?text=Capeletti+de+Abóbora' WHERE id = 'item-0010-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Leitão+Assado' WHERE id = 'item-0010-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF8F33/FFFFFF?text=Suco+de+Milho+Verde' WHERE id = 'item-0010-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Doce+de+Abóbora+com+Coco' WHERE id = 'item-0010-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Pastel+de+Angu' WHERE id = 'item-0010-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/900C3F/FFFFFF?text=Nhoque+de+Mandioca' WHERE id = 'item-0010-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF57/FFFFFF?text=Costela+com+Mandioca' WHERE id = 'item-0010-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF3333/FFFFFF?text=Chá+de+Erva+Mate+com+Limão' WHERE id = 'item-0010-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Arroz+Doce+Queimado' WHERE id = 'item-0010-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Bruschetta+de+Cogumelos' WHERE id = 'item-0011-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Lasanha+de+Berinjela' WHERE id = 'item-0011-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Burger+de+Grão+de+Bico' WHERE id = 'item-0011-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Smoothie+de+Frutas+Vermelhas' WHERE id = 'item-0011-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Torta+de+Chocolate+Vegana' WHERE id = 'item-0011-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Guacamole+com+Chips' WHERE id = 'item-0011-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF8F33/FFFFFF?text=Curry+de+Legumes' WHERE id = 'item-0011-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Burger+de+Lentilha' WHERE id = 'item-0011-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Suco+Verde+Detox' WHERE id = 'item-0011-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/F1C40F/FFFFFF?text=Mousse+de+Maracujá+Vegano' WHERE id = 'item-0011-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Combinado+de+Sushi+Premium' WHERE id = 'item-0012-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Yakisoba+de+Frango' WHERE id = 'item-0012-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Guioza+de+Carne' WHERE id = 'item-0012-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Saquê+Importado' WHERE id = 'item-0012-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Mochi+de+Chocolate' WHERE id = 'item-0012-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF8F33/FFFFFF?text=Temaki+Salmão+Completo' WHERE id = 'item-0012-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/900C3F/FFFFFF?text=Frango+Xadrez' WHERE id = 'item-0012-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Harumaki+de+Queijo' WHERE id = 'item-0012-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Chá+de+Jasmim' WHERE id = 'item-0012-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Tempurá+de+Sorvete' WHERE id = 'item-0012-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Samosa' WHERE id = 'item-0013-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF8F33/FFFFFF?text=Vegetable+Curry' WHERE id = 'item-0013-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Chicken+Tikka+Masala' WHERE id = 'item-0013-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Naan' WHERE id = 'item-0013-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/16A085/FFFFFF?text=Gulab+Jamun' WHERE id = 'item-0013-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Onion+Bhaji' WHERE id = 'item-0013-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/C70039/FFFFFF?text=Palak+Paneer' WHERE id = 'item-0013-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Lamb+Curry' WHERE id = 'item-0013-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Garlic+Naan' WHERE id = 'item-0013-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Lassi+de+Manga' WHERE id = 'item-0013-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/2ECC71/FFFFFF?text=Suco+de+Laranja+com+Acerola' WHERE id = 'item-0014-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Smoothie+de+Banana+com+Aveia' WHERE id = 'item-0014-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FFC300/FFFFFF?text=Vitamina+de+Abacate+com+Leite' WHERE id = 'item-0014-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/F1C40F/FFFFFF?text=Chá+Verde+com+Limão+e+Hortelã' WHERE id = 'item-0014-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Água+com+Morango+e+Manjericão' WHERE id = 'item-0014-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Suco+de+Melancia+com+Gengibre' WHERE id = 'item-0014-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Smoothie+de+Morango+com+Chia' WHERE id = 'item-0014-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Vitamina+de+Mamão+com+Laranja' WHERE id = 'item-0014-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Chá+de+Hibisco+com+Canela' WHERE id = 'item-0014-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Água+com+Abacaxi+e+Hortelã' WHERE id = 'item-0014-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Pizza+Margherita' WHERE id = 'item-0015-01';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Pizza+Pepperoni' WHERE id = 'item-0015-02';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Pizza+Quatro+Queijos' WHERE id = 'item-0015-03';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Pizza+Frango+com+Catupiry' WHERE id = 'item-0015-04';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Pizza+Portuguesa' WHERE id = 'item-0015-05';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FF8F/FFFFFF?text=Pizza+Siciliana' WHERE id = 'item-0015-06';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Pizza+Abobrinha+com+Brie' WHERE id = 'item-0015-07';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/DAF7A6/FFFFFF?text=Pizza+Camarão+com+Alho+Poró' WHERE id = 'item-0015-08';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/8F33FF/FFFFFF?text=Pizza+Cordeiro+com+Hortelã' WHERE id = 'item-0015-09';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Pizza+Vegana' WHERE id = 'item-0015-10';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Calzone+Tradicional' WHERE id = 'item-0015-11';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Calzone+Frango+com+Catupiry' WHERE id = 'item-0015-12';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF3333/FFFFFF?text=Calzone+Quatro+Queijos' WHERE id = 'item-0015-13';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Refrigerante' WHERE id = 'item-0015-14';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Suco+Natural' WHERE id = 'item-0015-15';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/33FFF0/FFFFFF?text=Cerveja+Long+Neck' WHERE id = 'item-0015-16';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9D33FF/FFFFFF?text=Vinho+Tinto' WHERE id = 'item-0015-17';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Tiramisu' WHERE id = 'item-0015-18';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF33A8/FFFFFF?text=Panna+Cotta' WHERE id = 'item-0015-19';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Petit+Gateau' WHERE id = 'item-0015-20';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/9B59B6/FFFFFF?text=Pão+de+Queijo+Mineiro+6+unidades' WHERE id = 'item-bra-001';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/8F33FF/FFFFFF?text=Torresmo+à+Mineira' WHERE id = 'item-bra-002';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/900C3F/FFFFFF?text=Feijão+Tropeiro+Completo' WHERE id = 'item-bra-003';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/1ABC9C/FFFFFF?text=Frango+com+Quiabo' WHERE id = 'item-bra-004';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3498DB/FFFFFF?text=Vaca+Atolada' WHERE id = 'item-bra-005';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/FF5733/FFFFFF?text=Arroz+com+Pequi' WHERE id = 'item-bra-006';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Tutu+de+Feijão+à+Mineira' WHERE id = 'item-bra-007';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?text=Couve+Refogada+com+Alho' WHERE id = 'item-bra-008';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Doce+de+Leite+com+Queijo' WHERE id = 'item-bra-009';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Bolo+de+Fubá+Cremoso' WHERE id = 'item-bra-010';
+UPDATE menu_items SET image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Goiabada+com+Queijo+Romeu+e+Julieta' WHERE id = 'item-bra-011';

@@ -10,6 +10,7 @@ import br.com.sugestaopedidos.backend.dto.ContentRestaurantDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantFormatDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ChatProcessingException;
+import br.com.sugestaopedidos.backend.exception.resource.OpenAiRequestException;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.RestaurantMapper;
 import br.com.sugestaopedidos.backend.model.Category;
@@ -51,7 +52,7 @@ import java.util.StringJoiner;
             log.info("Response: {}", responseOpenAi);
 
             if (responseOpenAi == null) {
-                throw new RuntimeException("Falha ao obter resposta do OpenAI");
+                throw new OpenAiRequestException();
             }
 
             return processResponse(responseOpenAi, chatDtos);
@@ -85,7 +86,7 @@ import java.util.StringJoiner;
             if (!contentDto.getRestaurantName().isBlank() && !contentDto.getRestaurantName().equals("N/A")) {
                 restaurantResponseDto = restaurantMapper.toDto(
                         restaurantRepository.findByName(contentDto.getRestaurantName())
-                                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + contentDto.getRestaurantName())));
+                                .orElseThrow(() -> new ResourceNotFoundException(contentDto.getRestaurantName())));
             }
             chatRequestDtos.add(new ChatRestaurantDto(responseOpenAi.getChoices().getFirst().getMessage(), restaurantResponseDto));
 

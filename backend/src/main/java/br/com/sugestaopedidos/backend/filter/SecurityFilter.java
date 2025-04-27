@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.filter;
 
+import br.com.sugestaopedidos.backend.exception.model.StandardError;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
 import br.com.sugestaopedidos.backend.service.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +45,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             String token = this.recoverToken(request);
 
             if (token == null) {
-                sendJsonError(request, response, "Token not found", 401);
+                sendJsonError(request, response, "Token not found", HttpStatus.UNAUTHORIZED);
                 return;
             }
 
@@ -50,7 +53,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             UserDetails user = userRepository.findByEmail(email);
 
             if (user == null) {
-                sendJsonError(request, response, "User not found by token", 401);
+                sendJsonError(request, response, "User not found by token", HttpStatus.UNAUTHORIZED);
                 return;
             }
 
@@ -59,7 +62,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            sendJsonError(request, response, "Erro na autenticação: " + e.getMessage(), 401);
+            sendJsonError(request, response, "Authentication error: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -71,16 +74,17 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ", "");
     }
 
-    private void sendJsonError(HttpServletRequest request, HttpServletResponse response, String message, int status) throws IOException {
+    private void sendJsonError(HttpServletRequest request, HttpServletResponse response, String message, HttpStatus status) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(status);
+        response.setStatus(status.value());
 
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("status", status);
-        errorResponse.put("error", status == 401 ? "Unauthorized" : "Forbidden");
-        errorResponse.put("message", message);
-        errorResponse.put("path", request.getRequestURI());
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError(status.getReasonPhrase());
+        err.setMessage(message);
+        err.setPath(request.getRequestURI());
 
-        objectMapper.writeValue(response.getWriter(), errorResponse);
+        objectMapper.writeValue(response.getWriter(), err);
     }
 }

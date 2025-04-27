@@ -70,13 +70,13 @@ public class IngredientService {
             String ids = menuItemList.stream()
                     .map(MenuItem::getId)
                     .collect(Collectors.joining(","));
-            throw new RelatedObjectException("Existem MenuItems relacionado a essa categoria: " + ids);
+            throw new RelatedObjectException(ids);
         }
 
         ingredientRepository.deleteById(id);
     }
 
     private static ResourceNotFoundException getResourceNotFoundException(String id) {
-        return new ResourceNotFoundException("Ingredient not found with id: " + id);
+        return new ResourceNotFoundException(id);
     }
 }

@@ -20,7 +20,7 @@ public class RestaurantService {
     private final RestaurantMapper restaurantMapper;
 
     private static ResourceNotFoundException getResourceNotFoundException(String id) {
-        return new ResourceNotFoundException("Restaurant not found with id: " + id);
+        return new ResourceNotFoundException(id);
     }
 
     public Set<RestaurantResponseDto> findAllRestaurants() {
