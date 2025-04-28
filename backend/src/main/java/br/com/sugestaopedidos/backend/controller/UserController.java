@@ -57,7 +57,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping()
+    @GetMapping("/getUser")
     public ResponseEntity<UserResponseDto> getUser() {
         UserResponseDto userResponseDto = userService.getUserByAuthenticated();
         return ResponseEntity.ok(userResponseDto);
