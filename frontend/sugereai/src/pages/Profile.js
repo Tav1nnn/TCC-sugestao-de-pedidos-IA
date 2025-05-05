@@ -58,30 +58,70 @@ const Profile = () => {
             alert("Por favor, digite sua senha atual para confirmar.");
             return;
         }
-
+    
+        const removeMask = (value) => value.replace(/\D/g, '');
+    
+        const emptyFields = Object.entries(editedData).filter(
+          ([key, value]) =>
+            key !== "imageURL" && String(value ?? "").trim() === ""
+        );
+    
+        if (emptyFields.length > 0) {
+            alert("Por favor, preencha todos os campos obrigatórios.");
+            return;
+        }
+    
+        const cleanDocument = removeMask(editedData.document || '');
+        const cleanPhone = removeMask(editedData.phone || '');
+    
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(editedData.email) || editedData.email.length > 100) {
+            alert("Por favor, insira um e-mail válido.");
+            return;
+        }
+    
+        if (cleanDocument.length < 8 || cleanDocument.length > 11) {
+            alert("Por favor, insira um CPF ou RG válido.");
+            return;
+        }
+    
+        if (cleanPhone.length < 10 || cleanPhone.length > 12) {
+            alert("Por favor, insira um telefone válido com DDD.");
+            return;
+        }
+    
         try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Sessão expirada. Faça login novamente.');
+                navigate('/');
+                return;
+            }
+    
             const dataToSend = {
                 ...editedData,
-                password: currentPassword,
+                password: currentPassword, // manda senha atual para o backend validar
             };
-
-            await axios.put("http://localhost:8080/api/users/update", dataToSend, {
+    
+            /*await axios.put("http://localhost:8080/api/users/update", dataToSend, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("authToken")}`
+                    Authorization: `Bearer ${token}`
                 }
-            });
-
+            });*/
+    
             setUser(editedData);
             setEditing(false);
             setCurrentPassword('');
             alert("Dados atualizados com sucesso!");
         } catch (error) {
             console.error("Erro ao salvar:", error);
-            alert("Erro ao salvar alterações.");
+            if (error.response?.status === 401) {
+                alert("Senha incorreta. Verifique sua senha atual.");
+            } else {
+                alert("Erro ao salvar alterações.");
+            }
         }
-    };
-
-
+    };    
 
     useEffect(() => {
         getUser();

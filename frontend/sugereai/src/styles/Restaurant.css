@@ -101,6 +101,12 @@ h1 {
     margin-bottom: 15px;
 }
 
+.dishRest-row:hover {
+    background-color: rgb(154,162,162, 0.1);
+    border: 1px solid #A10800;
+    border-radius: 8px;
+}
+
 .dishRest-image {
     flex: 1;
     max-width: 120px;

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { BsFillSendFill } from 'react-icons/bs';
-import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
+import { Button, Input, Box, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
 import logo from '../images/Logo preta escrita.png';
 import { BiSolidFoodMenu } from "react-icons/bi";
@@ -21,6 +21,20 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const navigate = useNavigate();
+  const [welcomeSent, setWelcomeSent] = useState(false);
+  const emojis = ['😊','😎','😍','🥰','❤️','💖','🔥','🚀','🌟','💃','🕺','🥳','🎉','🍀','🌸','✨','🙌','😂','✔','😉'];
+
+  const getRandomEmoji = () => {
+    const numEmojis = Math.floor(Math.random() * 3) + 1;
+    let randomEmojis = '';
+
+    for (let i = 0; i < numEmojis; i++) {
+      const randomIndex = Math.floor(Math.random() * emojis.length);
+      randomEmojis += emojis[randomIndex];
+    }
+  
+    return randomEmojis;
+  };
 
   const chatEndRef = useRef(null);
 
@@ -125,7 +139,6 @@ export default function ChatPage() {
         chatHistory,
         {
           headers: {
-            'UserId': '57768dfb-0752-11f0-94fc-74563c7c997c',
             Authorization: `Bearer ${token}`
           },
         }
@@ -138,6 +151,15 @@ export default function ChatPage() {
     }
   };
 
+  useEffect(() => {
+    if (!welcomeSent) {
+      setMessages([{
+        type: 'response',
+        text: `Olá, bem-vindo ao SugereAI. Você pode pedir sugestões de restaurantes caso não tenha um em mente de acordo com o estilo desejado ou restrição alimentar. ${getRandomEmoji()}`,
+      }]);
+      setWelcomeSent(true);
+    }
+  }, [welcomeSent]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -146,7 +168,7 @@ export default function ChatPage() {
   return (
     <Flex direction="column" minH="100vh" p="20px">
       <Flex mb="10px" w={'100%'} justify={'space-between'}>
-        <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'} />
+        <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} maxW={'200px'} color={'#2D2C31'} />
         <Button
           onClick={() => navigate(-1)}
           bg={'#2D2C31'}
@@ -158,19 +180,16 @@ export default function ChatPage() {
         </Button>
       </Flex>
 
-      <Text mb="10px" fontWeight={'lighter'} fontSize={16} textAlign="center" color={'black'}>
-        Fale para nós qual tipo de restaurante deseja?
-      </Text>
-
       <Box
-        minHeight="400px" // Quebrar a cabeça para o responsivo.
-        maxHeight="calc(90vh - 100px)" // Define o uso máximo da tela em 90% retirando 100px para não ultrapassar outras BOX
+        minHeight="400px"
+        maxHeight="calc(90vh - 80px)" 
         overflowY="auto"
         p="20px"
         border="1px solid #A10808"
         borderRadius="8px"
         bg="#2D2C31"
-        mb="4px"
+        mb="5px"
+        mt="5px"
         display="flex"
         flexDirection="column"
         flexGrow={1}

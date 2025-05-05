@@ -9,6 +9,8 @@ import ProtectedRoute from './components/ProtectedRouted';
 import ChatRest from './pages/ChatRest';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
+import Prato from './pages/Dish';
+import RestEdit from './pages/RestEdit';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/dish/:id",
+    element: (
+      <ProtectedRoute>
+        <Prato/>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/profile/:id",
     element: (
       <ProtectedRoute>
@@ -60,6 +70,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Register/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/restEdit/:id",
+    element: (
+      <ProtectedRoute>
+        <RestEdit/>
       </ProtectedRoute>
     ),
   }
