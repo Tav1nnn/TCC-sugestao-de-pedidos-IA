@@ -5,6 +5,7 @@ import { FormControl, FormErrorMessage } from '@chakra-ui/form-control';
 import LoadingAnimation from '../components/LoadingAnimation';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import logo from '../images/Logo branca escrita.png';
 
 function Login() {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,21 @@ function Login() {
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const isMobile = window.innerWidth <= 768;
+
+  const handleFocus = () => {
+    if (isMobile) {
+      setIsInputFocused(true);
+    }
+  };
+
+  const handleBlur = () => {
+    if (isMobile) {
+      setIsInputFocused(false);
+    }
+  };
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,35 +57,35 @@ function Login() {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const isEmailValid = validateEmail(email);
-  const isPasswordValid = validatePassword(password);
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
 
-  if (isEmailValid && isPasswordValid) {
-    try {
-      const response = await axios.post('http://localhost:8080/api/users/login', {
-        email,
-        password
-      });
+    if (isEmailValid && isPasswordValid) {
+      try {
+        const response = await axios.post('http://localhost:8080/api/users/login', {
+          email,
+          password
+        });
 
-      const authorization = response.data.token;
+        const authorization = response.data.token;
 
-      if (authorization) {
-        localStorage.setItem('authToken', authorization);
-        navigate('/home', { replace: true });
-      } else {
-        throw new Error('Dados de autenticação incompletos');
+        if (authorization) {
+          localStorage.setItem('authToken', authorization);
+          navigate('/home', { replace: true });
+        } else {
+          throw new Error('Dados de autenticação incompletos');
+        }
+      } catch (error) {
+        const msg = error.response?.data?.message || 'Erro ao fazer login';
+        console.error('Erro durante o login:', msg);
+        alert(msg);
       }
-    } catch (error) {
-      const msg = error.response?.data?.message || 'Erro ao fazer login';
-      console.error('Erro durante o login:', msg);
-      alert(msg);
     }
-  }
-};
-  
+  };
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -84,11 +100,13 @@ const handleSubmit = async (e) => {
 
   return (
     <div className="box-geral">
-      <div className="box-fale-conosco">
-        <div className="content">
-          <h1>Olá, seja bem-vindo ao SugereAI!</h1>
-          <p>AI (Artificial Intelligence) que entende sua fome e sugere o que você ama.</p>
-          {/*<a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer'>
+      {!isInputFocused && (
+        <div className="box-fale-conosco">
+          <div className="content">
+            <h1>Olá, seja bem-vindo ao SugereAI!</h1>
+            <img src={logo} className='logo-login' />
+            <p>AI (Artificial Intelligence) que entende sua fome e sugere o que você ama.</p>
+            {/*<a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer'>
             <Button
               className="btn-fale-conosco"
               mt={2}
@@ -103,8 +121,9 @@ const handleSubmit = async (e) => {
               Fale conosco!
             </Button>
           </a>*/}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="box-login">
         <div className="form-box">
@@ -116,17 +135,18 @@ const handleSubmit = async (e) => {
                   id="email"
                   type="email"
                   placeholder="Usuário"
+                  onFocus={handleFocus}
+                  onBlur={() => validateEmail(email) && handleBlur()}
                   bg="#E5E5E5"
                   borderColor="#E5E5E5"
                   _hover={{ borderColor: "#A10808" }}
                   _focus={{ borderColor: "#A10808" }}
                   size="lg"
-                  p = {4}
+                  p={4}
                   mb={2}
                   color={"black"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onBlur={() => validateEmail(email)} // Permite que o evento de validação seja feito até mesmo com a tecla TAB e não só o clique fora do input
                 />
                 <FormErrorMessage color='black' marginLeft={4} fontSize={10}>{emailError}</FormErrorMessage>
               </FormControl>
@@ -136,17 +156,18 @@ const handleSubmit = async (e) => {
                   id="password"
                   type="password"
                   placeholder="Senha"
+                  onFocus={handleFocus}
+                  onBlur={() => validatePassword(password) && handleBlur()}
                   bg="#E5E5E5"
                   borderColor="#E5E5E5"
                   _hover={{ borderColor: "#A10808" }}
                   _focus={{ borderColor: "#A10808" }}
                   size="lg"
-                  p = {4}
+                  p={4}
                   mb={2}
                   color={"black"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onBlur={() => validatePassword(password)}
                 />
                 <FormErrorMessage color='black' marginLeft={4} fontSize={10}>{passwordError}</FormErrorMessage>
               </FormControl>
@@ -164,7 +185,7 @@ const handleSubmit = async (e) => {
               >
                 Entrar
               </Button>
-              <a onClick={() => navigate(`/register`)} target="_blank" rel='noopener noreferrer' className="criar-conta">Não possui uma conta? Fale Conosco!</a>
+              <a onClick={() => navigate(`/register`)} target="_blank" rel='noopener noreferrer' className="criar-conta">Não possui uma conta? Crie agora!</a>
             </VStack>
           </form>
         </div>

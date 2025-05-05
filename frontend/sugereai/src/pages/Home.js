@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import logo from '../images/Logo preta escrita.png';
 import { jwtDecode } from "jwt-decode";
+import { MdLogout } from "react-icons/md";
 
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -26,7 +27,6 @@ const Home = () => {
       }
 
       const decodedPayload = jwtDecode(token);
-      console.log("JWT payload decodificado:", decodedPayload);
 
       const response = await axios.get('http://localhost:8080/api/restaurants', {
         headers: {
@@ -36,16 +36,16 @@ const Home = () => {
 
       const responseUser = await axios.get('http://localhost:8080/api/users/getUser', {
         headers: {
-            Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
-    });
+      });
 
       console.log(response.data);
       setRestaurants(response.data);
       setUser({
-                ...responseUser.data,
-                ...decodedPayload
-              });
+        ...responseUser.data,
+        ...decodedPayload
+      });
     } catch (error) {
       console.error('Erro ao buscar restaurantes:', error);
       if (error.response?.status === 401) {
@@ -66,10 +66,15 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-header">
-        <Button className='btn-profile' onClick={() => navigate(`/profile/${user.id}`)}>
-          <img src='https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg' alt='Foto do usuário' />
+        <Button className="btn-profile" onClick={() => navigate(`/profile/${user.id}`)}>
+          <img src="https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg" alt="Foto do usuário" />
         </Button>
+
         <img src={logo} alt="Logo" className="logo" />
+
+        <Button className="btn-logout" onClick={() => navigate('/')}>
+          <MdLogout />
+        </Button>
       </div>
       <div className="home-image">
         <div className='sugere-ai'>

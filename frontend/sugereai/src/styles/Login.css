@@ -55,6 +55,14 @@ body {
   font-style: italic;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .box-login {
   display: flex;
   justify-content: center;
@@ -67,6 +75,14 @@ body {
   transform: translate(-50%, -50%); 
   z-index: 10; 
   border-radius: 8px; 
+}
+
+.logo-login {
+  width: 40%;
+  height: 40%;
+  max-width: 200px;
+  max-height: 200px;
+  padding-top: 10px;
 }
 
 .form-box {
@@ -142,6 +158,10 @@ transition: all 0.3s ease;
 
   .box-fale-conosco:hover .btn-fale-conosco {
     animation: saltoTexto 0.5s ease-in-out;
+  }
+
+  .logo-login {
+    display: none;
   }
 
   @keyframes saltoTexto {

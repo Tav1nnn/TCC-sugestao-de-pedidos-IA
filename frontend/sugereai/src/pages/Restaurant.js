@@ -6,6 +6,7 @@ import { Button } from "@chakra-ui/react";
 import { FaRobot } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const Restaurant = () => {
     const { id } = useParams();
@@ -13,6 +14,26 @@ const Restaurant = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [menuData, setMenuData] = useState([]);
     const [restaurantData, setRestaurantData] = useState(null);
+    const token = localStorage.getItem('authToken');
+    let isOwner = false;
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            const decoded = jwtDecode(token);
+            console.log('Decoded JWT:', decoded);
+        }
+    }, []);
+
+    if (token) {
+        const decoded = jwtDecode(token);
+        const isAdmin = decoded.roles?.includes('ROLE_ADMIN');
+        const userRestaurantId = decoded.restaurantId;
+
+        if (isAdmin && userRestaurantId === id) {
+            isOwner = true;
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,6 +83,18 @@ const Restaurant = () => {
                     />
                     <div className="restaurantRest-text-info">
                         <h1>{restaurantData?.name || "Restaurante"}</h1>
+                        {isOwner && (
+                            <Button
+                                onClick={() => setIsEditing(true)}
+                                bg="blue.500"
+                                color="white"
+                                position="absolute"
+                                top="10px"
+                                right="70px"
+                            >
+                                Editar
+                            </Button>
+                        )}
                         <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
                         <h2>Cardápio</h2>
                         <Button
@@ -85,19 +118,17 @@ const Restaurant = () => {
                             <h3>{category.category}</h3>
 
                             {category.menuItem.map((dish, dishIndex) => (
-                                <div key={dishIndex} className="dishRest-row">
+                                <a onClick={() => navigate(`/dish/${dish.menuItemId}`)} key={dishIndex} className="dishRest-row">
                                     <div className="dishRest-image">
                                         <img src={dish.imageUrl} alt={dish.name} />
                                     </div>
 
                                     <div className="dishRest-info">
                                         <p className="dishRest-name"><strong>{dish.name}</strong></p>
-                                        <p className="dishRest-ingredients">
-                                            {dish.ingredients.map(ingredient => ingredient.ingredient).join(", ")}
-                                        </p>
+                                        <p className="dishRest-ingredients">{dish.ingredients.map(ing => ing.ingredient).join(", ")}</p>
                                         <p className="dishRest-price">R$ {dish.price.toFixed(2)}</p>
                                     </div>
-                                </div>
+                                </a>
                             ))}
                         </div>
                     ))}

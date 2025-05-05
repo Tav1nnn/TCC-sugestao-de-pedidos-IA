@@ -21,15 +21,15 @@ export default function ChatRest() {
   const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [welcomeSent, setWelcomeSent] = useState(false);
-  const emojis = ['😊','😎','😍','🥰','❤️','💖','🔥','🚀','🌟','💃','🕺','🥳','🎉','🍀','🌸','✨','🙌','😂','✔','😉'];
-  const {id} = useParams();
+  const emojis = ['😊', '😎', '😍', '🥰', '❤️', '💖', '🔥', '🚀', '🌟', '💃', '🕺', '🥳', '🎉', '🍀', '🌸', '✨', '🙌', '😂', '✔', '😉'];
+  const { id } = useParams();
   const navigate = useNavigate();
   const chatEndRef = useRef(null);
 
   const getRandomEmoji = () => {
     const numEmojis = Math.floor(Math.random() * 3) + 1; // 1 a 3 emojis
     let randomEmojis = '';
-    
+
     for (let i = 0; i < numEmojis; i++) {
       const randomIndex = Math.floor(Math.random() * emojis.length);
       randomEmojis += emojis[randomIndex];
@@ -46,7 +46,7 @@ export default function ChatRest() {
 
     const updatedHistory = [
       ...chatHistory,
-      { message: { role: "user", content: inputValue, refusal: null }, menuItemResponseDto: null, sides: []}
+      { message: { role: "user", content: inputValue, refusal: null }, menuItemResponseDto: null, sides: [] }
     ];
 
     setChatHistory(updatedHistory);
@@ -74,21 +74,37 @@ export default function ChatRest() {
           menuIngredients: parsedContent.ingredients || [],
         };
 
+
+
         if (latestAssistantResponse?.menuItemResponseDto) {
           assistantMessage.imageUrl = latestAssistantResponse.menuItemResponseDto.imageURL;
           assistantMessage.menuId = latestAssistantResponse.menuItemResponseDto.id;
           assistantMessage.menuName = latestAssistantResponse.menuItemResponseDto.name;
           assistantMessage.menuDescription = latestAssistantResponse.menuItemResponseDto.description;
           assistantMessage.menuPrice = latestAssistantResponse.menuItemResponseDto.price;
-          assistantMessage.menuIngredients = latestAssistantResponse.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', '); 
+          assistantMessage.menuIngredients = latestAssistantResponse.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', ');
+
+          assistantMessage.action = {
+            label: "PROSSEGUIR",
+            menuId: latestAssistantResponse.menuItemResponseDto.id
+          };
+        }
+
+        if (latestAssistantResponse?.menuItemResponseDto) {
+          assistantMessage.imageUrl = latestAssistantResponse.menuItemResponseDto.imageURL;
+          assistantMessage.menuId = latestAssistantResponse.menuItemResponseDto.id;
+          assistantMessage.menuName = latestAssistantResponse.menuItemResponseDto.name;
+          assistantMessage.menuDescription = latestAssistantResponse.menuItemResponseDto.description;
+          assistantMessage.menuPrice = latestAssistantResponse.menuItemResponseDto.price;
+          assistantMessage.menuIngredients = latestAssistantResponse.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', ');
         }
 
         setMessages((prev) => [...prev, assistantMessage]);
 
         setChatHistory([
           ...updatedHistory,
-          { 
-            message: latestAssistantResponse.message, 
+          {
+            message: latestAssistantResponse.message,
             menuItemResponseDto: latestAssistantResponse.menuItemResponseDto,
             sides: latestAssistantResponse.sides || []
           }
@@ -134,6 +150,28 @@ export default function ChatRest() {
     }
   };
 
+  const handleProceed = async (menuId) => {
+    console.log("Usuário quer prosseguir para o cardápio:", menuId);
+
+    try {
+      const token = localStorage.getItem('authToken');
+      await axios.post(
+        `http://localhost:8080/api/ai/profile`,
+        chatHistory,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        }
+      );
+
+      navigate(`/dish/${menuId}`);
+    } catch (error) {
+      console.error("Erro ao prosseguir:", error);
+    }
+  };
+
+
   useEffect(() => {
     const fetchRestaurantName = async () => {
       const token = localStorage.getItem('authToken');
@@ -142,16 +180,16 @@ export default function ChatRest() {
         window.location.href = '/';
         return;
       }
-  
+
       try {
         const response = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-  
+
         const name = response.data.name;
-  
+
         if (!welcomeSent) {
           setMessages([{
             type: 'response',
@@ -159,14 +197,14 @@ export default function ChatRest() {
           }]);
           setWelcomeSent(true);
         }
-  
+
       } catch (error) {
         console.error("Erro ao buscar nome do restaurante:", error);
       }
     };
-  
+
     fetchRestaurantName();
-  }, [id, welcomeSent]);  
+  }, [id, welcomeSent]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -175,30 +213,28 @@ export default function ChatRest() {
   return (
     <Flex direction="column" minH="100vh" p="20px">
       <Flex mb="10px" w={'100%'} justify={'space-between'}>
-        <Image src={logo} alt='Logo SugereAI' width={'40%'} h={'auto'} color={'#2D2C31'} />
-        <Button 
-            onClick={() => navigate(-1)}
-            bg={'#2D2C31'} 
-            border={'2px solid #A10808'} 
-            borderRadius={'50%'} 
-            color={'white'}
-          >
-            <AiOutlineClose />
+        <Image src={logo} alt='Logo SugereAI' width={'40%'} maxW={'200px'} h={'auto'} color={'#2D2C31'} />
+        <Button
+          onClick={() => navigate(-1)}
+          bg={'#2D2C31'}
+          border={'2px solid #A10808'}
+          borderRadius={'50%'}
+          color={'white'}
+        >
+          <AiOutlineClose />
         </Button>
       </Flex>
-      <Text mb="10px" fontSize={16} fontWeight={'lighter'} textAlign="center" color={'black'}>
-        Fale para nós qual tipo de prato deseja?
-      </Text>
 
       <Box
-        minHeight="400px" 
-        maxHeight="calc(90vh - 100px)" 
+        minHeight="400px"
+        maxHeight="calc(90vh - 80px)"
         overflowY="auto"
         p="20px"
         border="1px solid #A10808"
         borderRadius="8px"
         bg="#2D2C31"
-        mb="4px"
+        mb="5px"
+        mt='5px'
         display="flex"
         flexDirection="column"
         flexGrow={1}
@@ -223,13 +259,30 @@ export default function ChatRest() {
               {msg.menuName && <Text fontSize={'14px'} fontWeight={'bold'}>{msg.menuName}</Text>}
             </Box>
             <Box justifyItems={'center'} style={msg.imageUrl ? { marginTop: '0px' } : { display: 'none' }}>
-              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100"/>} 
+              {msg.imageUrl && <img src={msg.imageUrl} alt="Imagem do Restaurante" width="100" />}
             </Box>
             <Box style={msg.menuId ? { marginTop: '4px' } : { display: 'none' }}>
               {msg.menuDescription && <Text fontSize={'12px'}>{msg.menuDescription}</Text>}
               {msg.menuPrice && <Text fontSize={'12px'}>R$ {msg.menuPrice}</Text>}
               {msg.menuIngredients && msg.menuIngredients.length > 0 && (
                 <Text fontSize={'12px'}>Ingredientes: {msg.menuIngredients}</Text>
+              )}
+            </Box>
+            <Box justifyItems={'center'}>
+              {msg.action && (
+                <Button
+                  onClick={() => handleProceed(msg.action.menuId)}
+                  color={'white'}
+                  bg='#A10808'
+                  p={'10px'}
+                  marginTop={'10px'}
+                  fontSize={'10px'}
+                  maxW={'80%'}
+                  display={'flex'}
+                  alignItems={'center'}
+                >
+                  {msg.action.label}
+                </Button>
               )}
             </Box>
           </Box>

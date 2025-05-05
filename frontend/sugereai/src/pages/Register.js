@@ -42,6 +42,10 @@ const UserRegistration = () => {
   const [message, setMessage] = useState(null);
   const [status, setStatus] = useState(null);
 
+  const removeMask = (value) => {
+    return value.replace(/[^\d]/g, '');
+  };
+
   const handleChange = (e) => {
     const { placeholder, value } = e.target;
     const mapping = {
@@ -62,6 +66,7 @@ const UserRegistration = () => {
 
   const handleRegister = async () => {
     setMessage(null);
+
     const emptyFields = Object.entries(formData).filter(
       ([key, value]) => key !== "imageUrl" && value.trim() === ""
     );
@@ -74,13 +79,39 @@ const UserRegistration = () => {
       return;
     }
 
+    const cleanDocument = removeMask(formData.document);
+    const cleanPhone = removeMask(formData.phone);
+
+    if (cleanDocument.length < 8 || cleanDocument.length > 11) {
+      setInvalidFields(["document"]);
+      setStatus("error");
+      setMessage("Por favor, insira um CPF ou RG válido.");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if ((!emailRegex.test(formData.email))
+      && formData.email === ""
+      && formData.email.length < 100) {
       setInvalidFields(["email"]);
       setStatus("error");
       setMessage("Por favor, insira um e-mail válido.");
       return;
     }
+
+    if (cleanPhone.length < 10 || cleanPhone.length > 12) {
+      setInvalidFields(["phone"]);
+      setStatus("error");
+      setMessage("Por favor, insira um telefone válido com DDD.");
+      return;
+    }
+
+    /* if (formData.password.length < 8) && formData.password === "" {
+      setInvalidFields(["password"]);
+      setStatus("error");
+      setMessage("Por favor, a senha precisa ter no mínimo 8 caracteres e um caracter especial.");
+      return;
+      } */
 
     if (formData.password !== formData.confirmPassword) {
       setInvalidFields(["password", "confirmPassword"]);
@@ -94,7 +125,7 @@ const UserRegistration = () => {
     try {
       const response = await axios.post(
         "http://localhost:8080/api/users/register",
-        formData
+        { ...formData, document: cleanDocument }
       );
       if (response.status === 201) {
         setStatus("success");
@@ -113,7 +144,7 @@ const UserRegistration = () => {
         navigate("/");
       }
     } catch (error) {
-      const errMsg = error.response?.data || "Erro ao cadastrar usuário";
+      const errMsg = error.response?.data?.message || "Erro ao cadastrar usuário";
       setStatus("error");
       setMessage(errMsg);
     }
