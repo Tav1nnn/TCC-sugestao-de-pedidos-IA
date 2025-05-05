@@ -29,6 +29,17 @@ public class TokenService {
                     .map(GrantedAuthority::getAuthority)
                     .toList();
 
+            if(user.getRestaurant() != null) {
+                return JWT.create()
+                        .withIssuer("auth-api")
+                        .withSubject(user.getEmail())
+                        .withClaim("userId", user.getId())
+                        .withClaim("roles", roles)
+                        .withClaim("restaurantId", user.getRestaurant().getId())
+                        .withExpiresAt(genExpirationDate())
+                        .sign(algorithm);
+            }
+
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
@@ -36,6 +47,7 @@ public class TokenService {
                     .withClaim("roles", roles)
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
+
         } catch (JWTCreationException ex) {
             throw new InvalidTokenException("Error generating token: " + ex.getMessage());
         }
