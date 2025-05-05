@@ -83,18 +83,18 @@ const Restaurant = () => {
                     />
                     <div className="restaurantRest-text-info">
                         <h1>{restaurantData?.name || "Restaurante"}</h1>
-                        {isOwner && (
-                            <Button
-                                onClick={() => setIsEditing(true)}
-                                bg="blue.500"
-                                color="white"
-                                position="absolute"
-                                top="10px"
-                                right="70px"
-                            >
-                                Editar
-                            </Button>
-                        )}
+                        {/* {isOwner && (
+                            // <Button
+                            //     onClick={() => setIsEditing(true)}
+                            //     bg="blue.500"
+                            //     color="white"
+                            //     position="absolute"
+                            //     top="10px"
+                            //     right="70px"
+                            // >
+                            //     Editar
+                            // </Button>
+                        )} */}
                         <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
                         <h2>Cardápio</h2>
                         <Button
