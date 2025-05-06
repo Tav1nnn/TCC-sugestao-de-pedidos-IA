@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
 import "../styles/Restaurant.css";
 import { Button } from "@chakra-ui/react";
-import { FaRobot } from "react-icons/fa";
+import { FaEdit, FaRobot } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -14,26 +14,26 @@ const Restaurant = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [menuData, setMenuData] = useState([]);
     const [restaurantData, setRestaurantData] = useState(null);
-    const token = localStorage.getItem('authToken');
-    let isOwner = false;
+    const [isOwner, setIsOwner] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         if (token) {
-            const decoded = jwtDecode(token);
-            console.log('Decoded JWT:', decoded);
-        }
-    }, []);
+            try {
+                const decoded = jwtDecode(token);
+                console.log('Decoded JWT:', decoded);
 
-    if (token) {
-        const decoded = jwtDecode(token);
-        const isAdmin = decoded.roles?.includes('ROLE_ADMIN');
-        const userRestaurantId = decoded.restaurantId;
+                const isAdmin = decoded.roles?.includes('ROLE_ADMIN');
+                const userRestaurantId = decoded.restaurantId;
 
-        if (isAdmin && userRestaurantId === id) {
-            isOwner = true;
+                if (isAdmin && userRestaurantId === id) {
+                    setIsOwner(true);
+                }
+            } catch (err) {
+                console.error("Erro ao decodificar o token:", err);
+            }
         }
-    }
+    }, [id]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -83,18 +83,20 @@ const Restaurant = () => {
                     />
                     <div className="restaurantRest-text-info">
                         <h1>{restaurantData?.name || "Restaurante"}</h1>
-                        {/* {isOwner && (
-                            // <Button
-                            //     onClick={() => setIsEditing(true)}
-                            //     bg="blue.500"
-                            //     color="white"
-                            //     position="absolute"
-                            //     top="10px"
-                            //     right="70px"
-                            // >
-                            //     Editar
-                            // </Button>
-                        )} */}
+                        {isOwner && (
+                            <Button
+                                onClick={() => navigate(`/restEdit/${id}`)}
+                                bg="#2D2C31"
+                                border="2px solid #A10808"
+                                color="white"
+                                position="absolute"
+                                borderRadius="50%"
+                                top="10px"
+                                right="70px"
+                            >
+                                <FaEdit className="iconRest-edit" />
+                            </Button>
+                        )}
                         <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
                         <h2>Cardápio</h2>
                         <Button

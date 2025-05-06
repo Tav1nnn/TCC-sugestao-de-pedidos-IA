@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
-import { Button, Input, VStack, HStack, Box} from "@chakra-ui/react";
-import { FaCheck, FaRobot,} from "react-icons/fa";
+import { Button, Input, VStack, HStack, Box } from "@chakra-ui/react";
+import { FaCheck, FaRobot, } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 
@@ -79,33 +79,75 @@ const RestEdit = () => {
     }
   };
 
-  const handleSaveDish = async (dishId, updatedDish) => {
+  const handleSaveDish = async (dishId, newName) => {
     const token = localStorage.getItem('authToken');
+    console.log("Atualizando prato ID:", dishId);
+  
     try {
-      await axios.put(`http://localhost:8080/api/menuItems/${dishId}`, updatedDish, {
+      const response = await axios.get(`http://localhost:8080/api/menuItem/${dishId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+  
+      const currentDish = response.data;
+      console.log("Dados atuais do prato:", currentDish);
+      if (!currentDish.categoryId) {
+        alert("Erro: prato sem categoria atribuída.");
+        return;
+      }
+      
+      console.log("Ingredientes do prato:", currentDish.ingredientIds);
+      if (!Array.isArray(currentDish.ingredientIds) || currentDish.ingredientIds.length === 0) {
+        alert("Erro: ingredientes não encontrados.");
+        return;
+      }
+      
+      const updatedDish = {
+        name: newName.name,
+        description: currentDish.description,
+        price: currentDish.price,
+        imageURL: currentDish.imageURL,
+        categoryId: currentDish.categoryId,
+        ingredientIds: currentDish.ingredientIds
+      };
+  
+      await axios.put(`http://localhost:8080/api/menuItem/${dishId}`, updatedDish, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
       alert('Prato atualizado com sucesso!');
     } catch (error) {
       console.error("Erro ao atualizar prato:", error);
+      alert("Erro ao atualizar prato. Verifique o console.");
     }
   };
+  
 
   const handleSaveIngredient = async (ingredientId, newName) => {
     const token = localStorage.getItem('authToken');
+    console.log("Atualizando ingrediente ID:", ingredientId);
     try {
-      await axios.put(`http://localhost:8080/api/ingredients/${ingredientId}`, { ingredient: newName }, {
+      await axios.put(`http://localhost:8080/api/ingredients/${ingredientId}`, { name: newName }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       alert('Ingrediente atualizado com sucesso!');
     } catch (error) {
-      console.error("Erro ao atualizar ingrediente:", error);
+      if (error.response) {
+        console.error("Erro ao atualizar ingrediente:", error.response.data);
+        alert("Erro ao atualizar ingrediente");
+      } else {
+        console.error("Erro ao atualizar ingrediente:", error.message);
+        alert("Erro desconhecido ao atualizar ingrediente.");
+      }
     }
   };
+  
+
 
   if (isLoading) {
     return <LoadingAnimation />;
@@ -146,7 +188,7 @@ const RestEdit = () => {
                   value={category.category}
                   onChange={(e) => handleCategoryChange(catIndex, e.target.value)}
                 />
-                <Button onClick={() => handleSaveCategory(category.categoryId, category.category)}><FaCheck/></Button>
+                <Button onClick={() => handleSaveCategory(category.categoryId, category.category)}><FaCheck /></Button>
               </HStack>
 
               {category.menuItem.map((dish, dishIndex) => (
@@ -168,7 +210,7 @@ const RestEdit = () => {
                       value={dish.imageUrl}
                       onChange={(e) => handleDishChange(catIndex, dishIndex, 'imageUrl', e.target.value)}
                     />
-                    <Button onClick={() => handleSaveDish(dish.menuItemId, dish)}><FaCheck/></Button>
+                    <Button onClick={() => handleSaveDish(dish.menuItemId, dish)}><FaCheck /></Button>
                   </HStack>
 
                   <VStack align="start" spacing={2}>
@@ -179,7 +221,7 @@ const RestEdit = () => {
                           value={ing.ingredient}
                           onChange={(e) => handleIngredientChange(catIndex, dishIndex, ingIndex, e.target.value)}
                         />
-                        <Button onClick={() => handleSaveIngredient(ing.ingredientId, ing.ingredient)}><FaCheck/></Button>
+                        <Button onClick={() => handleSaveIngredient(ing.ingredientId, ing.ingredient)}><FaCheck /></Button>
                       </HStack>
                     ))}
                   </VStack>
