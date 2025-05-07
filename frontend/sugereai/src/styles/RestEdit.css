@@ -1,0 +1,195 @@
+/* Container geral da seção do menu */
+.menuSection {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    color: black;
+  }
+  
+  /* Card da categoria */
+  .menuItem {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  .menuItem .buttonEdit {
+    display: none;
+    margin-left: 10px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .menuItem:hover .buttonEdit {
+    display: inline-block;
+  }
+  
+  .menuItem .categoryName {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .menuItem .categoryName input {
+    flex-grow: 1;
+    border: none;
+    background-color: transparent;
+    padding: 5px;
+    font-size: 1.2em;
+  }
+  
+  .menuItem .categoryName input:focus {
+    outline: 2px solid #4CAF50;
+  }
+  
+  .dishRow {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dishRow .dishFields {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .dishRow .dishFields input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 1em;
+    margin-right: 10px;
+  }
+  
+  .dishRow .dishFields input:focus {
+    outline: 2px solid #4CAF50;
+  }
+  
+  .dishRow .dishFields .buttonEdit {
+    display: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .dishRow .dishFields:hover .buttonEdit {
+    display: inline-block;
+  }
+  
+  .dishRow .addDishButton,
+  .dishRow .addIngredientButton {
+    background-color: #2d3d44;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .dishRow .addDishButton:hover,
+  .dishRow .addIngredientButton:hover {
+    background-color: #A10808;
+  }
+  
+  .dishRow .addDishButton .FaPlus,
+  .dishRow .addIngredientButton .FaPlus {
+    font-size: 1.2em;
+  }
+  
+  /* Ingredientes */
+  .dishRow .ingredientRow {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .dishRow .ingredientRow input {
+    flex-grow: 1;
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }
+  
+  .dishRow .ingredientRow input:focus {
+    outline: 2px solid #4CAF50;
+  }
+  
+  .dishRow .ingredientRow .buttonEdit {
+    display: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .dishRow .ingredientRow .buttonEdit:hover {
+    display: inline-block;
+  }
+  
+  .dishRow .ingredientRow .buttonEdit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .createInput {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .createInput:focus {
+    outline: 2px solid #4CAF50;
+  }
+  
+  .createButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  
+  .createButton:hover {
+    background-color: #A10808;
+  }
+  
+  /* Animação de transição para mostrar o card de criação */
+  .transitionCard {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .transitionCard.showCard {
+    transform: translateX(0);
+  }
+  
+  .transitionCard.hideCard {
+    transform: translateX(100%);
+  }
+  
