@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
-import { Button, Input, VStack, HStack, Box } from "@chakra-ui/react";
-import { FaCheck, FaRobot, } from "react-icons/fa";
+import { Button, VStack, HStack, Box, Text } from "@chakra-ui/react";
 import { AiOutlineClose } from "react-icons/ai";
+import { FaPlus, FaRobot } from "react-icons/fa";
 import axios from "axios";
+import EditableField from "../components/EditableField";
+import "../styles/RestEdit.css";
 
 const RestEdit = () => {
   const { id } = useParams();
@@ -17,7 +19,6 @@ const RestEdit = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('authToken');
-
       try {
         const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
           headers: {
@@ -31,8 +32,24 @@ const RestEdit = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        setMenuData(response.data.menu);
-        setEditedMenuData(response.data.menu);
+
+        const rawMenu = response.data.menu;
+        const enrichedMenu = await Promise.all(
+          rawMenu.map(async (category) => {
+            const updatedItems = await Promise.all(
+              category.menuItem.map(async (dish) => {
+                const res = await axios.get(`http://localhost:8080/api/menuItem/${dish.menuItemId}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                const fullDish = res.data;
+                return { ...dish, description: fullDish.description ?? dish.description, imageUrl: fullDish.imageURL ?? dish.imageUrl, price: fullDish.price ?? dish.price };
+              })
+            );
+            return { ...category, menuItem: updatedItems };
+          })
+        );
+        setMenuData(enrichedMenu);
+        setEditedMenuData(enrichedMenu);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
         if (error.response?.status === 401) {
@@ -43,7 +60,6 @@ const RestEdit = () => {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, [id]);
 
@@ -68,90 +84,75 @@ const RestEdit = () => {
   const handleSaveCategory = async (categoryId, newName) => {
     const token = localStorage.getItem('authToken');
     try {
-      await axios.put(`http://localhost:8080/api/categories/${categoryId}`, { name: newName }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      await axios.put(`http://localhost:8080/api/categories/${categoryId}`, { name: newName }, { headers: { Authorization: `Bearer ${token}` } });
       alert('Categoria atualizada com sucesso!');
     } catch (error) {
       console.error("Erro ao atualizar categoria:", error);
     }
   };
 
-  const handleSaveDish = async (dishId, newName) => {
+  const handleSaveDish = async (dishId, updatedDishData) => {
     const token = localStorage.getItem('authToken');
-    console.log("Atualizando prato ID:", dishId);
-  
     try {
-      const response = await axios.get(`http://localhost:8080/api/menuItem/${dishId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-  
+      const response = await axios.get(`http://localhost:8080/api/menuItem/${dishId}`, { headers: { Authorization: `Bearer ${token}` } });
       const currentDish = response.data;
-      console.log("Dados atuais do prato:", currentDish);
-      if (!currentDish.categoryId) {
-        alert("Erro: prato sem categoria atribuída.");
-        return;
-      }
-      
-      console.log("Ingredientes do prato:", currentDish.ingredientIds);
-      if (!Array.isArray(currentDish.ingredientIds) || currentDish.ingredientIds.length === 0) {
-        alert("Erro: ingredientes não encontrados.");
-        return;
-      }
-      
-      const updatedDish = {
-        name: newName.name,
-        description: currentDish.description,
-        price: currentDish.price,
-        imageURL: currentDish.imageURL,
-        categoryId: currentDish.categoryId,
-        ingredientIds: currentDish.ingredientIds
-      };
-  
-      await axios.put(`http://localhost:8080/api/menuItem/${dishId}`, updatedDish, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-  
+      if (!currentDish.categoryId) return alert("Erro: prato sem categoria atribuída.");
+      if (!Array.isArray(currentDish.ingredientIds) || currentDish.ingredientIds.length === 0) return alert("Erro: ingredientes não encontrados.");
+      const updatedDish = { name: updatedDishData.name, description: updatedDishData.description, price: updatedDishData.price, imageURL: updatedDishData.imageUrl ?? '', categoryId: currentDish.categoryId, ingredientIds: currentDish.ingredientIds };
+      await axios.put(`http://localhost:8080/api/menuItem/${dishId}`, updatedDish, { headers: { Authorization: `Bearer ${token}` } });
       alert('Prato atualizado com sucesso!');
     } catch (error) {
       console.error("Erro ao atualizar prato:", error);
       alert("Erro ao atualizar prato. Verifique o console.");
     }
   };
-  
+
+  const handleCreateCategory = async () => {
+    const token = localStorage.getItem('authToken');
+    try {
+      const response = await axios.post('http://localhost:8080/api/categories', { name: 'Nova Categoria' }, { headers: { Authorization: `Bearer ${token}` } });
+      alert('Categoria criada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao criar categoria:', error);
+      alert('Erro ao criar categoria.');
+    }
+  };
+
+  const handleCreateDish = async (categoryId) => {
+    const token = localStorage.getItem('authToken');
+    try {
+      const response = await axios.post('http://localhost:8080/api/menuItem', { name: 'Novo Prato', description: '', price: 0, imageURL: '', categoryId, ingredientIds: [] }, { headers: { Authorization: `Bearer ${token}` } });
+      alert('Prato criado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao criar prato:', error);
+      alert('Erro ao criar prato.');
+    }
+  };
 
   const handleSaveIngredient = async (ingredientId, newName) => {
     const token = localStorage.getItem('authToken');
-    console.log("Atualizando ingrediente ID:", ingredientId);
     try {
-      await axios.put(`http://localhost:8080/api/ingredients/${ingredientId}`, { name: newName }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const getResponse = await axios.get(`http://localhost:8080/api/ingredients/${ingredientId}`, { headers: { Authorization: `Bearer ${token}` } });
+      const ingredientData = getResponse.data;
+      if (ingredientData.isGlobal) return alert("Ingrediente padrão, não é possível editar");
+      await axios.put(`http://localhost:8080/api/ingredients/${ingredientId}`, { name: newName }, { headers: { Authorization: `Bearer ${token}` } });
       alert('Ingrediente atualizado com sucesso!');
     } catch (error) {
-      if (error.response) {
-        console.error("Erro ao atualizar ingrediente:", error.response.data);
-        alert("Erro ao atualizar ingrediente");
-      } else {
-        console.error("Erro ao atualizar ingrediente:", error.message);
-        alert("Erro desconhecido ao atualizar ingrediente.");
-      }
+      alert("Erro ao atualizar ingrediente");
     }
   };
-  
 
+  const handleCreateIngredient = async () => {
+    const token = localStorage.getItem('authToken');
+    try {
+      await axios.post('http://localhost:8080/api/ingredients', { name: 'Novo Ingrediente' }, { headers: { Authorization: `Bearer ${token}` } });
+      alert('Ingrediente criado com sucesso!');
+    } catch (error) {
+      alert('Erro ao criar ingrediente.');
+    }
+  };
 
-  if (isLoading) {
-    return <LoadingAnimation />;
-  }
+  if (isLoading) return <LoadingAnimation />;
 
   return (
     <div className="homeRest-container">
@@ -165,6 +166,7 @@ const RestEdit = () => {
             <h1>{restaurantData?.name || "Restaurante"}</h1>
             <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
             <h2>Cardápio</h2>
+            <h6>Clique sobre as informações para editar!</h6>
             <Button
               bg={'#2D2C31'}
               border={'2px solid #A10808'}
@@ -180,48 +182,60 @@ const RestEdit = () => {
           </div>
         </div>
 
-        <div className="menuRest-section">
+        <div className="menuSection">
           {editedMenuData.map((category, catIndex) => (
-            <Box key={catIndex} className="menuRest-item" p={4} borderWidth="1px" borderRadius="md" mb={4}>
-              <HStack mb={2}>
-                <Input
+            <Box key={catIndex} id={`cat-${category.categoryId}`} className="menuItem" p={4} borderWidth="1px" borderRadius="md" mb={4}>
+              <HStack mb={2} alignItems={"center"} justifyContent="space-between">
+                <EditableField
                   value={category.category}
-                  onChange={(e) => handleCategoryChange(catIndex, e.target.value)}
+                  onChange={(val) => handleCategoryChange(catIndex, val)}
+                  onSave={() => handleSaveCategory(category.categoryId, category.category)}
                 />
-                <Button onClick={() => handleSaveCategory(category.categoryId, category.category)}><FaCheck /></Button>
+                <Button onClick={handleCreateCategory}>
+                  <FaPlus />
+                </Button>
               </HStack>
 
               {category.menuItem.map((dish, dishIndex) => (
-                <Box key={dishIndex} className="dishRest-row" p={3} borderWidth="1px" borderRadius="md" mb={3}>
-                  <HStack mb={2}>
-                    <Input
-                      placeholder="Nome do Prato"
+                <Box key={dishIndex} className="dishRow" p={3} borderWidth="1px" borderRadius="md" mb={3}>
+                  <HStack mb={2} display={"grid"} gridTemplateColumns={"repeat(1, 1fr)"} gap={2} >
+                    <EditableField
                       value={dish.name}
-                      onChange={(e) => handleDishChange(catIndex, dishIndex, 'name', e.target.value)}
+                      onChange={(val) => handleDishChange(catIndex, dishIndex, 'name', val)}
+                      onSave={() => handleSaveDish(dish.menuItemId, dish)}
                     />
-                    <Input
-                      placeholder="Preço"
-                      type="number"
-                      value={dish.price}
-                      onChange={(e) => handleDishChange(catIndex, dishIndex, 'price', parseFloat(e.target.value))}
+                    <EditableField
+                      value={dish.description ?? ''}
+                      onChange={(val) => handleDishChange(catIndex, dishIndex, 'description', val)}
+                      onSave={() => handleSaveDish(dish.menuItemId, dish)}
                     />
-                    <Input
-                      placeholder="URL da Imagem"
-                      value={dish.imageUrl}
-                      onChange={(e) => handleDishChange(catIndex, dishIndex, 'imageUrl', e.target.value)}
+                    <EditableField
+                      value={'Valor: ' + dish.price}
+                      onChange={(val) => handleDishChange(catIndex, dishIndex, 'price', parseFloat(val))}
+                      onSave={() => handleSaveDish(dish.menuItemId, dish)}
                     />
-                    <Button onClick={() => handleSaveDish(dish.menuItemId, dish)}><FaCheck /></Button>
+                    <EditableField
+                      value={'Alterar imagem do ' + dish.name}
+                      onChange={(val) => handleDishChange(catIndex, dishIndex, 'imageUrl', val)}
+                      onSave={() => handleSaveDish(dish.menuItemId, dish)}
+                    />
+                    <Button onClick={() => handleCreateDish(category.categoryId)}>
+                      <FaPlus />
+                    </Button>
                   </HStack>
-
-                  <VStack align="start" spacing={2}>
+                  <Text fontSize='medium' fontWeight={'bold'} mb={2} mt={6}>Ingredientes: </Text>
+                  <VStack >
                     {dish.ingredients.map((ing, ingIndex) => (
-                      <HStack key={ingIndex}>
-                        <Input
-                          placeholder="Ingrediente"
+                      <HStack key={ingIndex} mb={2} width="100%" justifyContent="space-between" >
+                        <EditableField
                           value={ing.ingredient}
-                          onChange={(e) => handleIngredientChange(catIndex, dishIndex, ingIndex, e.target.value)}
+                          isEditable={!ing.isGlobal}
+                          onChange={(val) => handleIngredientChange(catIndex, dishIndex, ingIndex, val)}
+                          onSave={() => handleSaveIngredient(ing.ingredientId, ing.ingredient)}
                         />
-                        <Button onClick={() => handleSaveIngredient(ing.ingredientId, ing.ingredient)}><FaCheck /></Button>
+                        <Button onClick={handleCreateIngredient}>
+                          <FaPlus />
+                        </Button>
                       </HStack>
                     ))}
                   </VStack>
@@ -231,9 +245,10 @@ const RestEdit = () => {
           ))}
         </div>
 
+
         <div>
-          <Button className='btnRest-ia' onClick={() => navigate(`/chatRest/${id}`)}>
-            <FaRobot className='iconRest-ia' />
+          <Button className="btnRest-ia" onClick={() => navigate(`/chatRest/${id}`)}>
+            <FaRobot className="iconRest-ia" />
           </Button>
         </div>
       </div>
