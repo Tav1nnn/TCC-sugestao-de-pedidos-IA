@@ -11,6 +11,7 @@ public class UserResponseDto {
     private String id;
     private String name;
     private String email;
+    private String profile;
     private String document;
     private String address;
     private String phone;

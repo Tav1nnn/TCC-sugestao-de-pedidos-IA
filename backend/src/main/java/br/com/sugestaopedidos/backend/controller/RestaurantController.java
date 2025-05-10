@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.controller;
 
+import br.com.sugestaopedidos.backend.dto.PutRestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.service.RestaurantService;
@@ -43,7 +44,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
+    public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @Valid @RequestBody PutRestaurantRequestDto restaurantRequestDto) {
         restaurantService.updateRestaurant(id, restaurantRequestDto);
         return ResponseEntity.ok().build();
     }

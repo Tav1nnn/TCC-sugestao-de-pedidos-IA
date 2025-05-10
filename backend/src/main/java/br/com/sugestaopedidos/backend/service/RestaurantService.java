@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.service;
 
+import br.com.sugestaopedidos.backend.dto.PutRestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
@@ -42,7 +43,7 @@ public class RestaurantService {
         return restaurantMapper.toDto(restaurant);
     }
 
-    public void updateRestaurant(String id, RestaurantRequestDto restaurantRequestDto) {
+    public void updateRestaurant(String id, PutRestaurantRequestDto restaurantRequestDto) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> getResourceNotFoundException(id));
 
