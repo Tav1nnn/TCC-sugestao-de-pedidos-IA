@@ -11,7 +11,6 @@ import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Prato from './pages/Dish';
 import RestEdit from './pages/RestEdit';
-import RestEdit2 from './pages/RestEdit2';
 
 const router = createBrowserRouter([
   {
@@ -79,14 +78,6 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <RestEdit/>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/restedit2/:id",
-    element: (
-      <ProtectedRoute>
-        <RestEdit2/>
       </ProtectedRoute>
     ),
   }
