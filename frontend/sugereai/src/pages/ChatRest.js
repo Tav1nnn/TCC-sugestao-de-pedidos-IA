@@ -1,12 +1,12 @@
+// Seu código existente...
 import { useState, useRef, useEffect } from 'react';
 import { BsFillSendFill } from 'react-icons/bs';
 import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
-import logo from '../images/Logo preta escrita.png';
+import logo from '../images/Logo preta escrita.png'; // Certifique-se que o caminho está correto
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { useParams, useNavigate } from 'react-router-dom';
-
 
 const dotsAnimation = keyframes`
   0% { content: ''; }
@@ -56,63 +56,74 @@ export default function ChatRest() {
     try {
       const response = await getResult(updatedHistory);
 
-      if (!response) return;
+      if (!response) {
+        setIsLoading(false);
+        return;
+      }
 
-      const latestAssistantResponse = response[response.length - 1];
+      const latestAssistantResponse = response.find(msg => msg.message && msg.message.role === "assistant" && !messages.some(m => m.rawContent === msg.message.content));
 
-      if (latestAssistantResponse?.message?.role === "assistant") {
-        const parsedContent = JSON.parse(latestAssistantResponse.message.content);
+      const lastResponseFromServer = response[response.length - 1];
+
+
+      if (lastResponseFromServer?.message?.role === "assistant") {
+        const parsedContent = JSON.parse(lastResponseFromServer.message.content);
+
+        let textForMessage = `SugereAI: ${parsedContent.title}\n`;
+        if (parsedContent.dishName && parsedContent.dishName.trim() !== "") {
+          textForMessage += `${parsedContent.dishName}\n`;
+        }
+        textForMessage += parsedContent.message; // Mensagem principal da IA
+
+        if (lastResponseFromServer.sides && lastResponseFromServer.sides.length > 0) {
+          textForMessage += "\n\nAcompanhamentos:\n"; // Cabeçalho para a lista
+          lastResponseFromServer.sides.forEach(side => {
+            textForMessage += `- ${side.name}\n`; // Cada acompanhamento como um item da lista
+          });
+          if (textForMessage.endsWith('\n')) {
+             textForMessage = textForMessage.slice(0, -1);
+          }
+        }
 
         let assistantMessage = {
           type: "response",
-          text: `SugereAI: ${parsedContent.title} \n ${parsedContent.dishName} \n ${parsedContent.sides}  ${parsedContent.message}`,
+          text: textForMessage,
           imageUrl: null,
           menuId: null,
           menuName: null,
           menuDescription: null,
           menuPrice: null,
-          menuIngredients: parsedContent.ingredients || [],
+          menuIngredients: parsedContent.ingredients ? (Array.isArray(parsedContent.ingredients) ? parsedContent.ingredients.join(', ') : parsedContent.ingredients) : [],
+          detailedSides: lastResponseFromServer.sides || []
         };
 
-
-
-        if (latestAssistantResponse?.menuItemResponseDto) {
-          assistantMessage.imageUrl = latestAssistantResponse.menuItemResponseDto.imageURL;
-          assistantMessage.menuId = latestAssistantResponse.menuItemResponseDto.id;
-          assistantMessage.menuName = latestAssistantResponse.menuItemResponseDto.name;
-          assistantMessage.menuDescription = latestAssistantResponse.menuItemResponseDto.description;
-          assistantMessage.menuPrice = latestAssistantResponse.menuItemResponseDto.price;
-          assistantMessage.menuIngredients = latestAssistantResponse.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', ');
+        if (lastResponseFromServer?.menuItemResponseDto) {
+          assistantMessage.imageUrl = lastResponseFromServer.menuItemResponseDto.imageURL;
+          assistantMessage.menuId = lastResponseFromServer.menuItemResponseDto.id;
+          assistantMessage.menuName = lastResponseFromServer.menuItemResponseDto.name;
+          assistantMessage.menuDescription = lastResponseFromServer.menuItemResponseDto.description;
+          assistantMessage.menuPrice = lastResponseFromServer.menuItemResponseDto.price;
+          assistantMessage.menuIngredients = lastResponseFromServer.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', ');
 
           assistantMessage.action = {
             label: "PROSSEGUIR",
-            menuId: latestAssistantResponse.menuItemResponseDto.id
+            menuId: lastResponseFromServer.menuItemResponseDto.id
           };
         }
+        
 
-        if (latestAssistantResponse?.menuItemResponseDto) {
-          assistantMessage.imageUrl = latestAssistantResponse.menuItemResponseDto.imageURL;
-          assistantMessage.menuId = latestAssistantResponse.menuItemResponseDto.id;
-          assistantMessage.menuName = latestAssistantResponse.menuItemResponseDto.name;
-          assistantMessage.menuDescription = latestAssistantResponse.menuItemResponseDto.description;
-          assistantMessage.menuPrice = latestAssistantResponse.menuItemResponseDto.price;
-          assistantMessage.menuIngredients = latestAssistantResponse.menuItemResponseDto.ingredients.map((ingredient) => ingredient.name).join(', ');
-        }
 
         setMessages((prev) => [...prev, assistantMessage]);
 
         setChatHistory([
           ...updatedHistory,
           {
-            message: latestAssistantResponse.message,
-            menuItemResponseDto: latestAssistantResponse.menuItemResponseDto,
-            sides: latestAssistantResponse.sides || []
+            message: lastResponseFromServer.message,
+            menuItemResponseDto: lastResponseFromServer.menuItemResponseDto,
+            sides: lastResponseFromServer.sides || []
           }
         ]);
       }
-
-
-
     } catch (error) {
       console.error('Erro ao buscar resposta:', error);
       setMessages((prev) => [...prev, { type: 'response', text: "Erro ao obter resposta do servidor." }]);
@@ -137,9 +148,12 @@ export default function ChatRest() {
       );
       console.log("Retorno do back:", JSON.stringify(response.data, null, 2));
 
-      return response.data;
+      return response.data; 
     } catch (error) {
       console.log(error);
+      if (error.response) {
+        console.error("Erro do backend:", error.response.data);
+      }
     }
     return null;
   };
@@ -152,32 +166,29 @@ export default function ChatRest() {
 
   const handleProceed = async (menuId) => {
     console.log("Usuário quer prosseguir para o cardápio:", menuId);
-
     try {
       const token = localStorage.getItem('authToken');
       await axios.post(
         `http://localhost:8080/api/ai/profile`,
-        chatHistory,
+        chatHistory, 
         {
           headers: {
             Authorization: `Bearer ${token}`
           },
         }
       );
-
       navigate(`/dish/${menuId}`);
     } catch (error) {
       console.error("Erro ao prosseguir:", error);
     }
   };
 
-
   useEffect(() => {
     const fetchRestaurantName = async () => {
       const token = localStorage.getItem('authToken');
       if (!token) {
         alert('Sessão expirada. Faça login novamente.');
-        window.location.href = '/';
+        navigate('/'); 
         return;
       }
 
@@ -187,7 +198,6 @@ export default function ChatRest() {
             Authorization: `Bearer ${token}`
           }
         });
-
         const name = response.data.name;
 
         if (!welcomeSent) {
@@ -197,14 +207,20 @@ export default function ChatRest() {
           }]);
           setWelcomeSent(true);
         }
-
       } catch (error) {
         console.error("Erro ao buscar nome do restaurante:", error);
+       
+        if (!welcomeSent) { 
+             setMessages([{
+                type: 'response',
+                text: `Olá! Você pode pedir sugestões de pratos. ${getRandomEmoji()}`,
+             }]);
+             setWelcomeSent(true);
+        }
       }
     };
-
     fetchRestaurantName();
-  }, [id, welcomeSent]);
+  }, [id, welcomeSent, navigate]); // Adicionado navigate às dependências
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -264,27 +280,27 @@ export default function ChatRest() {
             <Box style={msg.menuId ? { marginTop: '4px' } : { display: 'none' }}>
               {msg.menuDescription && <Text fontSize={'12px'}>{msg.menuDescription}</Text>}
               {msg.menuPrice && <Text fontSize={'12px'}>R$ {msg.menuPrice}</Text>}
-              {msg.menuIngredients && msg.menuIngredients.length > 0 && (
+                {msg.menuIngredients && msg.menuIngredients.length > 0 && (
                 <Text fontSize={'12px'}>Ingredientes: {msg.menuIngredients}</Text>
-              )}
+                )}
             </Box>
             <Box justifyItems={'center'}>
-              {msg.action && (
-                <Button
-                  onClick={() => handleProceed(msg.action.menuId)}
+                {msg.action && (
+                  <Button
+                    onClick={() => handleProceed(msg.action.menuId)}
                   color={'white'}
-                  bg='#A10808'
+                    bg='#A10808'
                   p={'10px'}
                   marginTop={'10px'}
                   fontSize={'10px'}
                   maxW={'80%'}
-                  display={'flex'}
-                  alignItems={'center'}
-                >
-                  {msg.action.label}
-                </Button>
-              )}
-            </Box>
+                    display={'flex'}
+                    alignItems={'center'}
+                  >
+                    {msg.action.label}
+                  </Button>
+                )}
+              </Box>
           </Box>
         ))}
 
@@ -307,7 +323,6 @@ export default function ChatRest() {
             Digitando
           </Box>
         )}
-        <Box></Box>
         <div ref={chatEndRef} />
       </Box>
 
