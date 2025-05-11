@@ -85,7 +85,7 @@ const Restaurant = () => {
                         <h1>{restaurantData?.name || "Restaurante"}</h1>
                         {isOwner && (
                             <Button
-                                onClick={() => navigate(`/restEdit/${id}`)}
+                                onClick={() => navigate(`/restedit/${id}`)}
                                 bg="#2D2C31"
                                 border="2px solid #A10808"
                                 color="white"

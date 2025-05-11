@@ -106,21 +106,6 @@ function Login() {
             <h1>Olá, seja bem-vindo ao SugereAI!</h1>
             <img src={logo} className='logo-login' />
             <p>AI (Artificial Intelligence) que entende sua fome e sugere o que você ama.</p>
-            {/*<a href="https://www.google.com.br/" target="_blank" rel='noopener noreferrer'>
-            <Button
-              className="btn-fale-conosco"
-              mt={2}
-              bg="#A10808"
-              color="white"
-              _hover={{ bg: "#E5E5E5", color: "#A10808" }}
-              w="max-content"
-              size="lg"
-              rounded="md"
-              border={"2px solid white"}
-            >
-              Fale conosco!
-            </Button>
-          </a>*/}
           </div>
         </div>
       )}
