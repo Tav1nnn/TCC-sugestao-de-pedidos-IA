@@ -44,8 +44,8 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @Valid @RequestBody PutRestaurantRequestDto restaurantRequestDto) {
-        restaurantService.updateRestaurant(id, restaurantRequestDto);
+    public ResponseEntity<Void> updateRestaurant(@Valid @RequestBody PutRestaurantRequestDto restaurantRequestDto) {
+        restaurantService.updateRestaurant(restaurantRequestDto);
         return ResponseEntity.ok().build();
     }
 

@@ -6,7 +6,9 @@ import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.RestaurantMapper;
 import br.com.sugestaopedidos.backend.model.Restaurant;
+import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.RestaurantRepository;
+import br.com.sugestaopedidos.backend.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +45,11 @@ public class RestaurantService {
         return restaurantMapper.toDto(restaurant);
     }
 
-    public void updateRestaurant(String id, PutRestaurantRequestDto restaurantRequestDto) {
-        Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> getResourceNotFoundException(id));
+    public void updateRestaurant(PutRestaurantRequestDto restaurantRequestDto) {
+        User user = AuthUtils.getCurrentUser();
+
+        Restaurant restaurant = restaurantRepository.findById(user.getRestaurant().getId())
+                .orElseThrow(() -> getResourceNotFoundException(user.getRestaurant().getId()));
 
         restaurantMapper.updateEntityFromRequest(restaurant, restaurantRequestDto);
 

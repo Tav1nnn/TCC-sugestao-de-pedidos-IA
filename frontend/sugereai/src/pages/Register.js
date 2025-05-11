@@ -24,6 +24,7 @@ import "../styles/Register.css";
 import { useState } from "react";
 import axios from "axios";
 import { IoMdLock } from "react-icons/io";
+import { cpf } from 'cpf-cnpj-validator'; 
 
 const UserRegistration = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const UserRegistration = () => {
     const mapping = {
       Nome: "name",
       Email: "email",
-      "CPF ou RG": "document",
+      "CPF": "document",
       Telefone: "phone",
       Endereço: "address",
       Senha: "password",
@@ -82,10 +83,10 @@ const UserRegistration = () => {
     const cleanDocument = removeMask(formData.document);
     const cleanPhone = removeMask(formData.phone);
 
-    if (cleanDocument.length < 8 || cleanDocument.length > 11) {
+    if (!cpf.isValid(cleanDocument)) {
       setInvalidFields(["document"]);
       setStatus("error");
-      setMessage("Por favor, insira um CPF ou RG válido.");
+      setMessage("Por favor, insira um CPF válido.");
       return;
     }
 

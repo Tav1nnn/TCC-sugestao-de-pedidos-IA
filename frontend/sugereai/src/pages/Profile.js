@@ -4,140 +4,165 @@ import {
 import {
     FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt, FaEdit
 } from "react-icons/fa";
-import "../styles/Profile.css";
-import logo from '../images/Logo preta escrita.png';
 import { AiOutlineClose } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import LoadingAnimation from "../components/LoadingAnimation";
-import { jwtDecode } from "jwt-decode";
 import { IoMdLock } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { cpf } from 'cpf-cnpj-validator'; 
+
+import LoadingAnimation from "../components/LoadingAnimation";
+import logo from '../images/Logo preta escrita.png';
+import "../styles/Profile.css";
 
 const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [restaurant, setRestaurant] = useState(null);
     const [editing, setEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
     const [currentPassword, setCurrentPassword] = useState('');
 
-    const getUser = async () => {
+    useEffect(() => {
+        fetchUser();
+    }, []);
+
+    const fetchUser = async () => {
         try {
             const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Sessão expirada. Faça login novamente.');
-                navigate('/');
-                return;
+            if (!token) return handleSessionExpired();
+
+            const decoded = jwtDecode(token);
+            console.log(decoded);
+            const isAdmin = decoded.roles.includes("ROLE_ADMIN");
+            const restaurantId = decoded.restaurantId;
+
+            if (isAdmin && restaurantId) {
+                const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${restaurantId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const restaurantData = restaurantResponse.data;
+                setRestaurant(restaurantData);
+                setEditedData(restaurantData);
+            } else {
+                const userResponse = await axios.get('http://localhost:8080/api/users/getUser', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const userData = userResponse.data;
+                setUser(userData);
+                const { profile, ...rest } = userData;
+                setEditedData(rest);
             }
-
-            const decodedPayload = jwtDecode(token);
-            const response = await axios.get('http://localhost:8080/api/users/getUser', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            const userData = { ...response.data, ...decodedPayload };
-            setUser(userData);
-            setEditedData(userData);
         } catch (error) {
-            console.error('Erro ao buscar usuário:', error);
-            if (error.response?.status === 401) {
-                alert('Sessão expirada. Faça login novamente.');
-                navigate('/');
-            }
+            if (error.response?.status === 401) handleSessionExpired();
+            console.error('Erro ao buscar dados:', error);
         }
+    };
+
+    const handleSessionExpired = () => {
+        alert('Sessão expirada. Faça login novamente.');
+        navigate('/');
     };
 
     const handleChange = (field, value) => {
         setEditedData((prev) => ({ ...prev, [field]: value }));
     };
 
+    const validateInputs = () => {
+        if (restaurant) {
+            const requiredFields = ["name", "description", "address", "phone", "imageUrl"];
+            const emptyFields = requiredFields.filter(field => !editedData[field]?.trim());
+            if (emptyFields.length > 0) return "Preencha todos os campos obrigatórios.";
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const removeMask = (value) => value.replace(/\D/g, '');
+
+            const emptyFields = Object.entries(editedData).filter(
+                ([key, value]) => key !== "imageURL" && String(value ?? '').trim() === ''
+            );
+            if (emptyFields.length > 0) return "Preencha todos os campos obrigatórios.";
+
+            if (!emailRegex.test(editedData.email)) return "E-mail inválido.";
+
+            const doc = removeMask(editedData.document);
+            if (!cpf.isValid(doc)) return "CPF inválido.";
+
+            const phone = removeMask(editedData.phone);
+            if (phone.length < 10 || phone.length > 12) return "Telefone inválido.";
+
+            if (!currentPassword) return "Digite sua senha atual para confirmar.";
+        }
+
+        return null;
+    };
+
     const handleSave = async () => {
-        if (!currentPassword) {
-            alert("Por favor, digite sua senha atual para confirmar.");
-            return;
-        }
-    
-        const removeMask = (value) => value.replace(/\D/g, '');
-    
-        const emptyFields = Object.entries(editedData).filter(
-          ([key, value]) =>
-            key !== "imageURL" && String(value ?? "").trim() === ""
-        );
-    
-        if (emptyFields.length > 0) {
-            alert("Por favor, preencha todos os campos obrigatórios.");
-            return;
-        }
-    
-        const cleanDocument = removeMask(editedData.document || '');
-        const cleanPhone = removeMask(editedData.phone || '');
-    
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(editedData.email) || editedData.email.length > 100) {
-            alert("Por favor, insira um e-mail válido.");
-            return;
-        }
-    
-        if (cleanDocument.length < 8 || cleanDocument.length > 11) {
-            alert("Por favor, insira um CPF ou RG válido.");
-            return;
-        }
-    
-        if (cleanPhone.length < 10 || cleanPhone.length > 12) {
-            alert("Por favor, insira um telefone válido com DDD.");
-            return;
-        }
-    
+        const validationMessage = validateInputs();
+        if (validationMessage) return alert(validationMessage);
+
         try {
             const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Sessão expirada. Faça login novamente.');
-                navigate('/');
-                return;
-            }
-    
-            const dataToSend = {
-                ...editedData,
-                password: currentPassword, // manda senha atual para o backend validar
-            };
-    
-            /*await axios.put("http://localhost:8080/api/users/update", dataToSend, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });*/
-    
-            setUser(editedData);
-            setEditing(false);
-            setCurrentPassword('');
-            alert("Dados atualizados com sucesso!");
-        } catch (error) {
-            console.error("Erro ao salvar:", error);
-            if (error.response?.status === 401) {
-                alert("Senha incorreta. Verifique sua senha atual.");
+            if (!token) return handleSessionExpired();
+
+            if (restaurant) {
+                await axios.put(`http://localhost:8080/api/restaurants/${restaurant.id}`, editedData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                await fetchUser();
+                setEditing(false);
+                alert("Restaurante atualizado com sucesso!");
             } else {
-                alert("Erro ao salvar alterações.");
+                const dataToSend = {
+                    ...editedData,
+                    password: currentPassword
+                };
+
+                await axios.put("http://localhost:8080/api/users/update", dataToSend, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                await fetchUser();
+                setEditing(false);
+                setCurrentPassword('');
+                alert("Dados atualizados com sucesso!");
             }
+        } catch (error) {
+            const status = error.response?.status;
+            if (status === 401) alert("Senha incorreta.");
+            else alert("Erro ao salvar alterações.");
+            console.error("Erro ao salvar:", error);
         }
-    };    
+    };
 
-    useEffect(() => {
-        getUser();
-    }, []);
+    const displayData = restaurant || user;
+    if (!displayData) return <LoadingAnimation />;
 
-    if (!user) {
-        return <LoadingAnimation />;
-    }
+    const profileFields = restaurant ? [
+        { icon: FaUser, label: "name", placeholder: "Nome do Restaurante" },
+        { icon: FaMapMarkerAlt, label: "address", placeholder: "Endereço" },
+        { icon: FaPhone, label: "phone", placeholder: "Telefone" },
+        { icon: FaEnvelope, label: "description", placeholder: "Descrição" },
+        { icon: FaIdCard, label: "imageUrl", placeholder: "URL da Imagem" }
+    ] : [
+        { icon: FaUser, label: "name", placeholder: "Nome" },
+        { icon: FaEnvelope, label: "email", placeholder: "Email" },
+        { icon: FaIdCard, label: "document", placeholder: "CPF ou RG" },
+        { icon: FaPhone, label: "phone", placeholder: "Telefone" },
+        { icon: FaMapMarkerAlt, label: "address", placeholder: "Endereço" },
+        { icon: FaIdCard, label: "imageUrl", placeholder: "URL da Imagem" }
+    ];
 
     return (
         <Box className="profile-container">
             <Flex className="profile-header">
-                <Box className="profile-header-image" position="relative">
+                <Box className="profile-header-image">
                     <Image
-                        src={user?.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
-                        alt="Foto do usuário"
+                        src={displayData.imageUrl || displayData.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
+                        alt="Foto de perfil"
                     />
                 </Box>
 
@@ -147,9 +172,9 @@ const Profile = () => {
 
                 <Button
                     onClick={() => navigate(-1)}
-                    bg={'#2D2C31'}
-                    border={'2px solid #f7bb75'}
-                    color={'white'}
+                    bg='#2D2C31'
+                    border='2px solid #f7bb75'
+                    color='white'
                     className="back-button-profile"
                 >
                     <AiOutlineClose />
@@ -160,8 +185,8 @@ const Profile = () => {
                 <Box className="profile-image-wrapper" position="relative">
                     <Box className="profile-image-container">
                         <Image
-                            src={user?.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
-                            alt="Foto do usuário"
+                            src={displayData.imageUrl || displayData.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
+                            alt="Foto de perfil"
                             className="profile-image"
                         />
                     </Box>
@@ -175,19 +200,12 @@ const Profile = () => {
                         onClick={() => setEditing(!editing)}
                         zIndex="1"
                     >
-                        <FaEdit/>
+                        <FaEdit />
                     </Button>
                 </Box>
 
-
                 <VStack className="profile-info-container">
-                    {[
-                        { icon: FaUser, label: "name", placeholder: "Nome" },
-                        { icon: FaEnvelope, label: "email", placeholder: "Email" },
-                        { icon: FaIdCard, label: "document", placeholder: "CPF ou RG" },
-                        { icon: FaPhone, label: "phone", placeholder: "Telefone" },
-                        { icon: FaMapMarkerAlt, label: "address", placeholder: "Endereço" },
-                    ].map(({ icon, label, placeholder }) => (
+                    {profileFields.map(({ icon, label, placeholder }) => (
                         <Flex key={label} className="profile-info-item">
                             <Icon as={icon} className="info-icon" />
                             {editing ? (
@@ -198,12 +216,24 @@ const Profile = () => {
                                     className="info-input"
                                 />
                             ) : (
-                                <Text className="info-text">{user?.[label] || '—————————'}</Text>
+                                <Text className="info-text">{displayData?.[label] || '—————————'}</Text>
                             )}
                         </Flex>
                     ))}
 
-                    {editing && (
+                    {!restaurant && !editing && (
+                        <Flex className="profile-description-box" direction="column" align="start" w="100%">
+                            <Text className="description-label">Perfil do Cliente</Text>
+                            <Box className="description-text">
+                                {user?.profile || 'Nenhuma descrição disponível.'}
+                            </Box>
+                            <Text className="description-info">
+                                Essa descrição é gerada automaticamente por inteligência artificial com base nas suas conversas com nosso chat.
+                            </Text>
+                        </Flex>
+                    )}
+
+                    {!restaurant && editing && (
                         <Flex className="profile-info-item">
                             <Icon as={IoMdLock} className="info-icon" />
                             <Input
@@ -215,7 +245,6 @@ const Profile = () => {
                             />
                         </Flex>
                     )}
-
 
                     {editing && (
                         <Button colorScheme="orange" onClick={handleSave}>
