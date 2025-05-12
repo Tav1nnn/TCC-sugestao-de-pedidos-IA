@@ -128,3 +128,44 @@
     font-size: smaller;
     font-weight: lighter;
   }
+
+  .profile-description-box {
+    background-color: #fffdf9;
+    border: 1px solid #f7bb75;
+    border-left: 6px solid #f7bb75;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+  
+  .description-label {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #444;
+  }
+  
+  .description-text {
+    background-color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #f7bb75;
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.5;
+    width: 100%;
+    white-space: pre-wrap;
+    pointer-events: none;
+    user-select: none;
+  }
+  
+  .description-info {
+    font-size: 0.85rem;
+    color: #a56917;
+    margin-top: 8px;
+    font-style: italic;
+  }
+  
+  
+  

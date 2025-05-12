@@ -1,5 +1,6 @@
 package br.com.sugestaopedidos.backend.mapper;
 
+import br.com.sugestaopedidos.backend.dto.PutRestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantFormatDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantRequestDto;
 import br.com.sugestaopedidos.backend.dto.RestaurantResponseDto;
@@ -23,5 +24,5 @@ public interface RestaurantMapper {
 
     List<RestaurantFormatDto> toListDtos(List<Restaurant> restaurants);
 
-    void updateEntityFromRequest(@MappingTarget Restaurant restaurant, RestaurantRequestDto restaurantRequestDto);
+    void updateEntityFromRequest(@MappingTarget Restaurant restaurant, PutRestaurantRequestDto restaurantRequestDto);
 }
