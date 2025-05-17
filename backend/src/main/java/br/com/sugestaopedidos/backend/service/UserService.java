@@ -10,6 +10,7 @@ import br.com.sugestaopedidos.backend.model.UserRole;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
 import br.com.sugestaopedidos.backend.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,8 @@ public class UserService {
     public void updateUser (UserRequestDto userRequestDto) {
         User userAuthenticated = AuthUtils.getCurrentUser();
 
+        verifyPassword(userAuthenticated.getPassword(), userRequestDto.getPassword());
+
         if(!userAuthenticated.getEmail().equals(userRequestDto.getEmail())){
             verifyEmail(userRequestDto.getEmail());
         }
@@ -46,11 +49,19 @@ public class UserService {
         }
 
         User userUpdate = userMapper.toEntity(userRequestDto);
+        userUpdate.setPassword(userAuthenticated.getPassword());
+        System.out.println(userAuthenticated.getProfile());
+        userUpdate.setProfile(userAuthenticated.getProfile());
         userUpdate.setId(userAuthenticated.getId());
         userUpdate.setRole(UserRole.CLIENT);
-        userUpdate.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
 
         userRepository.save(userUpdate);
+    }
+
+    private void verifyPassword(String password, String confirmPassword) {
+       if(!passwordEncoder.matches(confirmPassword, password)) {
+           throw new BadCredentialsException("password incorrect");
+       }
     }
 
     public UserResponseDto getUserByAuthenticated () {
