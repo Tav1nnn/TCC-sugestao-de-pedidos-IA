@@ -4,6 +4,7 @@ import {
 import {
     FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt, FaEdit
 } from "react-icons/fa";
+import logo from '../images/Logo branca escrita.png';
 import { AiOutlineClose } from "react-icons/ai";
 import { IoMdLock } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import { cpf } from 'cpf-cnpj-validator'; 
 
 import LoadingAnimation from "../components/LoadingAnimation";
-import logo from '../images/Logo preta escrita.png';
+import logo1 from '../images/Logo preta escrita.png';
 import "../styles/Profile.css";
 
 const Profile = () => {
@@ -172,9 +173,9 @@ const Profile = () => {
 
                 <Button
                     onClick={() => navigate(-1)}
-                    bg='#2D2C31'
-                    border='2px solid #f7bb75'
-                    color='white'
+                    bg={'#2D2C31'}
+                    border={'2px solid #A10808'}
+                    color={'white'}
                     className="back-button-profile"
                 >
                     <AiOutlineClose />
@@ -247,7 +248,7 @@ const Profile = () => {
                     )}
 
                     {editing && (
-                        <Button colorScheme="orange" onClick={handleSave}>
+                        <Button backgroundColor={'#A10808'} mt={2} p={4} color={'white'} onClick={handleSave}>
                             Salvar alterações
                         </Button>
                     )}

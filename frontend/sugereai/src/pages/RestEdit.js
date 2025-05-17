@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
-import { Button, VStack, HStack, Box, Text, Dialog, Portal, Input, NativeSelect, Accordion, Span, Alert, Toaster } from "@chakra-ui/react";
+import { Button, VStack, HStack, Box, Text, Dialog, Portal, Input, NativeSelect, Accordion, Span, Alert, Toaster, Flex } from "@chakra-ui/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FiAlertTriangle } from "react-icons/fi";
 import { FaAngleDown, FaBars, FaCheck, FaEdit, FaMoneyBillWave, FaPlus, FaRobot, FaTrash } from "react-icons/fa";
@@ -30,6 +30,7 @@ const RestEdit = () => {
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [currentIngredient, setCurrentIngredient] = useState('');
     const [editingDishId, setEditingDishId] = useState(null);
+    const ordemPrioridade = ['Entradas', 'Pratos Principais', 'Sobremesas', 'Bebidas'];
 
     useEffect(() => {
         const fetchAllIngredients = async () => {
@@ -204,7 +205,6 @@ const RestEdit = () => {
                 )
             );
 
-            alert('Prato salvo com sucesso!');
         } catch (error) {
             alert(`Erro ao salvar: ${error.message}`);
         }
@@ -394,7 +394,6 @@ const RestEdit = () => {
         }
     };
 
-
     const handleSaveIngredient = async (ingredientId, newName) => {
         const token = localStorage.getItem('authToken');
         try {
@@ -410,21 +409,14 @@ const RestEdit = () => {
             setEditedMenuData((prevData) =>
                 prevData.map((category) => ({
                     ...category,
-                    menuItem: category.menuItem.map((dish) =>
-                        dish.menuItemId === dishId
-                            ? {
-                                ...dish,
-                                ingredients: [
-                                    ...dish.ingredients,
-                                    {
-                                        ingredientId: newIngredientId, // o novo ingrediente
-                                        ingredient: newIngredientName, // nome do novo ingrediente
-                                        isGlobal: false, // ou o valor correto
-                                    },
-                                ],
-                            }
-                            : dish
-                    ),
+                    menuItem: category.menuItem.map((dish) => ({
+                        ...dish,
+                        ingredients: dish.ingredients.map((ingredient) =>
+                            ingredient.ingredientId === ingredientId
+                                ? { ...ingredient, ingredient: newName }
+                                : ingredient
+                        ),
+                    })),
                 }))
             );
 
@@ -458,41 +450,6 @@ const RestEdit = () => {
             console.error("Erro ao criar ingrediente:", error);
         }
     };
-
-
-    /*const handleRemoveIngredient = async () => {
-        if (!ingredient) return;
-
-        try {
-            const token = localStorage.getItem('authToken');
-
-            await axios.delete(
-                `http://localhost:8080/api/menuItem/${currentDish.menuItemId}/ingredients/${ingredientToRemove.ingredientId}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            setEditedMenuData(prev =>
-                prev.map(category => ({
-                    ...category,
-                    menuItem: category.menuItem.map(item =>
-                        item.menuItemId === currentDish.menuItemId
-                            ? {
-                                ...item,
-                                ingredients: item.ingredients.filter(i => i.ingredientId !== ingredientToRemove.ingredientId)
-                            }
-                            : item
-                    )
-                }))
-            );
-
-            alert('Ingrediente removido com sucesso!');
-        } catch (error) {
-            console.error("Erro ao remover ingrediente:", error);
-            alert('Erro ao remover ingrediente');
-        } finally {
-            onRemoveClose();
-        }
-    };*/
 
     const handleRemoveIngredient = async (ingredientId) => {
         const confirmed = window.confirm("Quer mesmo excluir esse ingrediente?");
@@ -660,7 +617,8 @@ const RestEdit = () => {
                                     color="white"
                                     position="absolute"
                                     top="10px"
-                                    right="80px"
+                                    right="70px"
+                                    zIndex={4}
                                 >
                                     <FaBars />
                                 </Button>
@@ -877,7 +835,7 @@ const RestEdit = () => {
                                                                     backgroundColor={'#2D2C31'}
                                                                     borderBottom={'1px solid #A10808'}
                                                                 >
-                                                                    {allCategories.map((cat) => (
+                                                                    {allCategories.slice().sort((a, b) => a.name.localeCompare(b.name)).map((cat) => (
                                                                         <option key={cat.id} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
                                                                             {cat.name}
                                                                         </option>
@@ -903,7 +861,7 @@ const RestEdit = () => {
                                                                         backgroundColor={'#2D2C31'}
                                                                         borderBottom={'1px solid #A10808'}
                                                                     >
-                                                                        {allIngredients.map((ingredient) => (
+                                                                        {allIngredients.slice().sort((a, b) => a.name.localeCompare(b.name)).map((ingredient) => (
                                                                             <option key={ingredient.id} value={ingredient.ingredientId} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
                                                                                 {ingredient.name}
                                                                             </option>
@@ -988,6 +946,7 @@ const RestEdit = () => {
                                                                 >
                                                                     {allIngredients
                                                                         .filter((ingredient) => ingredient.isGlobal === false)
+                                                                        .slice().sort((a, b) => a.name.localeCompare(b.name))
                                                                         .map((ingredient) => (
                                                                             <option
                                                                                 key={ingredient.id}
@@ -1024,260 +983,99 @@ const RestEdit = () => {
                     </div>
                 </div>
 
-                <div className="menuSection">
-                    {editedMenuData.map((category, catIndex) => (
-                        <Box key={catIndex} id={`cat-${category.categoryId}`} className="menuItem" p={4} borderWidth="1px" borderRadius="md" mb={4}>
-                            <HStack mb={2} alignItems={"center"} justifyContent="space-between">
-                                <Text fontSize='large' fontWeight={'bold'}>{category.category}</Text>
-                                <Dialog.Root>
-                                    <Dialog.Trigger asChild>
-                                        <Button variant="outline" size="sm">
-                                            <FaEdit />
-                                        </Button>
-                                    </Dialog.Trigger>
-                                    <Portal>
-                                        <Dialog.Backdrop />
-                                        <Dialog.Positioner>
-                                            <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
-                                                <Dialog.Header mt={2} className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
-                                                    <Dialog.Title className="DialogTitle">Editar Categoria</Dialog.Title>
-                                                    <Dialog.ActionTrigger asChild position={"absolute"} top={2} right={2} mt={2}>
-                                                        <Button bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>
-                                                            <AiOutlineClose />
+                <div className="menuSectionEdit">
+                    {editedMenuData
+                        .slice()
+                        .sort((a, b) => a.category.localeCompare(b.category))
+                        .map((category, catIndex) => (
+                            <Box key={catIndex} maxW={'800px'} id={`cat-${category.categoryId}`} className="menuItem" p={4} borderWidth="1px" borderRadius="md" mb={4} bg={'#f2f5f7'} borderColor={'#A10808'}>
+                                <HStack mb={2} alignItems={"center"} justifyContent="space-between">
+                                    <Text fontSize='large' fontWeight={'bold'}>{category.category}</Text>
+                                    <Dialog.Root>
+                                        <Dialog.Trigger asChild>
+                                            <Button
+                                                size="md"
+                                                background={'transparent'}
+                                                borderRadius={'50%'}
+                                                color={'#2D2C31'}
+                                            >
+                                                <FaEdit />
+                                            </Button>
+                                        </Dialog.Trigger>
+                                        <Portal>
+                                            <Dialog.Backdrop />
+                                            <Dialog.Positioner>
+                                                <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                    <Dialog.Header mt={2} className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
+                                                        <Dialog.Title className="DialogTitle">Editar Categoria</Dialog.Title>
+                                                        <Dialog.ActionTrigger asChild position={"absolute"} top={2} right={2} mt={2}>
+                                                            <Button bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>
+                                                                <AiOutlineClose />
+                                                            </Button>
+                                                        </Dialog.ActionTrigger>
+                                                    </Dialog.Header>
+                                                    <Dialog.Body mt={8} className="DialogDescription">
+                                                        <Text>Digite o novo nome da Categoria:</Text>
+                                                    </Dialog.Body>
+                                                    <Input
+                                                        placeholder={category.category}
+                                                        value={categoria}
+                                                        onChange={(e) => setCategoria(e.target.value)}
+                                                        padding={2}
+                                                        mt={2}
+                                                    />
+                                                    <Dialog.Footer mt={4} className="DialogFooter">
+                                                        <Dialog.ActionTrigger asChild>
+                                                            <Button variant="outline" size="md" p={2}>Cancel</Button>
+                                                        </Dialog.ActionTrigger>
+                                                        <Button variant="outline" size="md" onClick={() => handleSaveCategory(category.categoryId, categoria)}>
+                                                            <FaCheck />
                                                         </Button>
-                                                    </Dialog.ActionTrigger>
-                                                </Dialog.Header>
-                                                <Dialog.Body mt={8} className="DialogDescription">
-                                                    <Text>Digite o novo nome da Categoria:</Text>
-                                                </Dialog.Body>
-                                                <Input
-                                                    placeholder={category.category}
-                                                    value={categoria}
-                                                    onChange={(e) => setCategoria(e.target.value)}
-                                                    padding={2}
-                                                    mt={2}
-                                                />
-                                                <Dialog.Footer mt={4} className="DialogFooter">
-                                                    <Dialog.ActionTrigger asChild>
-                                                        <Button variant="outline" size="md" p={2}>Cancel</Button>
-                                                    </Dialog.ActionTrigger>
-                                                    <Button variant="outline" size="md" onClick={() => handleSaveCategory(category.categoryId, categoria)}>
-                                                        <FaCheck />
-                                                    </Button>
-                                                </Dialog.Footer>
-                                            </Dialog.Content>
-                                        </Dialog.Positioner>
-                                    </Portal>
-                                </Dialog.Root>
-                            </HStack>
+                                                    </Dialog.Footer>
+                                                </Dialog.Content>
+                                            </Dialog.Positioner>
+                                        </Portal>
+                                    </Dialog.Root>
+                                </HStack>
 
-                            {category.menuItem.map((dish, dishIndex) => (
-                                <Box key={dishIndex} className="dishRow" p={3} borderWidth="1px" borderRadius="md" mb={3}>
-
-                                    <HStack mb={2} alignItems={"center"} justifyContent="space-between">
-                                        <img src={dish.imageUrl} alt={dish.name} className="dishImage" />
-                                        <Box>
-                                            <Text fontWeight={'bold'}>{dish.name}</Text>
-                                            <Text fontSize='small' color={'gray.500'}>{dish.description}</Text>
-                                            <Box display={'flex'} alignItems={'center'} justifyContent={'inline'}>
-                                                <FaMoneyBillWave color="green" size={18} />
-                                                <Text fontSize='unset' fontWeight={'bold'} color={'gray.800'} p={2}>
-                                                    {dish.price}
-                                                </Text>
-                                            </Box>
-                                        </Box>
-                                        <Dialog.Root>
-                                            <Box p={4} pr={0}>
-                                                <Dialog.Trigger asChild>
-                                                    <Button size="sm" background={'none'}
-                                                        onClick={() => fillDish(dish)}>
-                                                        <FaEdit color="#2D2C31" />
-                                                    </Button>
-                                                </Dialog.Trigger>
-                                                <Button size={'sm'} background={'none'} onClick={() => handleExcludeDish(dish.menuItemId)}>
-                                                    <FaTrash color="#A10808" />
-                                                </Button>
-
-                                            </Box>
-                                            <Portal>
-                                                <Dialog.Backdrop />
-                                                <Dialog.Positioner>
-                                                    <Dialog.Content m={20} minH={200} maxH={'auto'} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
-                                                        <Dialog.Header className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
-                                                            <Dialog.Title mt={4} className="DialogTitle">Editar Prato</Dialog.Title>
-                                                            <Dialog.ActionTrigger asChild>
-                                                                <Button bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>
-                                                                    <AiOutlineClose />
-                                                                </Button>
-                                                            </Dialog.ActionTrigger>
-                                                        </Dialog.Header>
-                                                        <Dialog.Body className="DialogDescription" mt={8}>
-                                                            <Text>Nome do prato:</Text>
-                                                        </Dialog.Body>
-                                                        <Input
-                                                            placeholder={dish.name}
-                                                            value={dishName}
-                                                            onChange={(e) => setDishName(e.target.value)}
-                                                            padding={2}
-                                                            mt={2}
-                                                        />
-                                                        <Input
-                                                            placeholder={dish.description}
-                                                            value={dishDescription}
-                                                            onChange={(e) => setDishDescription(e.target.value)}
-                                                            padding={2}
-                                                            mt={2}
-                                                        />
-                                                        <Input
-                                                            placeholder="Preço (ex: 30,99)"
-                                                            value={typeof dishPrice === 'string' ? dishPrice : String(dishPrice || '')}
-                                                            onChange={handlePriceChange}
-                                                            onBlur={() => {
-                                                                if (typeof dishPrice === 'string') {
-                                                                    setDishPrice(formatPriceForDisplay(dishPrice));
-                                                                }
-                                                            }}
-                                                            padding={2}
-                                                            mt={2}
-                                                        />
-                                                        <Input
-                                                            placeholder={dish.imageUrl}
-                                                            value={dishImageUrl}
-                                                            onChange={(e) => setDishImageUrl(e.target.value)}
-                                                            padding={2}
-                                                            mt={2}
-                                                        />
-                                                        <NativeSelect.Root variant={'subtle'}>
-                                                            <NativeSelect.Field
-                                                                p={2}
-                                                                mt={2}
-                                                                placeholder="Selecione a categoria"
-                                                                value={dishCategory || category.category}
-                                                                onChange={(e) => setDishCategory(e.target.value)}
-                                                            >
-                                                                {allCategories.map((cat) => (
-                                                                    <option key={cat.id} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
-                                                                        {cat.name}
-                                                                    </option>
-                                                                ))}
-                                                            </NativeSelect.Field>
-                                                            <NativeSelect.Indicator />
-                                                        </NativeSelect.Root>
-                                                        <Dialog.Footer className="DialogFooter" mt={4}>
-                                                            <Button variant="outline" size="sm" onClick={handleLocalSave} border={'1px solid #A10808'} color={'white'} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
-                                                                <FaCheck />
-                                                            </Button>
-                                                            <Dialog.ActionTrigger asChild>
-                                                                <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}>Cancel</Button>
-                                                            </Dialog.ActionTrigger>
-                                                        </Dialog.Footer>
-                                                    </Dialog.Content>
-                                                </Dialog.Positioner>
-                                            </Portal>
-                                        </Dialog.Root>
-                                    </HStack>
-                                    <Box mb={2} display={'inline-flex'} alignItems={'center'} justifyContent={'center'}>
-                                        <Text fontSize='medium' fontWeight={'bold'} mb={2} mt={6}>Ingredientes: </Text>
-                                        <Dialog.Root>
-                                            <Dialog.Trigger asChild>
-                                                <Button variant="outline" size="sm" onClick={() => setEditingDishId(dish.menuItemId)}>
-                                                    <FaPlus />
-                                                </Button>
-                                            </Dialog.Trigger>
-                                            <Portal>
-                                                <Dialog.Backdrop />
-                                                <Dialog.Positioner>
-                                                    <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
-                                                        <Dialog.Header className="DialogHeader">
-                                                            <Dialog.Title className="DialogTitle">Adicionar Ingrediente</Dialog.Title>
-                                                        </Dialog.Header>
-
-                                                        <Dialog.Body className="DialogDescription">
-
-                                                            <Box mt={4} display="flex" alignItems="center">
-                                                                <NativeSelect.Root variant="subtle">
-                                                                    <NativeSelect.Field
-                                                                        value={currentIngredient}
-                                                                        onChange={(e) => setCurrentIngredient(e.target.value)}
-                                                                        p={2}
-                                                                    >
-                                                                        <option value="" style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>Selecione um ingrediente</option>
-                                                                        {allIngredients.map((ingredient) => (
-                                                                            <option key={ingredient.id} value={ingredient.ingredientId} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
-                                                                                {ingredient.name}
-                                                                            </option>
-                                                                        ))}
-                                                                    </NativeSelect.Field>
-                                                                </NativeSelect.Root>
-
-                                                                <Button
-                                                                    ml={2}
-                                                                    onClick={addIngredientDish}
-                                                                    size="sm"
-                                                                    variant="ghost"
-                                                                >
-                                                                    <FaCheck />
-                                                                </Button>
-                                                            </Box>
-
-                                                            <VStack mt={4} spacing={2} align="start">
-                                                                {selectedIngredients.map((ing) => (
-                                                                    <HStack key={ing.ingredientId}>
-                                                                        <Text>{ing.ingredient}</Text>
-                                                                        <FaTrash
-                                                                            onClick={() =>
-                                                                                setSelectedIngredients(
-                                                                                    selectedIngredients.filter(
-                                                                                        (i) => i.ingredientId !== ing.ingredientId
-                                                                                    )
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </HStack>
-                                                                ))}
-                                                            </VStack>
-                                                        </Dialog.Body>
-
-                                                        <Dialog.Footer className="DialogFooter">
-                                                            <Dialog.ActionTrigger asChild>
-                                                                <Button variant="outline">Cancelar</Button>
-                                                            </Dialog.ActionTrigger>
-
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() => handleAddIngredientsToDish(editingDishId, selectedIngredients)}
-                                                            >
-                                                                <FaCheck />
-                                                            </Button>
-                                                        </Dialog.Footer>
-                                                    </Dialog.Content>
-
-                                                </Dialog.Positioner>
-                                            </Portal>
-                                        </Dialog.Root>
-                                    </Box>
-                                    <VStack >
-                                        {dish.ingredients.map((ing, ingIndex) => (
-                                            <HStack key={ingIndex} mb={2} width="100%" justifyContent="space-between" >
-                                                <Text fontSize={14}>{ing.ingredient}</Text>
+                                {category.menuItem.slice()
+                                    .sort((a, b) => a.name.localeCompare(b.name)).map((dish, dishIndex) => (
+                                        <Box key={dishIndex} className="dishRow" p={3} mb={3}>
+                                            <Flex
+                                                direction={{ base: 'column', md: 'row' }}
+                                                alignItems={{ base: 'center', md: 'flex-start' }}
+                                                justifyContent="space-between"
+                                            >
+                                                <img src={dish.imageUrl} alt={dish.name} className="dishImageEdit" />
+                                                <Box ml={{ base: 0, md: 4 }} mt={{ base: 3, md: 0 }} textAlign={{ base: 'center', md: 'left' }}>
+                                                    <Text fontWeight={'bold'} mt={2}>{dish.name}</Text>
+                                                    <Text fontSize='small' textAlign={'justify'} color={'gray.500'}>{dish.description}</Text>
+                                                    <Box display={'flex'} w={'100%'} alignItems={'center'} justifyContent={'inline'}>
+                                                        <FaMoneyBillWave color="green" size={18} />
+                                                        <Text fontWeight={'bold'} fontSize={'small'} color={'gray.800'} p={2}>
+                                                            R${dish.price}
+                                                        </Text>
+                                                    </Box>
+                                                </Box>
                                                 <Dialog.Root>
-                                                    <Box>
+                                                    <Box mt={{ base: 3, md: 0 }} ml={{ base: 0, md: 4 }} display="flex" gap="2">
                                                         <Dialog.Trigger asChild>
-                                                            <Button size="sm" background={'none'} color={'#2D2C31'} border={'none'}>
-                                                                <FaEdit />
+                                                            <Button size="sm" background={'none'}
+                                                                onClick={() => fillDish(dish)}>
+                                                                <FaEdit color="#2D2C31" />
                                                             </Button>
                                                         </Dialog.Trigger>
-                                                        <Button background={'none'} size={'sm'}>
-                                                            <FaTrash color={"#A10808"} onClick={() => RemoveIngredientToDish(dish.menuItemId, ing.ingredientId)} />
+                                                        <Button size={'sm'} background={'none'} onClick={() => handleExcludeDish(dish.menuItemId)}>
+                                                            <FaTrash color="#A10808" />
                                                         </Button>
+
                                                     </Box>
                                                     <Portal>
                                                         <Dialog.Backdrop />
                                                         <Dialog.Positioner>
-                                                            <Dialog.Content m={20} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                            <Dialog.Content m={20} minH={200} maxH={'auto'} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
                                                                 <Dialog.Header className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
-                                                                    <Dialog.Title mt={4} className="DialogTitle">Editar Ingrediente</Dialog.Title>
+                                                                    <Dialog.Title mt={4} className="DialogTitle">Editar Prato</Dialog.Title>
                                                                     <Dialog.ActionTrigger asChild>
                                                                         <Button bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>
                                                                             <AiOutlineClose />
@@ -1285,34 +1083,213 @@ const RestEdit = () => {
                                                                     </Dialog.ActionTrigger>
                                                                 </Dialog.Header>
                                                                 <Dialog.Body className="DialogDescription" mt={8}>
-                                                                    <Text>Digite o novo nome do Ingrediente:</Text>
+                                                                    <Text>Nome do prato:</Text>
                                                                 </Dialog.Body>
                                                                 <Input
-                                                                    placeholder={ing.ingredient}
-                                                                    value={ingredient}
-                                                                    onChange={(e) => setIngredient(e.target.value)}
+                                                                    placeholder={dish.name}
+                                                                    value={dishName}
+                                                                    onChange={(e) => setDishName(e.target.value)}
                                                                     padding={2}
                                                                     mt={2}
                                                                 />
+                                                                <Input
+                                                                    placeholder={dish.description}
+                                                                    value={dishDescription}
+                                                                    onChange={(e) => setDishDescription(e.target.value)}
+                                                                    padding={2}
+                                                                    mt={2}
+                                                                />
+                                                                <Input
+                                                                    placeholder="Preço (ex: 30,99)"
+                                                                    value={typeof dishPrice === 'string' ? dishPrice : String(dishPrice || '')}
+                                                                    onChange={handlePriceChange}
+                                                                    onBlur={() => {
+                                                                        if (typeof dishPrice === 'string') {
+                                                                            setDishPrice(formatPriceForDisplay(dishPrice));
+                                                                        }
+                                                                    }}
+                                                                    padding={2}
+                                                                    mt={2}
+                                                                />
+                                                                <Input
+                                                                    placeholder={dish.imageUrl}
+                                                                    value={dishImageUrl}
+                                                                    onChange={(e) => setDishImageUrl(e.target.value)}
+                                                                    padding={2}
+                                                                    mt={2}
+                                                                />
+                                                                <NativeSelect.Root variant={'subtle'}>
+                                                                    <NativeSelect.Field
+                                                                        p={2}
+                                                                        mt={2}
+                                                                        placeholder="Selecione a categoria"
+                                                                        value={dishCategory || category.category}
+                                                                        onChange={(e) => setDishCategory(e.target.value)}
+                                                                    >
+                                                                        {allCategories.slice().sort((a, b) => a.name.localeCompare(b.name)).map((cat) => (
+                                                                            <option key={cat.id} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
+                                                                                {cat.name}
+                                                                            </option>
+                                                                        ))}
+                                                                    </NativeSelect.Field>
+                                                                    <NativeSelect.Indicator />
+                                                                </NativeSelect.Root>
                                                                 <Dialog.Footer className="DialogFooter" mt={4}>
-                                                                    <Dialog.ActionTrigger asChild>
-                                                                        <Button variant="outline" size="sm" p={2} bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>Cancel</Button>
-                                                                    </Dialog.ActionTrigger>
-                                                                    <Button variant="outline" size="sm" bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'} onClick={() => handleSaveIngredient(ing.ingredientId, ingredient)}>
+                                                                    <Button variant="outline" size="sm" onClick={handleLocalSave} border={'1px solid #A10808'} color={'white'} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
                                                                         <FaCheck />
                                                                     </Button>
+                                                                    <Dialog.ActionTrigger asChild>
+                                                                        <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}>Cancel</Button>
+                                                                    </Dialog.ActionTrigger>
                                                                 </Dialog.Footer>
                                                             </Dialog.Content>
                                                         </Dialog.Positioner>
                                                     </Portal>
                                                 </Dialog.Root>
-                                            </HStack>
-                                        ))}
-                                    </VStack>
-                                </Box>
-                            ))}
-                        </Box>
-                    ))}
+                                            </Flex>
+                                            <Box mb={2} display={'inline-flex'} alignItems={'center'} justifyContent={'center'}>
+                                                <Text fontSize='medium' fontWeight={'bold'} mb={2} mt={2}>Ingredientes: </Text>
+                                                <Dialog.Root>
+                                                    <Dialog.Trigger asChild>
+                                                        <Button
+                                                            marginLeft={2}
+                                                            size={'2xs'}
+                                                            bg={'#2D2C31'}
+                                                            border={'1px solid #96c93d'}
+                                                            color={'white'}
+                                                            onClick={() => setEditingDishId(dish.menuItemId)}>
+                                                            <FaPlus />
+                                                        </Button>
+                                                    </Dialog.Trigger>
+                                                    <Portal>
+                                                        <Dialog.Backdrop />
+                                                        <Dialog.Positioner>
+                                                            <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                                <Dialog.Header className="DialogHeader">
+                                                                    <Dialog.Title className="DialogTitle">Adicionar Ingrediente</Dialog.Title>
+                                                                </Dialog.Header>
+
+                                                                <Dialog.Body className="DialogDescription">
+
+                                                                    <Box mt={4} display="flex" alignItems="center">
+                                                                        <NativeSelect.Root variant="subtle">
+                                                                            <NativeSelect.Field
+                                                                                value={currentIngredient}
+                                                                                onChange={(e) => setCurrentIngredient(e.target.value)}
+                                                                                p={2}
+                                                                            >
+                                                                                <option value="" style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>Selecione um ingrediente</option>
+                                                                                {allIngredients.slice().sort((a, b) => a.name.localeCompare(b.name)).map((ingredient) => (
+                                                                                    <option key={ingredient.id} value={ingredient.ingredientId} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
+                                                                                        {ingredient.name}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </NativeSelect.Field>
+                                                                        </NativeSelect.Root>
+
+                                                                        <Button
+                                                                            ml={2}
+                                                                            onClick={addIngredientDish}
+                                                                            size="sm"
+                                                                            variant="ghost"
+                                                                        >
+                                                                            <FaCheck />
+                                                                        </Button>
+                                                                    </Box>
+
+                                                                    <VStack mt={4} spacing={2} align="start">
+                                                                        {selectedIngredients.map((ing) => (
+                                                                            <HStack key={ing.ingredientId}>
+                                                                                <Text>{ing.ingredient}</Text>
+                                                                                <FaTrash
+                                                                                    onClick={() =>
+                                                                                        setSelectedIngredients(
+                                                                                            selectedIngredients.filter(
+                                                                                                (i) => i.ingredientId !== ing.ingredientId
+                                                                                            )
+                                                                                        )
+                                                                                    }
+                                                                                />
+                                                                            </HStack>
+                                                                        ))}
+                                                                    </VStack>
+                                                                </Dialog.Body>
+
+                                                                <Dialog.Footer className="DialogFooter">
+                                                                    <Dialog.ActionTrigger asChild>
+                                                                        <Button variant="outline">Cancelar</Button>
+                                                                    </Dialog.ActionTrigger>
+
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handleAddIngredientsToDish(editingDishId, selectedIngredients)}
+                                                                    >
+                                                                        <FaCheck />
+                                                                    </Button>
+                                                                </Dialog.Footer>
+                                                            </Dialog.Content>
+
+                                                        </Dialog.Positioner>
+                                                    </Portal>
+                                                </Dialog.Root>
+                                            </Box>
+                                            <VStack >
+                                                {dish.ingredients.map((ing, ingIndex) => (
+                                                    <HStack key={ingIndex} width="100%" justifyContent="space-between" >
+                                                        <Text fontSize={14}>{ing.ingredient}</Text>
+                                                        <Dialog.Root>
+                                                            <Box>
+                                                                <Dialog.Trigger asChild>
+                                                                    <Button size="sm" background={'none'} color={'#2D2C31'} border={'none'}>
+                                                                        <FaEdit />
+                                                                    </Button>
+                                                                </Dialog.Trigger>
+                                                                <Button background={'none'} size={'sm'}>
+                                                                    <FaTrash color={"#A10808"} onClick={() => RemoveIngredientToDish(dish.menuItemId, ing.ingredientId)} />
+                                                                </Button>
+                                                            </Box>
+                                                            <Portal>
+                                                                <Dialog.Backdrop />
+                                                                <Dialog.Positioner>
+                                                                    <Dialog.Content m={20} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                                        <Dialog.Header className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
+                                                                            <Dialog.Title mt={4} className="DialogTitle">Editar Ingrediente</Dialog.Title>
+                                                                            <Dialog.ActionTrigger asChild>
+                                                                                <Button bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>
+                                                                                    <AiOutlineClose />
+                                                                                </Button>
+                                                                            </Dialog.ActionTrigger>
+                                                                        </Dialog.Header>
+                                                                        <Dialog.Body className="DialogDescription" mt={8}>
+                                                                            <Text>Digite o novo nome do Ingrediente:</Text>
+                                                                        </Dialog.Body>
+                                                                        <Input
+                                                                            placeholder={ing.ingredient}
+                                                                            value={ingredient}
+                                                                            onChange={(e) => setIngredient(e.target.value)}
+                                                                            padding={2}
+                                                                            mt={2}
+                                                                        />
+                                                                        <Dialog.Footer className="DialogFooter" mt={4}>
+                                                                            <Dialog.ActionTrigger asChild>
+                                                                                <Button variant="outline" size="sm" p={2} bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>Cancel</Button>
+                                                                            </Dialog.ActionTrigger>
+                                                                            <Button variant="outline" size="sm" bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'} onClick={() => handleSaveIngredient(ing.ingredientId, ingredient)}>
+                                                                                <FaCheck />
+                                                                            </Button>
+                                                                        </Dialog.Footer>
+                                                                    </Dialog.Content>
+                                                                </Dialog.Positioner>
+                                                            </Portal>
+                                                        </Dialog.Root>
+                                                    </HStack>
+                                                ))}
+                                            </VStack>
+                                        </Box>
+                                    ))}
+                            </Box>
+                        ))}
                 </div>
 
 

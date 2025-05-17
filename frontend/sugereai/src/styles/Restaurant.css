@@ -13,6 +13,7 @@ h1 {
     margin-bottom: 20px;
     color: #000000;
 }
+
 .restaurantRest-description {
     overflow-y: auto;
     height: 100%;
@@ -41,9 +42,6 @@ h1 {
     background-color: #2D2C31;
     padding: 10px;
     margin: 0;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 .restaurantRest-image-capa {
@@ -53,9 +51,10 @@ h1 {
     justify-content: center;
     background-color: #2D2C31;
     color: #E5DFC9;
+    box-shadow: 0px 0px 12px black;
 }
 
-.restaurantRest-image-capa h3{
+.restaurantRest-image-capa h3 {
     display: none;
 }
 
@@ -102,7 +101,7 @@ h1 {
 }
 
 .dishRest-row:hover {
-    background-color: rgb(154,162,162, 0.1);
+    background-color: rgb(154, 162, 162, 0.1);
     border: 1px solid #A10800;
     border-radius: 8px;
 }
@@ -177,6 +176,7 @@ h1 {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -272,7 +272,7 @@ h1 {
         border-radius: 10px;
         padding: 15px;
         border: 1px solid #ccc;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -290,13 +290,13 @@ h1 {
 
     .dishRest-row {
         display: flex;
-        flex-direction: row; 
+        flex-direction: row;
         align-items: center;
         gap: 15px;
         margin-bottom: 20px;
         width: 100%;
     }
-    
+
 
     .dishRest-image {
         flex-shrink: 0;
@@ -339,4 +339,25 @@ h1 {
         width: 25px;
         height: 25px;
     }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #2D2C31;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #A10808;
+        border-radius: 4px;
+        border: 2px solid #2D2C31;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #f2f6f7;
+    }
+
 }
