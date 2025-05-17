@@ -394,7 +394,6 @@ const RestEdit = () => {
         }
     };
 
-
     const handleSaveIngredient = async (ingredientId, newName) => {
         const token = localStorage.getItem('authToken');
         try {
@@ -410,21 +409,14 @@ const RestEdit = () => {
             setEditedMenuData((prevData) =>
                 prevData.map((category) => ({
                     ...category,
-                    menuItem: category.menuItem.map((dish) =>
-                        dish.menuItemId === dishId
-                            ? {
-                                ...dish,
-                                ingredients: [
-                                    ...dish.ingredients,
-                                    {
-                                        ingredientId: newIngredientId,
-                                        ingredient: newIngredientName,
-                                        isGlobal: false,
-                                    },
-                                ],
-                            }
-                            : dish
-                    ),
+                    menuItem: category.menuItem.map((dish) => ({
+                        ...dish,
+                        ingredients: dish.ingredients.map((ingredient) =>
+                            ingredient.ingredientId === ingredientId
+                                ? { ...ingredient, ingredient: newName }
+                                : ingredient
+                        ),
+                    })),
                 }))
             );
 

@@ -214,7 +214,7 @@ const UserRegistration = () => {
           <Flex className="register-info-item">
             <Icon as={FaIdCard} className="register-info-icon" />
             <Input
-              placeholder="CPF ou RG"
+              placeholder="CPF"
               className="register-info-input"
               value={formData.document}
               onChange={handleChange}
