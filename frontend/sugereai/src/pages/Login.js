@@ -119,7 +119,8 @@ function Login() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Usuário"
+                  placeholder="Digite seu e-mail"
+                  autocomplete="username"
                   onFocus={handleFocus}
                   onBlur={() => validateEmail(email) && handleBlur()}
                   bg="#E5E5E5"
@@ -153,6 +154,7 @@ function Login() {
                   color={"black"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete='current-password'
                 />
                 <FormErrorMessage color='black' marginLeft={4} fontSize={10}>{passwordError}</FormErrorMessage>
               </FormControl>

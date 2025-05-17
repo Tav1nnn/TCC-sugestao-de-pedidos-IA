@@ -5,7 +5,7 @@ import {
     FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt, FaEdit
 } from "react-icons/fa";
 import "../styles/Profile.css";
-import logo from '../images/Logo preta escrita.png';
+import logo from '../images/Logo branca escrita.png';
 import { AiOutlineClose } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -100,7 +100,7 @@ const Profile = () => {
     
             const dataToSend = {
                 ...editedData,
-                password: currentPassword, // manda senha atual para o backend validar
+                password: currentPassword,
             };
     
             /*await axios.put("http://localhost:8080/api/users/update", dataToSend, {
@@ -148,7 +148,7 @@ const Profile = () => {
                 <Button
                     onClick={() => navigate(-1)}
                     bg={'#2D2C31'}
-                    border={'2px solid #f7bb75'}
+                    border={'2px solid #A10808'}
                     color={'white'}
                     className="back-button-profile"
                 >
@@ -218,7 +218,7 @@ const Profile = () => {
 
 
                     {editing && (
-                        <Button colorScheme="orange" onClick={handleSave}>
+                        <Button backgroundColor={'#A10808'} mt={2} p={4} color={'white'} onClick={handleSave}>
                             Salvar alterações
                         </Button>
                     )}

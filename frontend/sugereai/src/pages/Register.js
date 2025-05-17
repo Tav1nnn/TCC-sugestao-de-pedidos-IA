@@ -19,7 +19,7 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import logo from "../images/Logo preta escrita.png";
+import logo from "../images/Logo branca escrita.png";
 import "../styles/Register.css";
 import { useState } from "react";
 import axios from "axios";
@@ -168,7 +168,7 @@ const UserRegistration = () => {
         <Button
           onClick={() => navigate(-1)}
           bg={"#2D2C31"}
-          border={"2px solid #f7bb75"}
+          border={"2px solid #A10808"}
           color={"white"}
           className="register-back-button"
         >
@@ -256,6 +256,7 @@ const UserRegistration = () => {
               onChange={handleChange}
               isInvalid={invalidFields.includes("password")}
               errorBorderColor="red.500"
+              autocomplete="new-password"
             />
           </Flex>
 
@@ -269,6 +270,7 @@ const UserRegistration = () => {
               onChange={handleChange}
               isInvalid={invalidFields.includes("confirmPassword")}
               errorBorderColor="red.500"
+              autocomplete="new-password"
             />
           </Flex>
 

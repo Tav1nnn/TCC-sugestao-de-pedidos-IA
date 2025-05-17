@@ -81,37 +81,37 @@ const Restaurant = () => {
                         src={restaurantData?.coverUrl || "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/56/71/59/atmosphere.jpg"}
                         alt={restaurantData?.name || "Imagem do Restaurante"}
                     />
-                    <div className="restaurantRest-text-info">
-                        <h1>{restaurantData?.name || "Restaurante"}</h1>
-                        {isOwner && (
-                            <Button
-                                onClick={() => navigate(`/restedit/${id}`)}
-                                bg="#2D2C31"
-                                border="2px solid #A10808"
-                                color="white"
-                                position="absolute"
-                                borderRadius="50%"
-                                top="10px"
-                                right="70px"
-                            >
-                                <FaEdit className="iconRest-edit" />
-                            </Button>
-                        )}
-                        <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
-                        <h2>Cardápio</h2>
+                    <h1>{restaurantData?.name || "Restaurante"}</h1>
+                    <h2>Cardápio</h2>
+                    <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
+                </div>
+                <div>
+                    {isOwner && (
                         <Button
-                            bg={'#2D2C31'}
-                            border={'2px solid #A10808'}
-                            borderRadius={'50%'}
-                            color={'white'}
-                            position={'absolute'}
-                            top={'10px'}
-                            right={'20px'}
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate(`/restedit/${id}`)}
+                            bg="#2D2C31"
+                            border={"2px solid #A10808"}
+                            color="white"
+                            position="absolute"
+                            borderRadius="50%"
+                            top="10px"
+                            right="70px"
                         >
-                            <AiOutlineClose />
+                            <FaEdit className="iconRest-edit" />
                         </Button>
-                    </div>
+                    )}
+                    <Button
+                        bg={'#2D2C31'}
+                        border={'2px solid #A10808'}
+                        borderRadius={'50%'}
+                        color={'white'}
+                        position={'absolute'}
+                        top={'10px'}
+                        right={'20px'}
+                        onClick={() => navigate(-1)}
+                    >
+                        <AiOutlineClose />
+                    </Button>
                 </div>
 
                 <div className="menuRest-section">
