@@ -81,7 +81,7 @@ function Login() {
       } catch (error) {
         const msg = error.response?.data?.message || 'Erro ao fazer login';
         console.error('Erro durante o login:', msg);
-        alert(msg);
+        setPasswordError(msg)
       }
     }
   };

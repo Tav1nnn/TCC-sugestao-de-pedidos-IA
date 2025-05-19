@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
-import { Button, VStack, HStack, Box, Text, Dialog, Portal, Input, NativeSelect, Accordion, Span, Alert, Toaster, Flex } from "@chakra-ui/react";
+import { Button, VStack, HStack, Box, Text, Dialog, Portal, Input, NativeSelect, Accordion, Flex } from "@chakra-ui/react";
 import { AiOutlineClose } from "react-icons/ai";
-import { FiAlertTriangle } from "react-icons/fi";
 import { FaAngleDown, FaBars, FaCheck, FaEdit, FaMoneyBillWave, FaPlus, FaRobot, FaTrash } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "../styles/RestEdit.css";
+import AlertCheck from "../components/AlertCheck";
 
 const RestEdit = () => {
     const { id } = useParams();
@@ -30,7 +30,6 @@ const RestEdit = () => {
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [currentIngredient, setCurrentIngredient] = useState('');
     const [editingDishId, setEditingDishId] = useState(null);
-    const ordemPrioridade = ['Entradas', 'Pratos Principais', 'Sobremesas', 'Bebidas'];
 
     useEffect(() => {
         const fetchAllIngredients = async () => {
@@ -117,7 +116,11 @@ const RestEdit = () => {
         const token = localStorage.getItem('authToken');
         try {
             await axios.put(`http://localhost:8080/api/categories/${categoryId}`, { name: newName }, { headers: { Authorization: `Bearer ${token}` } });
-            alert('Categoria atualizada com sucesso!');
+            <AlertCheck
+                message="Nova categoria adicionada!"
+                description="Categoria salva com sucesso!"
+                status="sucess"
+            />
 
             setMenuData(prevMenu =>
                 prevMenu.map(cat =>
@@ -465,6 +468,23 @@ const RestEdit = () => {
             alert('Ingrediente excluído com sucesso!');
         } catch (error) {
             console.error("Erro ao excluir ingrediente:", error);
+        }
+    }
+
+    const handleRemoveCategory = async (categoryId) => {
+        const confirmed = window.confirm("Quer mesmo excluir essa categoria?");
+        if (!confirmed) return;
+        const token = localStorage.getItem('authToken');
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/categories/${categoryId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setAllCategories(prev => prev.filter(cat => cat.id !== categoryId));
+            setCategoria('');
+            alert('Categoria excluída com sucesso!');
+        } catch (error) {
+            console.error("Erro ao excluir categoria:", error);
         }
     }
 
@@ -932,7 +952,7 @@ const RestEdit = () => {
                                                                 <NativeSelect.Field
                                                                     value={currentIngredient}
                                                                     onChange={(e) => setCurrentIngredient(e.target.value)}
-                                                                    placeholder="Selecione os ingredientes"
+                                                                    placeholder="Selecione o ingrediente"
                                                                     p={2}
                                                                     width="90%"
                                                                     pl={0}
@@ -967,6 +987,65 @@ const RestEdit = () => {
                                                                 color={'white'}
                                                                 size="sm"
                                                                 onClick={() => handleRemoveIngredient(currentIngredient)}
+                                                            >
+                                                                <FaCheck />
+                                                            </Button>
+                                                        </Dialog.Body>
+                                                    </Accordion.ItemBody>
+                                                </Accordion.ItemContent>
+                                            </Accordion.Item>
+                                        </Accordion.Root>
+                                        <Accordion.Root collapsible defaultValue={[0]}>
+                                            <Accordion.Item borderColor={'#525059'} value="ingrediente" className="AccordionItem">
+                                                <Accordion.ItemTrigger
+                                                    mt={4}
+                                                    p={2}
+                                                    pl={0}
+                                                    borderRadius="md"
+                                                    color="white"
+                                                    fontWeight="bold"
+                                                    fontSize="small"
+                                                    justifyContent={'space-between'}
+                                                >
+                                                    <Text>EXCLUIR UMA CATEGORIA</Text>
+                                                    <Accordion.ItemIndicator >
+                                                        <FaAngleDown color="white" />
+                                                    </Accordion.ItemIndicator >
+                                                </Accordion.ItemTrigger>
+                                                <Accordion.ItemContent>
+                                                    <Accordion.ItemBody>
+                                                        <Dialog.Body display="flex" justifyContent="inline" mb={4}>
+                                                            <NativeSelect.Root variant="subtle">
+                                                                <NativeSelect.Field
+                                                                    value={categoria}
+                                                                    onChange={(e) => setCategoria(e.target.value)}
+                                                                    placeholder="Selecione a categoria"
+                                                                    p={2}
+                                                                    width="90%"
+                                                                    pl={0}
+                                                                    pb={0}
+                                                                    borderRadius={'none'}
+                                                                    w="100%"
+                                                                    color={'white'}
+                                                                    border={'none'}
+                                                                    backgroundColor={'#2D2C31'}
+                                                                    borderBottom={'1px solid #A10808'}
+                                                                >
+                                                                    {allCategories.slice().sort((a, b) => a.name.localeCompare(b.name)).map((cat) => (
+                                                                            <option key={cat.categoryId} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
+                                                                                {cat.name}
+                                                                            </option>
+                                                                    ))}
+                                                                </NativeSelect.Field>
+                                                            </NativeSelect.Root>
+                                                            <Button
+                                                                w={'4%'}
+                                                                position="absolute"
+                                                                right={4}
+                                                                backgroundColor={'#2D2C31'}
+                                                                color={'white'}
+                                                                size="sm"
+                                                                onClick={() => handleRemoveCategory(categoria)}
                                                             >
                                                                 <FaCheck />
                                                             </Button>
