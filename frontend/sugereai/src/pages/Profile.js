@@ -2,7 +2,8 @@ import {
     Box, Flex, Heading, Image, Text, VStack, Icon, Button, Input
 } from "@chakra-ui/react";
 import {
-    FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt, FaEdit
+    FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkerAlt, FaEdit,
+    FaAlgolia
 } from "react-icons/fa";
 import logo from '../images/Logo branca escrita.png';
 import { AiOutlineClose } from "react-icons/ai";
@@ -14,7 +15,6 @@ import { jwtDecode } from "jwt-decode";
 import { cpf } from 'cpf-cnpj-validator'; 
 
 import LoadingAnimation from "../components/LoadingAnimation";
-import logo1 from '../images/Logo preta escrita.png';
 import "../styles/Profile.css";
 
 const Profile = () => {
@@ -147,7 +147,8 @@ const Profile = () => {
         { icon: FaMapMarkerAlt, label: "address", placeholder: "Endereço" },
         { icon: FaPhone, label: "phone", placeholder: "Telefone" },
         { icon: FaEnvelope, label: "description", placeholder: "Descrição" },
-        { icon: FaIdCard, label: "imageUrl", placeholder: "URL da Imagem" }
+        { icon: FaIdCard, label: "imageUrl", placeholder: "URL da Imagem" },
+        { icon: FaAlgolia, label: "coverUrl", placeholder: "URL da Imagem de capa" }
     ] : [
         { icon: FaUser, label: "name", placeholder: "Nome" },
         { icon: FaEnvelope, label: "email", placeholder: "Email" },
@@ -217,7 +218,7 @@ const Profile = () => {
                                     className="info-input"
                                 />
                             ) : (
-                                <Text className="info-text">{displayData?.[label] || '—————————'}</Text>
+                                <Text textAlign={'justify'} className="info-text">{displayData?.[label] || '—————————'}</Text>
                             )}
                         </Flex>
                     ))}

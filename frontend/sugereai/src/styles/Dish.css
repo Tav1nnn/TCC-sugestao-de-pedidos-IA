@@ -66,16 +66,22 @@
 @media (min-width: 530px) {
     .dish-image-capa img {
         width: 30%;
+        min-height: 400px;
         border-radius: 12px;
+        margin-top: 40px;
     }
 
     .dish-image-capa h1 {
         font-size: 28px;
+        margin-top: 20px;
     }
 
     .dish-image-capa h3 {
         font-size: 18px;
         width: 60%;
+        max-width: 1000px;
+        min-width: 600px;
+        text-align: justify;
     }
 
     .dish-info-section {
