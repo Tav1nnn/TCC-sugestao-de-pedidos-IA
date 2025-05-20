@@ -16,6 +16,11 @@ const Home = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/");
+  };
+
   const getRestaurants = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -67,12 +72,15 @@ const Home = () => {
     <div className="home-container">
       <div className="home-header">
         <Button className="btn-profile" onClick={() => navigate(`/profile/${user.id}`)}>
-          <img src="https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg" alt="Foto do usuário" />
+          <img
+            src={user?.imageUrl || 'https://via.placeholder.com/40'}
+            alt={`Foto de ${user?.name || 'usuário'}`}
+          />
         </Button>
 
         <img src={logo} alt="Logo" className="logo" />
 
-        <Button className="btn-logout" onClick={() => navigate('/')}>
+        <Button className="btn-logout" onClick={handleLogout}>
           <MdLogout />
         </Button>
       </div>

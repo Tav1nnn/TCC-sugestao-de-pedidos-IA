@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { cpf } from 'cpf-cnpj-validator'; 
+import { cpf } from 'cpf-cnpj-validator';
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import "../styles/Profile.css";
@@ -168,6 +168,11 @@ const Profile = () => {
                     <Image
                         src={displayData.imageUrl || displayData.imageURL || "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
                         alt="Foto de perfil"
+                        width={'100%'}
+                        height={'100%'}
+                        maxH={'40px'}
+                        maxW={'40px'}
+                        borderRadius={'50%'}
                     />
                 </Box>
 
@@ -219,6 +224,7 @@ const Profile = () => {
                                     onChange={(e) => handleChange(label, e.target.value)}
                                     placeholder={placeholder}
                                     className={placeholder.includes("Imagem") ? "info-input tres-pontos" : "info-input"}
+                                    disabled={label === 'document'}
                                 />
                             ) : (
                                 <Text textAlign={'justify'} className={placeholder.includes("Imagem") ? "info-text tres-pontos" : "info-text"}>{displayData?.[label] || '—————————'}</Text>

@@ -29,10 +29,16 @@ const RestEdit = () => {
     const [ingredient, setIngredient] = useState('');
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [currentIngredient, setCurrentIngredient] = useState('');
+    const [currentCategory, setCurrentCategory] = useState('');
     const [editingDishId, setEditingDishId] = useState(null);
 
     useEffect(() => {
-        const fetchAllIngredients = async () => {
+        fetchData();
+        fetchAllIngredients();
+        fetchAllCategories();
+    }, [id]);
+
+    const fetchAllIngredients = async () => {
             const token = localStorage.getItem('authToken');
             try {
                 const response = await axios.get('http://localhost:8080/api/ingredients', {
@@ -43,8 +49,6 @@ const RestEdit = () => {
                 console.error("Erro ao buscar ingredientes:", error);
             }
         };
-
-        fetchAllIngredients();
 
         const fetchAllCategories = async () => {
             const token = localStorage.getItem('authToken');
@@ -57,8 +61,6 @@ const RestEdit = () => {
                 console.error("Erro ao buscar categorias:", error);
             }
         };
-
-        fetchAllCategories();
 
 
         const fetchData = async () => {
@@ -109,8 +111,6 @@ const RestEdit = () => {
                 setIsLoading(false);
             }
         };
-        fetchData();
-    }, [id]);
 
     const handleSaveCategory = async (categoryId, newName) => {
         const token = localStorage.getItem('authToken');
@@ -343,17 +343,9 @@ const RestEdit = () => {
         try {
             const response = await axios.post('http://localhost:8080/api/categories', { name: categoria }, { headers: { Authorization: `Bearer ${token}` } });
 
-            /*setEditedMenuData(prevData => [
-                ...prevData,
-                {
-                    categoryId: response.data.categoryId,
-                    category: response.data.name,
-                    menuItem: []
-                }
-            ]);*/
-
             alert('Categoria criada com sucesso!');
             setCategoria('');
+            await fetchAllCategories();
         } catch (error) {
             console.error('Erro ao criar categoria:', error);
             alert('Erro ao criar categoria.');
@@ -481,7 +473,7 @@ const RestEdit = () => {
             });
 
             setAllCategories(prev => prev.filter(cat => cat.id !== categoryId));
-            setCategoria('');
+            setCurrentCategory('');
             alert('Categoria excluída com sucesso!');
         } catch (error) {
             console.error("Erro ao excluir categoria:", error);
@@ -585,7 +577,6 @@ const RestEdit = () => {
 
 
     const addIngredientDish = () => {
-        console.log(currentIngredient)
         if (!currentIngredient) return;
         const selected = allIngredients.find(i => i.name === currentIngredient);
         if (
@@ -598,7 +589,6 @@ const RestEdit = () => {
             }]);
             setCurrentIngredient('');
         }
-        console.log(selectedIngredients)
     };
 
 
@@ -624,7 +614,7 @@ const RestEdit = () => {
                             position={'absolute'}
                             top={'10px'}
                             right={'20px'}
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate('/home')}
                         >
                             <AiOutlineClose />
                         </Button>
@@ -1017,8 +1007,8 @@ const RestEdit = () => {
                                                         <Dialog.Body display="flex" justifyContent="inline" mb={4}>
                                                             <NativeSelect.Root variant="subtle">
                                                                 <NativeSelect.Field
-                                                                    value={categoria}
-                                                                    onChange={(e) => setCategoria(e.target.value)}
+                                                                    value={currentCategory}
+                                                                    onChange={(e) => setCurrentCategory(e.target.value)}
                                                                     placeholder="Selecione a categoria"
                                                                     p={2}
                                                                     width="90%"
@@ -1032,7 +1022,7 @@ const RestEdit = () => {
                                                                     borderBottom={'1px solid #A10808'}
                                                                 >
                                                                     {allCategories.slice().sort((a, b) => a.name.localeCompare(b.name)).map((cat) => (
-                                                                            <option key={cat.categoryId} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
+                                                                            <option key={cat.id} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
                                                                                 {cat.name}
                                                                             </option>
                                                                     ))}
@@ -1045,7 +1035,7 @@ const RestEdit = () => {
                                                                 backgroundColor={'#2D2C31'}
                                                                 color={'white'}
                                                                 size="sm"
-                                                                onClick={() => handleRemoveCategory(categoria)}
+                                                                onClick={() => handleRemoveCategory(currentCategory)}
                                                             >
                                                                 <FaCheck />
                                                             </Button>

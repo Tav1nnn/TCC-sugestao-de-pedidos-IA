@@ -17,6 +17,7 @@ import {
   FaIdCard,
   FaPhone,
   FaMapMarkerAlt,
+  FaImage,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import logo from "../images/Logo branca escrita.png";
@@ -37,7 +38,7 @@ const UserRegistration = () => {
     address: "",
     phone: "",
     imageUrl:
-      "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg",
+      "",
   });
   const [invalidFields, setInvalidFields] = useState([]);
   const [message, setMessage] = useState(null);
@@ -51,6 +52,7 @@ const UserRegistration = () => {
     const { placeholder, value } = e.target;
     const mapping = {
       Nome: "name",
+      "Imagem de perfil": "imageUrl",
       Email: "email",
       "CPF": "document",
       Telefone: "phone",
@@ -140,7 +142,7 @@ const UserRegistration = () => {
           address: "",
           phone: "",
           imageUrl:
-            "https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg",
+            "",
         });
         navigate("/");
       }
@@ -157,7 +159,7 @@ const UserRegistration = () => {
       <Flex className="register-header">
         <Box className="register-header-image">
           <Image
-            src={formData.imageUrl}
+            src="https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
             alt="Foto de usuário"
           />
         </Box>
@@ -180,7 +182,7 @@ const UserRegistration = () => {
       <Flex className="register-content">
         <Box className="register-image-container">
           <Image
-            src={formData.imageUrl}
+            src="https://t3.ftcdn.net/jpg/07/24/59/76/360_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"
             alt="Foto do usuário"
             className="register-image"
           />
@@ -196,6 +198,16 @@ const UserRegistration = () => {
               onChange={handleChange}
               isInvalid={invalidFields.includes("name")}
               errorBorderColor="red.500"
+            />
+          </Flex>
+
+          <Flex className="register-info-item">
+            <Icon as={FaImage} className="register-info-icon" />
+            <Input
+              placeholder="Imagem de perfil"
+              className="register-info-input"
+              value={formData.imageUrl}
+              onChange={handleChange}
             />
           </Flex>
 

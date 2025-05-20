@@ -261,7 +261,7 @@ export default function ChatRest() {
             maxW="70%"
             p="10px 15px"
             borderRadius="20px"
-            fontSize={'12px'}
+            fontSize={'14px'}
             mb="10px"
             alignSelf={msg.type === 'request' ? 'flex-end' : 'flex-start'}
             bg={msg.type === 'request' ? '#A10808' : '#f7bb75'}
