@@ -109,6 +109,9 @@ const Profile = () => {
             if (!token) return handleSessionExpired();
 
             if (restaurant) {
+
+                console.log('teste', JSON.stringify(editedData));
+
                 await axios.put(`http://localhost:8080/api/restaurants/${restaurant.id}`, editedData, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -215,10 +218,10 @@ const Profile = () => {
                                     value={editedData[label] || ''}
                                     onChange={(e) => handleChange(label, e.target.value)}
                                     placeholder={placeholder}
-                                    className="info-input"
+                                    className={placeholder.includes("Imagem") ? "info-input tres-pontos" : "info-input"}
                                 />
                             ) : (
-                                <Text textAlign={'justify'} className="info-text">{displayData?.[label] || '—————————'}</Text>
+                                <Text textAlign={'justify'} className={placeholder.includes("Imagem") ? "info-text tres-pontos" : "info-text"}>{displayData?.[label] || '—————————'}</Text>
                             )}
                         </Flex>
                     ))}

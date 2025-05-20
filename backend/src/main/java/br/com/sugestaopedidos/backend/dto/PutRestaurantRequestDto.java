@@ -20,4 +20,5 @@ public class PutRestaurantRequestDto {
     private String phone;
     @NotBlank
     private String imageUrl;
+    private String coverUrl;
 }
