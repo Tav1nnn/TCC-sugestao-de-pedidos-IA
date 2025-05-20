@@ -6,6 +6,7 @@ import LoadingAnimation from '../components/LoadingAnimation';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../images/Logo branca escrita.png';
+import { jwtDecode } from 'jwt-decode';
 
 function Login() {
   const [isLoading, setIsLoading] = useState(true);
@@ -72,11 +73,16 @@ function Login() {
 
         const authorization = response.data.token;
 
-        if (authorization) {
-          localStorage.setItem('authToken', authorization);
-          navigate('/home', { replace: true });
+        localStorage.setItem('authToken', authorization);
+
+        const decoded = jwtDecode(authorization);
+        const isAdmin = decoded.roles?.includes("ROLE_ADMIN");
+        const restaurantId = decoded.restaurantId;
+
+        if (isAdmin && restaurantId) {
+            navigate(`/restedit/${restaurantId}`);
         } else {
-          throw new Error('Dados de autenticação incompletos');
+            navigate("/home");
         }
       } catch (error) {
         const msg = error.response?.data?.message || 'Erro ao fazer login';

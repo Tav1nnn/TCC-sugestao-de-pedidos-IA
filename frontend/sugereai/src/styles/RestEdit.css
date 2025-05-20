@@ -1,4 +1,3 @@
-/* Container geral da seção do menu */
 .menuSectionEdit {
     display: grid;
     flex-direction: column;
@@ -57,6 +56,7 @@
     margin-bottom: 15px;
     border-bottom: 1px solid #A10808;
     background-color: #f5f5f5;
+    width: 300px;
   }
   
   .dishRow .dishFields {
@@ -224,5 +224,17 @@
   width: 100%;
   padding: 8px;
   border-bottom: 1px solid #e2e8f0;
+}
+
+@media (min-width: 540px) {
+   .dishRow {
+    width: 500px;
+   }
+}
+
+@media (min-width: 780px) {
+   .dishRow {
+    width: 700px;
+   }
 }
   
