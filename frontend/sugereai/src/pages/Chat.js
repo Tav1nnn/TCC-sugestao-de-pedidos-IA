@@ -22,7 +22,7 @@ export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState([]);
   const navigate = useNavigate();
   const [welcomeSent, setWelcomeSent] = useState(false);
-  const emojis = ['😊','😎','😍','🥰','❤️','💖','🔥','🚀','🌟','💃','🕺','🥳','🎉','🍀','🌸','✨','🙌','😂','✔','😉'];
+  const emojis = ['😊','😎','😍','🥰','❤️','💖','🔥','🚀','🌟','💃','🕺','🥳','🎉','🍀','🌸','✨','🙌','✔','😉'];
 
   const getRandomEmoji = () => {
     const numEmojis = Math.floor(Math.random() * 3) + 1;
