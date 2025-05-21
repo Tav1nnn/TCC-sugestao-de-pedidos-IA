@@ -21,7 +21,7 @@ export default function ChatRest() {
   const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [welcomeSent, setWelcomeSent] = useState(false);
-  const emojis = ['😊', '😎', '😍', '🥰', '❤️', '💖', '🔥', '🚀', '🌟', '💃', '🕺', '🥳', '🎉', '🍀', '🌸', '✨', '🙌', '😂', '✔', '😉'];
+  const emojis = ['😊', '😎', '😍', '🥰', '❤️', '💖', '🔥', '🚀', '🌟', '💃', '🕺', '🥳', '🎉', '🍀', '🌸', '✨', '🙌', '✔', '😉'];
   const { id } = useParams();
   const navigate = useNavigate();
   const chatEndRef = useRef(null);
