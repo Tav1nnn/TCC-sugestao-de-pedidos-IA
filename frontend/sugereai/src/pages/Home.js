@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../images/Logo preta escrita.png';
 import { jwtDecode } from "jwt-decode";
 import { MdLogout } from "react-icons/md";
+import { toaster } from "../components/ui/toaster"
 
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -26,7 +27,11 @@ const Home = () => {
       const token = localStorage.getItem('authToken');
 
       if (!token) {
-        alert('Sessão expirada. Faça login novamente.');
+        toaster.create({
+                    title: "Sessão expirada. Faça login novamente.",
+                    type: "error",
+                    duration: 3000,
+                });
         navigate('/');
         return;
       }
@@ -45,16 +50,18 @@ const Home = () => {
         }
       });
 
-      console.log(response.data);
       setRestaurants(response.data);
       setUser({
         ...responseUser.data,
         ...decodedPayload
       });
     } catch (error) {
-      console.error('Erro ao buscar restaurantes:', error);
       if (error.response?.status === 401) {
-        alert('Sessão expirada. Faça login novamente.');
+        toaster.create({
+          title: "Sessão expirada. Faça login novamente.",
+          type: "error",
+          duration: 3000,
+        });
         navigate('/');
       }
     }

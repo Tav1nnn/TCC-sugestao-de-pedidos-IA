@@ -5,6 +5,7 @@ import "../styles/Dish.css";
 import { Button } from "@chakra-ui/react";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
+import { toaster } from "../components/ui/toaster";
 
 const Dish = () => {
     const { id } = useParams();
@@ -15,49 +16,53 @@ const Dish = () => {
     useEffect(() => {
         const fetchDishAndIngredients = async () => {
             const token = localStorage.getItem("authToken");
-    
+
             try {
                 const dishResponse = await axios.get(`http://localhost:8080/api/menuItem/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-    
+
                 const foundDish = dishResponse.data;
-    
+
                 const ingResponse = await axios.get(`http://localhost:8080/api/ingredients`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-    
+
                 const allIngredients = ingResponse.data;
-    
+
                 const fullIngredients = foundDish.ingredientIds.map(ingId => {
                     const match = allIngredients.find(i => i.id === ingId);
                     return match?.name || "Desconhecido";
                 });
-                
+
                 setDishData({
                     ...foundDish,
                     ingredients: fullIngredients
                 });
-    
+
             } catch (error) {
                 console.error("Erro ao buscar prato ou ingredientes:", error);
                 if (error.response?.status === 401) {
-                    alert("Sessão expirada. Faça login novamente.");
+                    toaster.create({
+                        title: "Sessão expirada. Faça login novamente.",
+                        type: "error",
+                        duration: 3000,
+                    });
                     window.location.href = "/";
                 }
             } finally {
                 setIsLoading(false);
             }
         };
-    
+
         fetchDishAndIngredients();
     }, [id]);
-    
-    
+
+
 
     if (isLoading) return <LoadingAnimation />;
 
@@ -86,14 +91,14 @@ const Dish = () => {
                         </Button>
                     </div>
                 </div>
-    
+
                 <div className="dish-info-section">
                     <p><strong>Ingredientes:</strong> {dishData?.ingredients.join(", ")} </p>
                     <p><strong>Preço:</strong> R$ {dishData?.price?.toFixed(2)}</p>
                 </div>
             </div>
         </div>
-    );    
+    );
 };
 
 export default Dish;
