@@ -7,7 +7,7 @@ import { FaAngleDown, FaBars, FaCheck, FaEdit, FaMoneyBillWave, FaPlus, FaRobot,
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "../styles/RestEdit.css";
-import AlertCheck from "../components/AlertCheck";
+import { toaster } from "../components/ui/toaster"
 
 const RestEdit = () => {
     const { id } = useParams();
@@ -39,105 +39,103 @@ const RestEdit = () => {
     }, [id]);
 
     const fetchAllIngredients = async () => {
-            const token = localStorage.getItem('authToken');
-            try {
-                const response = await axios.get('http://localhost:8080/api/ingredients', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setAllIngredients(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar ingredientes:", error);
-            }
-        };
+        const token = localStorage.getItem('authToken');
+        try {
+            const response = await axios.get('http://localhost:8080/api/ingredients', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setAllIngredients(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar ingredientes:", error);
+        }
+    };
 
-        const fetchAllCategories = async () => {
-            const token = localStorage.getItem('authToken');
-            try {
-                const response = await axios.get('http://localhost:8080/api/categories', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setAllCategories(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar categorias:", error);
-            }
-        };
+    const fetchAllCategories = async () => {
+        const token = localStorage.getItem('authToken');
+        try {
+            const response = await axios.get('http://localhost:8080/api/categories', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setAllCategories(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar categorias:", error);
+        }
+    };
 
 
-        const fetchData = async () => {
-            const token = localStorage.getItem('authToken');
-            const decoded = jwtDecode(token);
-            if (!decoded.role?.includes('ROLE_ADMIN') && decoded.restaurantId !== id) {
-                navigate('/home');
-                return;
-            }
-            try {
-                const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                setRestaurantData(restaurantResponse.data);
-
-                const response = await axios.get(`http://localhost:8080/api/menuItem/restaurant/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                const rawMenu = response.data.menu;
-                const enrichedMenu = await Promise.all(
-                    rawMenu.map(async (category) => {
-                        const updatedItems = await Promise.all(
-                            category.menuItem.map(async (dish) => {
-                                const res = await axios.get(`http://localhost:8080/api/menuItem/${dish.menuItemId}`, {
-                                    headers: { Authorization: `Bearer ${token}` }
-                                });
-                                const fullDish = res.data;
-                                return { ...dish, description: fullDish.description ?? dish.description, imageUrl: fullDish.imageURL ?? dish.imageUrl, price: fullDish.price ?? dish.price };
-                            })
-                        );
-                        return { ...category, menuItem: updatedItems };
-                    })
-                );
-                setMenuData(enrichedMenu);
-                setEditedMenuData(enrichedMenu);
-            } catch (error) {
-                console.error("Erro ao buscar dados:", error);
-                if (error.response?.status === 401) {
-                    alert('Sessão expirada. Faça login novamente.');
-                    window.location.href = '/';
+    const fetchData = async () => {
+        const token = localStorage.getItem('authToken');
+        const decoded = jwtDecode(token);
+        if (!decoded.role?.includes('ROLE_ADMIN') && decoded.restaurantId !== id) {
+            navigate('/home');
+            return;
+        }
+        try {
+            const restaurantResponse = await axios.get(`http://localhost:8080/api/restaurants/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            } finally {
-                setIsLoading(false);
+            });
+            setRestaurantData(restaurantResponse.data);
+
+            const response = await axios.get(`http://localhost:8080/api/menuItem/restaurant/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const rawMenu = response.data.menu;
+            const enrichedMenu = await Promise.all(
+                rawMenu.map(async (category) => {
+                    const updatedItems = await Promise.all(
+                        category.menuItem.map(async (dish) => {
+                            const res = await axios.get(`http://localhost:8080/api/menuItem/${dish.menuItemId}`, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            const fullDish = res.data;
+                            return { ...dish, description: fullDish.description ?? dish.description, imageUrl: fullDish.imageURL ?? dish.imageUrl, price: fullDish.price ?? dish.price };
+                        })
+                    );
+                    return { ...category, menuItem: updatedItems };
+                })
+            );
+            setMenuData(enrichedMenu);
+            setEditedMenuData(enrichedMenu);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                toaster.create({
+                    title: "Sessão expirada. Faça login novamente.",
+                    type: "error",
+                    duration: 3000,
+                });
+                window.location.href = '/';
             }
-        };
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleSaveCategory = async (categoryId, newName) => {
         const token = localStorage.getItem('authToken');
         try {
             await axios.put(`http://localhost:8080/api/categories/${categoryId}`, { name: newName }, { headers: { Authorization: `Bearer ${token}` } });
-            <AlertCheck
-                message="Nova categoria adicionada!"
-                description="Categoria salva com sucesso!"
-                status="sucess"
-            />
 
-            setMenuData(prevMenu =>
-                prevMenu.map(cat =>
-                    cat.categoryId === categoryId ? { ...cat, category: newName } : cat
-                )
-            );
+            toaster.create({
+                title: "Nome da categoria atualizado com sucesso! " + newName,
+                type: "success",
+                duration: 3000,
+            })
 
-            setEditedMenuData(prevMenu =>
-                prevMenu.map(cat =>
-                    cat.categoryId === categoryId ? { ...cat, category: newName } : cat
-                )
-            );
-
+            fetchData();
+            setCurrentCategory('');
             setCategoria('');
 
         } catch (error) {
-            console.error("Erro ao atualizar categoria:", error);
+            toaster.create({
+                title: "Erro ao atualizar categoria: " + error.message,
+                type: "error",
+                duration: 3000,
+            })
         }
     };
 
@@ -175,7 +173,12 @@ const RestEdit = () => {
             const priceValue = formatPriceForBackend(dishPrice || '0');
 
             if (priceValue <= 0) {
-                throw new Error("O preço deve ser maior que zero");
+                toaster.create({
+                    title: "Preço inválido. O preço deve ser maior que zero.",
+                    type: "warning",
+                    duration: 3000,
+                })
+                return;
             }
 
             const updatedDishData = {
@@ -189,27 +192,14 @@ const RestEdit = () => {
 
             await handleSaveDish(dishId, updatedDishData);
 
-            setEditedMenuData((prevData) =>
-                prevData.map((category) =>
-                    category.categoryId === dishCategory
-                        ? {
-                            ...category,
-                            menuItem: category.menuItem.map((dish) =>
-                                dish.menuItemId === dishId
-                                    ? {
-                                        ...dish,
-                                        ...updatedDishData,
-                                        price: updatedDishData.price.toString().replace('.', ','),
-                                    }
-                                    : dish
-                            ),
-                        }
-                        : category
-                )
-            );
+            fetchData();
 
         } catch (error) {
-            alert(`Erro ao salvar: ${error.message}`);
+            toaster.create({
+                title: "Erro ao salvar prato: " + error.message,
+                type: "error",
+                duration: 3000,
+            })
         }
     };
 
@@ -222,23 +212,18 @@ const RestEdit = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setEditedMenuData(prevData =>
-                prevData.map(category => ({
-                    ...category,
-                    menuItem: category.menuItem.filter(dish => dish.menuItemId !== dishId)
-                }))
-            );
-
-            setMenuData(prevData =>
-                prevData.map(category => ({
-                    ...category,
-                    menuItem: category.menuItem.filter(dish => dish.menuItemId !== dishId)
-                }))
-            );
-
-            alert('Prato excluído com sucesso!');
+            toaster.create({
+                title: "Prato excluído com sucesso!",
+                type: "success",
+                duration: 3000,
+            })
+            fetchData();
         } catch (error) {
-            console.error("Erro ao excluir prato:", error);
+            toaster.create({
+                title: "Erro ao excluir prato: " + error.message,
+                type: "error",
+                duration: 3000,
+            })
         }
     }
 
@@ -260,7 +245,11 @@ const RestEdit = () => {
             };
 
             if (!dishUpdate.categoryId) {
-                throw new Error("Categoria do prato não definida");
+                toaster.create({
+                    title: "Categoria não definida para o prato.",
+                    type: "warning",
+                    duration: 3000,
+                })
             }
 
             const response = await axios.put(
@@ -269,32 +258,20 @@ const RestEdit = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            setEditedMenuData(prevMenu =>
-                prevMenu.map(category => ({
-                    ...category,
-                    menuItem: category.menuItem.map(item =>
-                        item.menuItemId === dishId ? {
-                            ...item,
-                            name: dishUpdate.name,
-                            description: dishUpdate.description,
-                            price: dishUpdate.price,
-                            imageUrl: dishUpdate.imageURL,
-                            categoryId: dishUpdate.categoryId,
-                            ingredients: dishUpdate.ingredientIds.map(id => ({
-                                ingredientId: id,
-                                ingredient: allIngredients.find(ing => ing.id === id || ing.ingredientId === id)?.name || 'Desconhecido',
-                                isGlobal: false
-                            }))
-                        } : item
-                    )
-                }))
-            );
+            toaster.create({
+                title: "Prato atualizado com sucesso!",
+                type: "success",
+                duration: 3000,
+            })
 
-            alert('Prato atualizado com sucesso!');
+            fetchData();
             return response.data;
         } catch (error) {
-            console.error("Erro detalhado ao atualizar prato:", error.response?.data || error.message);
-            alert(`Erro ao atualizar prato: ${error.response?.data?.message || error.message}`);
+            toaster.create({
+                title: "Erro ao atualizar prato: " + error.message,
+                type: "error",
+                duration: 3000,
+            });
             throw error;
         }
     };
@@ -311,7 +288,11 @@ const RestEdit = () => {
 
             return isNaN(price) ? 0 : Number(price.toFixed(2));
         } catch (error) {
-            console.error('Erro ao formatar preço:', error);
+            toaster.create({
+                title: "Erro ao formatar preço: " + error.message,
+                type: "error",
+                duration: 3000,
+            })
             return 0;
         }
     };
@@ -343,18 +324,40 @@ const RestEdit = () => {
         try {
             const response = await axios.post('http://localhost:8080/api/categories', { name: categoria }, { headers: { Authorization: `Bearer ${token}` } });
 
-            alert('Categoria criada com sucesso!');
+            toaster.create({
+                title: "Categoria criada com sucesso!",
+                type: "success",
+                duration: 3000,
+            })
             setCategoria('');
             await fetchAllCategories();
         } catch (error) {
-            console.error('Erro ao criar categoria:', error);
-            alert('Erro ao criar categoria.');
+            toaster.create({
+                title: "Erro ao criar categoria: " + error.message,
+                type: "error",
+                duration: 3000,
+            })
         }
     };
 
     const handleCreateDish = async () => {
         if (selectedIngredients.length === 0) {
-            alert('Adicione pelo menos um ingrediente');
+            toaster.create({
+                title: "Adicione pelo menos um ingrediente.",
+                type: "warning",
+                duration: 3000,
+            })
+            return;
+        }
+
+        const priceValue = formatPriceForBackend(dishPrice || '0');
+
+        if (priceValue <= 0) {
+            toaster.create({
+                title: "Preço inválido. O preço deve ser maior que zero.",
+                type: "warning",
+                duration: 3000,
+            })
             return;
         }
 
@@ -377,15 +380,19 @@ const RestEdit = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            console.log(dishData)
-            console.log(response.data)
+            toaster.create({
+                title: "Prato criado com sucesso!",
+                type: "success",
+                duration: 3000,
+            });
+            fetchData();
 
-
-            alert('Prato criado com sucesso!');
-            window.location.reload();
         } catch (error) {
-            console.error('Erro ao criar prato:', error);
-            alert('Erro ao criar prato.');
+            toaster.create({
+                title: "Erro ao criar prato: " + error.message,
+                type: "error",
+                duration: 3000,
+            });
         }
     };
 
@@ -395,30 +402,21 @@ const RestEdit = () => {
             const getResponse = await axios.get(`http://localhost:8080/api/ingredients/${ingredientId}`, { headers: { Authorization: `Bearer ${token}` } });
             const ingredientData = getResponse.data;
 
-            if (ingredientData.isGlobal) {
-                return alert("Ingrediente padrão, não é possível editar");
-            }
-
             await axios.put(`http://localhost:8080/api/ingredients/${ingredientId}`, { name: newName }, { headers: { Authorization: `Bearer ${token}` } });
 
-            setEditedMenuData((prevData) =>
-                prevData.map((category) => ({
-                    ...category,
-                    menuItem: category.menuItem.map((dish) => ({
-                        ...dish,
-                        ingredients: dish.ingredients.map((ingredient) =>
-                            ingredient.ingredientId === ingredientId
-                                ? { ...ingredient, ingredient: newName }
-                                : ingredient
-                        ),
-                    })),
-                }))
-            );
+            fetchData();
 
-
-            alert('Ingrediente atualizado com sucesso!');
+            toaster.create({
+                title: "Ingrediente atualizado com sucesso!",
+                type: "success",
+                duration: 3000,
+            });
         } catch (error) {
-            alert("Erro ao atualizar ingrediente");
+            toaster.create({
+                title: "Não é possível alterar um ingrediente padrão.",
+                type: "error",
+                duration: 3000,
+            });
         }
     };
 
@@ -439,10 +437,15 @@ const RestEdit = () => {
 
             setAllIngredients(getResponse.data);
             setIngredient('');
-            alert('Ingrediente criado com sucesso!');
+            toaster.create({
+                title: "Ingrediente criado com sucesso!",
+                type: "success",
+            });
         } catch (error) {
-            alert('Erro ao criar ingrediente.');
-            console.error("Erro ao criar ingrediente:", error);
+            toaster.create({
+                title: "Erro ao criar ingrediente: " + error.message,
+                type: "error",
+            });
         }
     };
 
@@ -455,11 +458,26 @@ const RestEdit = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setAllIngredients(prev => prev.filter(ing => ing.id !== ingredientId));
+            fetchAllIngredients();
             setCurrentIngredient('');
-            alert('Ingrediente excluído com sucesso!');
+            toaster.create({
+                title: "Ingrediente excluído com sucesso!",
+                type: "success",
+                duration: 3000,
+            });
         } catch (error) {
-            console.error("Erro ao excluir ingrediente:", error);
+            if (error.response && error.response.status === 409) {
+                toaster.create({
+                    title: "Esse ingrediente está associado a pratos e não pode ser excluído. Remova-o dos pratos primeiro.",
+                    type: "warning",
+                    duration: 4000,
+                });
+            } else {
+                toaster.create({
+                    title: "Erro ao excluir ingrediente: " + error.message,
+                    type: "error",
+                });
+            }
         }
     }
 
@@ -472,11 +490,27 @@ const RestEdit = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setAllCategories(prev => prev.filter(cat => cat.id !== categoryId));
+            fetchAllCategories();
             setCurrentCategory('');
-            alert('Categoria excluída com sucesso!');
+            toaster.create({
+                title: "Categoria removida com sucesso!",
+                type: "success",
+                duration: 3000,
+            });
         } catch (error) {
-            console.error("Erro ao excluir categoria:", error);
+            if (error.response && error.response.status === 409) {
+                toaster.create({
+                    title: "Essa categoria possui pratos associados e não pode ser excluída. Transfira os pratos ou remova-os primeiro.",
+                    type: "warning",
+                    duration: 4000,
+                });
+            } else {
+                toaster.create({
+                    title: "Erro ao remover categoria: " + error.message,
+                    type: "error",
+                    duration: 3000,
+                });
+            }
         }
     }
 
@@ -502,30 +536,20 @@ const RestEdit = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setEditedMenuData(prevMenuData =>
-                prevMenuData.map(category => ({
-                    ...category,
-                    menuItem: category.menuItem.map(item =>
-                        item.menuItemId === dishId
-                            ? {
-                                ...item,
-                                ingredientIds: updatedIngredientIds,
-                                ingredients: updatedIngredientIds.map(id => ({
-                                    ingredientId: id,
-                                    ingredient: allIngredients.find(ing => ing.id === id)?.name || 'Desconhecido',
-                                    isGlobal: false
-                                }))
-                            }
-                            : item
-                    )
-                }))
-            );
+            fetchData();
 
             setSelectedIngredients([]);
-            alert('Ingredientes adicionados com sucesso!');
+            toaster.create({
+                title: "Ingredientes adicionados ao prato com sucesso!",
+                type: "success",
+                duration: 3000
+            });
         } catch (err) {
-            console.error('Erro ao adicionar ingredientes ao prato:', err);
-            alert('Erro ao adicionar ingredientes.');
+            toaster.create({
+                title: "Erro ao adicionar ingredientes ao prato",
+                type: "error",
+                duration: 3000
+            });
         }
     };
 
@@ -552,26 +576,19 @@ const RestEdit = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setEditedMenuData((prevData) =>
-                prevData.map((category) => ({
-                    ...category,
-                    menuItem: category.menuItem.map((dish) =>
-                        dish.menuItemId === dishId
-                            ? {
-                                ...dish,
-                                ingredients: dish.ingredients.filter(
-                                    (ing) => ing.ingredientId !== ingredientIdToRemove
-                                ),
-                            }
-                            : dish
-                    ),
-                }))
-            );
+            fetchData();
 
-            alert('Ingrediente removido com sucesso!');
+            toaster.create({
+                title: "Ingrediente removido do prato com sucesso!",
+                type: "success",
+                duration: 3000
+            });
         } catch (err) {
-            console.error('Erro ao remover ingrediente do prato:', err);
-            alert('Erro ao remover ingrediente.');
+            toaster.create({
+                title: "Erro ao remover ingrediente do prato",
+                type: "error",
+                duration: 3000
+            });
         }
     };
 
@@ -1022,9 +1039,9 @@ const RestEdit = () => {
                                                                     borderBottom={'1px solid #A10808'}
                                                                 >
                                                                     {allCategories.slice().sort((a, b) => a.name.localeCompare(b.name)).map((cat) => (
-                                                                            <option key={cat.id} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
-                                                                                {cat.name}
-                                                                            </option>
+                                                                        <option key={cat.id} value={cat.id} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
+                                                                            {cat.name}
+                                                                        </option>
                                                                     ))}
                                                                 </NativeSelect.Field>
                                                             </NativeSelect.Root>

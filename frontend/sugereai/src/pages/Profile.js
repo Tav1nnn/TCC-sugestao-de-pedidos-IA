@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { cpf } from 'cpf-cnpj-validator';
-
+import { toaster } from "../components/ui/toaster"
 import LoadingAnimation from "../components/LoadingAnimation";
 import "../styles/Profile.css";
 
@@ -35,7 +35,6 @@ const Profile = () => {
             if (!token) return handleSessionExpired();
 
             const decoded = jwtDecode(token);
-            console.log(decoded);
             const isAdmin = decoded.roles.includes("ROLE_ADMIN");
             const restaurantId = decoded.restaurantId;
 
@@ -64,7 +63,11 @@ const Profile = () => {
     };
 
     const handleSessionExpired = () => {
-        alert('Sessão expirada. Faça login novamente.');
+        toaster.create({
+            title: "Sessão expirada. Faça login novamente.",
+            type: "error",
+            duration: 3000,
+        });
         navigate('/');
     };
 
@@ -102,7 +105,11 @@ const Profile = () => {
 
     const handleSave = async () => {
         const validationMessage = validateInputs();
-        if (validationMessage) return alert(validationMessage);
+        if (validationMessage) return toaster.create({
+            title: validationMessage,
+            type: "default",
+            duration: 3000,
+        });
 
         try {
             const token = localStorage.getItem('authToken');
@@ -110,15 +117,17 @@ const Profile = () => {
 
             if (restaurant) {
 
-                console.log('teste', JSON.stringify(editedData));
-
                 await axios.put(`http://localhost:8080/api/restaurants/${restaurant.id}`, editedData, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
                 await fetchUser();
                 setEditing(false);
-                alert("Restaurante atualizado com sucesso!");
+                toaster.create({
+                    title: "Restaurante atualizado com sucesso!",
+                    type: "success",
+                    duration: 3000,
+                });
             } else {
                 const dataToSend = {
                     ...editedData,
@@ -132,13 +141,26 @@ const Profile = () => {
                 await fetchUser();
                 setEditing(false);
                 setCurrentPassword('');
-                alert("Dados atualizados com sucesso!");
+                toaster.create({
+                    title: "Dados atualizados com sucesso!",
+                    type: "success",
+                    duration: 3000,
+                });
             }
         } catch (error) {
             const status = error.response?.status;
-            if (status === 401) alert("Senha incorreta.");
-            else alert("Erro ao salvar alterações.");
-            console.error("Erro ao salvar:", error);
+            if (status === 401)
+                toaster.create({
+                    title: "Senha incorreta.",
+                    type: "error",
+                    duration: 3000,
+                });
+            else
+                toaster.create({
+                    title: "Erro ao salvar alterações.",
+                    type: "error",
+                    duration: 3000,
+                });
         }
     };
 

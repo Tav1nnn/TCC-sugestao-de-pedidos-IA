@@ -3,10 +3,11 @@ import { useState, useRef, useEffect } from 'react';
 import { BsFillSendFill } from 'react-icons/bs';
 import { Button, Input, Box, Text, Flex, Image } from "@chakra-ui/react";
 import { keyframes } from '@emotion/react';
-import logo from '../images/Logo preta escrita.png'; // Certifique-se que o caminho está correto
+import logo from '../images/Logo preta escrita.png'; 
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { useParams, useNavigate } from 'react-router-dom';
+import { toaster } from "../components/ui/toaster";
 
 const dotsAnimation = keyframes`
   0% { content: ''; }
@@ -187,7 +188,11 @@ export default function ChatRest() {
     const fetchRestaurantName = async () => {
       const token = localStorage.getItem('authToken');
       if (!token) {
-        alert('Sessão expirada. Faça login novamente.');
+        toaster.create({
+                    title: "Sessão expirada. Faça login novamente.",
+                    type: "error",
+                    duration: 3000,
+                });
         navigate('/'); 
         return;
       }

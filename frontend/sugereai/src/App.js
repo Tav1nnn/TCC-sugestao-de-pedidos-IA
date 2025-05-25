@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Prato from './pages/Dish';
 import RestEdit from './pages/RestEdit';
+import { Toaster } from './components/ui/toaster';
 
 const router = createBrowserRouter([
   {
@@ -87,6 +88,7 @@ function App() {
   return (
     <Provider>
       <RouterProvider router={router} />
+      <Toaster/>
     </Provider>
   )
 }

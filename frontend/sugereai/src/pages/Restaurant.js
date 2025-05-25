@@ -7,6 +7,7 @@ import { FaEdit, FaRobot } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { toaster } from "../components/ui/toaster"
 
 const Restaurant = () => {
     const { id } = useParams();
@@ -21,7 +22,6 @@ const Restaurant = () => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
-                console.log('Decoded JWT:', decoded);
 
                 const isAdmin = decoded.roles?.includes('ROLE_ADMIN');
                 const userRestaurantId = decoded.restaurantId;
@@ -45,7 +45,6 @@ const Restaurant = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                console.log("Restaurante:", restaurantResponse.data);
                 setRestaurantData(restaurantResponse.data);
 
                 const response = await axios.get(`http://localhost:8080/api/menuItem/restaurant/${id}`, {
@@ -53,12 +52,14 @@ const Restaurant = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                console.log("Menu:", response.data.menu);
                 setMenuData(response.data.menu);
             } catch (error) {
-                console.error("Erro ao buscar dados:", error);
                 if (error.response?.status === 401) {
-                    alert('Sessão expirada. Faça login novamente.');
+                    toaster.create({
+                                        title: "Sessão expirada. Faça login novamente.",
+                                        type: "error",
+                                        duration: 3000,
+                                    });
                     window.location.href = '/';
                 }
             } finally {

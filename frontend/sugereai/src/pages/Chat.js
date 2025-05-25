@@ -144,7 +144,6 @@ export default function ChatPage() {
         }
       )
 
-      console.log(response.data);
       navigate(`/restaurant/${restaurantId}`);
     } catch (error) {
       console.error(error);
