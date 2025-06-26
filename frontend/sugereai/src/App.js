@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import Prato from './pages/Dish';
 import RestEdit from './pages/RestEdit';
 import { Toaster } from './components/ui/toaster';
+import NotFoundPage from './pages/NotFoundPage';
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     path: "/chat",
     element: (
       <ProtectedRoute>
-        <Chat/>
+        <Chat />
       </ProtectedRoute>
     ),
   },
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
     path: "/chatRest/:id",
     element: (
       <ProtectedRoute>
-        <ChatRest/>
+        <ChatRest />
       </ProtectedRoute>
     ),
   },
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
     path: "/restaurant/:id",
     element: (
       <ProtectedRoute>
-        <Restaurant/>
+        <Restaurant />
       </ProtectedRoute>
     ),
   },
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
     path: "/dish/:id",
     element: (
       <ProtectedRoute>
-        <Prato/>
+        <Prato />
       </ProtectedRoute>
     ),
   },
@@ -62,7 +63,7 @@ const router = createBrowserRouter([
     path: "/profile/:id",
     element: (
       <ProtectedRoute>
-        <Profile/>
+        <Profile />
       </ProtectedRoute>
     ),
   },
@@ -70,7 +71,7 @@ const router = createBrowserRouter([
     path: "/register",
     element: (
       <ProtectedRoute>
-        <Register/>
+        <Register />
       </ProtectedRoute>
     ),
   },
@@ -78,17 +79,25 @@ const router = createBrowserRouter([
     path: "/restedit/:id",
     element: (
       <ProtectedRoute>
-        <RestEdit/>
+        <RestEdit />
       </ProtectedRoute>
     ),
-  }
+  },
+  {
+    path: "*",
+    element: (
+      <ProtectedRoute>
+        <NotFoundPage />
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
 function App() {
   return (
     <Provider>
       <RouterProvider router={router} />
-      <Toaster/>
+      <Toaster />
     </Provider>
   )
 }

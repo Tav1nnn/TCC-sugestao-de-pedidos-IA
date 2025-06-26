@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
 import "../styles/Restaurant.css";
-import { Button } from "@chakra-ui/react";
-import { FaEdit, FaRobot } from "react-icons/fa";
+import { Box, Button, Dialog, Portal, Text } from "@chakra-ui/react";
+import { FaAddressCard, FaCheck, FaEdit, FaInfoCircle, FaLocationArrow, FaPhone, FaRobot } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -56,10 +56,10 @@ const Restaurant = () => {
             } catch (error) {
                 if (error.response?.status === 401) {
                     toaster.create({
-                                        title: "Sessão expirada. Faça login novamente.",
-                                        type: "error",
-                                        duration: 3000,
-                                    });
+                        title: "Sessão expirada. Faça login novamente.",
+                        type: "error",
+                        duration: 3000,
+                    });
                     window.location.href = '/';
                 }
             } finally {
@@ -87,7 +87,7 @@ const Restaurant = () => {
                     <h3>{restaurantData?.description || "Descrição do Restaurante"}</h3>
                 </div>
                 <div>
-                    {isOwner && (
+                    {isOwner ? (
                         <Button
                             onClick={() => navigate(`/restedit/${id}`)}
                             bg="#2D2C31"
@@ -100,6 +100,45 @@ const Restaurant = () => {
                         >
                             <FaEdit className="iconRest-edit" />
                         </Button>
+                    ) : (
+                        <Dialog.Root>
+                            <Dialog.Trigger asChild>
+                                <Button
+                                    bg="#2D2C31"
+                                    border={"2px solid #A10808"}
+                                    color="white"
+                                    position="absolute"
+                                    borderRadius="50%"
+                                    top="10px"
+                                    right="70px"
+                                >
+                                    <FaInfoCircle className="iconRest-info" />
+                                </Button>
+                            </Dialog.Trigger>
+                            <Portal>
+                                <Dialog.Backdrop />
+                                <Dialog.Positioner display="flex" justifyContent="center" alignItems="center">
+                                    <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                        <Dialog.Header mt={2} className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
+                                            <Dialog.Title className="DialogTitle">INFORMAÇÕES</Dialog.Title>
+                                            <Dialog.ActionTrigger asChild position={"absolute"} top={2} right={2} mt={2}>
+                                                <Button bg={'#2D2C31'} border={'1px solid #A10808'} color={'white'}>
+                                                    <AiOutlineClose />
+                                                </Button>
+                                            </Dialog.ActionTrigger>
+                                        </Dialog.Header>
+                                        <Dialog.Body mt={4} className="DialogDescription" p={4} display={'flex'} flexDirection={'column'} alignItems={'center'} gap={2}>
+                                            <Box gap={2} display={'flex'} flexDirection={'column'} alignItems={'left'}>
+                                                <Text fontSize={20} fontWeight={'bold'}>{restaurantData?.name}</Text>
+                                                <Text display={'flex'} gap={2}><FaPhone /> {restaurantData?.phone}</Text>
+                                                <Text display={'flex'} gap={2}><FaLocationArrow />{restaurantData?.address}</Text>
+                                            </Box>
+                                            <Text display={'flex'} gap={2} textAlign={'justify'}><FaLocationArrow />{restaurantData?.description}</Text>
+                                        </Dialog.Body>
+                                    </Dialog.Content>
+                                </Dialog.Positioner>
+                            </Portal>
+                        </Dialog.Root>
                     )}
                     <Button
                         bg={'#2D2C31'}

@@ -127,15 +127,22 @@ const RestEdit = () => {
             })
 
             fetchData();
-            setCurrentCategory('');
-            setCategoria('');
-
+            fetchAllCategories();
+            
         } catch (error) {
-            toaster.create({
-                title: "Erro ao atualizar categoria: " + error.message,
-                type: "error",
-                duration: 3000,
-            })
+            if (error.response && error.response.status === 422) {
+                toaster.create({
+                    title: "Erro ao atualizar categoria: O campo nome é obrigatório.",
+                    type: "error",
+                    duration: 3000,
+                });
+            } else {
+                toaster.create({
+                    title: "Erro ao atualizar categoria: " + error.message,
+                    type: "error",
+                    duration: 3000,
+                });
+            }
         }
     };
 
@@ -177,6 +184,24 @@ const RestEdit = () => {
                     title: "Preço inválido. O preço deve ser maior que zero.",
                     type: "warning",
                     duration: 3000,
+                })
+                return;
+            }
+
+            if (dishName.trim() === '') {
+                toaster.create({
+                    title: "O nome deve ser preenchido.",
+                    type: "error",
+                    duration: 3000,
+                })
+                return;
+            }
+
+            if (dishDescription.trim() === '') {
+                toaster.create({
+                    title: "Você deixou a descrição do prato vazia, isso pode causar problemas para a sugestão desse item. Por favor, preencha a descrição.",
+                    type: "error",
+                    duration: 5000,
                 })
                 return;
             }
@@ -405,6 +430,7 @@ const RestEdit = () => {
             await axios.put(`http://localhost:8080/api/ingredients/${ingredientId}`, { name: newName }, { headers: { Authorization: `Bearer ${token}` } });
 
             fetchData();
+            fetchAllIngredients();
 
             toaster.create({
                 title: "Ingrediente atualizado com sucesso!",
@@ -554,7 +580,7 @@ const RestEdit = () => {
     };
 
     const RemoveIngredientToDish = async (dishId, ingredientIdToRemove) => {
-        const confirmed = window.confirm("Quer mesmo remover esse ingrediente desse prato?");
+        const confirmed = window.confirm("Quer mesmo remover esse ingrediente do prato?");
         if (!confirmed) return;
         const token = localStorage.getItem('authToken');
 
@@ -646,6 +672,7 @@ const RestEdit = () => {
                                     top="10px"
                                     right="70px"
                                     zIndex={4}
+                                    onClick={() => { setIngredient(''), setCategoria(''), setCurrentCategory(''), setCurrentIngredient('') }}
                                 >
                                     <FaBars />
                                 </Button>
@@ -1243,7 +1270,7 @@ const RestEdit = () => {
                                                             bg={'#2D2C31'}
                                                             border={'1px solid #96c93d'}
                                                             color={'white'}
-                                                            onClick={() => setEditingDishId(dish.menuItemId)}>
+                                                            onClick={() => { setCurrentIngredient(''); setEditingDishId(dish.menuItemId) }}>
                                                             <FaPlus />
                                                         </Button>
                                                     </Dialog.Trigger>
@@ -1327,7 +1354,7 @@ const RestEdit = () => {
                                                         <Dialog.Root>
                                                             <Box>
                                                                 <Dialog.Trigger asChild>
-                                                                    <Button size="sm" background={'none'} color={'#2D2C31'} border={'none'}>
+                                                                    <Button size="sm" background={'none'} color={'#2D2C31'} border={'none'} onClick={() => { setIngredient('') }}>
                                                                         <FaEdit />
                                                                     </Button>
                                                                 </Dialog.Trigger>
