@@ -12,8 +12,10 @@ public class RestaurantFormatDto {
     private String name;
     private String description;
     private Set<String> categories;
+    private Set<String> menuItems;
 
     public RestaurantFormatDto () {
         this.categories = new HashSet<>();
+        this.menuItems = new HashSet<>();
     }
 }

@@ -14,9 +14,11 @@ import br.com.sugestaopedidos.backend.exception.resource.OpenAiRequestException;
 import br.com.sugestaopedidos.backend.exception.resource.ResourceNotFoundException;
 import br.com.sugestaopedidos.backend.mapper.RestaurantMapper;
 import br.com.sugestaopedidos.backend.model.Category;
+import br.com.sugestaopedidos.backend.model.MenuItem;
 import br.com.sugestaopedidos.backend.model.Restaurant;
 import br.com.sugestaopedidos.backend.model.User;
 import br.com.sugestaopedidos.backend.repository.CategoryRepository;
+import br.com.sugestaopedidos.backend.repository.MenuItemRepository;
 import br.com.sugestaopedidos.backend.repository.RestaurantRepository;
 import br.com.sugestaopedidos.backend.repository.UserRepository;
 import br.com.sugestaopedidos.backend.util.AuthUtils;
@@ -40,7 +42,7 @@ import java.util.StringJoiner;
         private final ConsumeOpenAi consumeOpenAi;
         private final RestaurantMapper restaurantMapper;
         private final ObjectMapper objectMapper;
-        private final UserRepository userRepository;
+        private final MenuItemRepository menuItemRepository;
 
         public List<ChatRestaurantDto> consumeChatRestaurant(List<ChatRestaurantDto> chatDtos) {
             User user = AuthUtils.getCurrentUser();
@@ -97,7 +99,7 @@ import java.util.StringJoiner;
             List<Restaurant> restaurants = restaurantRepository.findAll();
             List<RestaurantFormatDto> restaurantFormatDtos = restaurantMapper.toListDtos(restaurants);
             List<Category> categories = categoryRepository.findByRestaurants(restaurants);
-
+            List<MenuItem> menuItems = menuItemRepository.findByRestaurants(restaurants);
             Map<String, RestaurantFormatDto> restaurantMap = new HashMap<>();
             for (int i = 0; i < restaurants.size(); i++) {
                 Restaurant restaurant = restaurants.get(i);
@@ -110,6 +112,14 @@ import java.util.StringJoiner;
                 RestaurantFormatDto dto = restaurantMap.get(restaurant.getId());
                 if (dto != null) {
                     dto.getCategories().add(category.getName());
+                }
+            }
+
+            for (MenuItem menuItem : menuItems) {
+                Restaurant restaurant = menuItem.getRestaurant();
+                RestaurantFormatDto dto = restaurantMap.get(restaurant.getId());
+                if(dto != null) {
+                    dto.getMenuItems().add(menuItem.getName());
                 }
             }
 

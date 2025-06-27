@@ -1788,3 +1788,15 @@ UPDATE menu_items SET image_url = 'https://placehold.co/200x200/3357FF/FFFFFF?te
 UPDATE menu_items SET image_url = 'https://placehold.co/200x200/581845/FFFFFF?text=Doce+de+Leite+com+Queijo' WHERE id = 'item-bra-009';
 UPDATE menu_items SET image_url = 'https://placehold.co/200x200/E67E22/FFFFFF?text=Bolo+de+Fubá+Cremoso' WHERE id = 'item-bra-010';
 UPDATE menu_items SET image_url = 'https://placehold.co/200x200/28B463/FFFFFF?text=Goiabada+com+Queijo+Romeu+e+Julieta' WHERE id = 'item-bra-011';
+
+
+update menu_items set image_url = '' where id = 'item-0011-01';
+update menu_items set image_url = '' where id = 'item-0011-02';
+update menu_items set image_url = '' where id = 'item-0011-03';
+update menu_items set image_url = '' where id = 'item-0011-04';
+update menu_items set image_url = '' where id = 'item-0011-05';
+update menu_items set image_url = '' where id = 'item-0011-06';
+update menu_items set image_url = '' where id = 'item-0011-07';
+update menu_items set image_url = '' where id = 'item-0011-08';
+update menu_items set image_url = '' where id = 'item-0011-09';
+update menu_items set image_url = '' where id = 'item-0011-10';
