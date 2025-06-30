@@ -23,6 +23,7 @@ public class ConsumeOpenAi {
         return webClient.post()
                 .uri("https://api.openai.com/v1/chat/completions")
                 .header("Authorization", "Bearer " + restProperties.getKey())
+                .header("Connection", "close")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(requestOpenAi), RequestOpenAi.class)
                 .retrieve()
