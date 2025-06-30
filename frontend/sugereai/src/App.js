@@ -70,9 +70,7 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: (
-      <ProtectedRoute>
         <Register />
-      </ProtectedRoute>
     ),
   },
   {

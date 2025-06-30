@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "../styles/RestEdit.css";
 import { toaster } from "../components/ui/toaster"
+import DialogExclude from "../components/DialogExclude";
 
 const RestEdit = () => {
     const { id } = useParams();
@@ -31,6 +32,14 @@ const RestEdit = () => {
     const [currentIngredient, setCurrentIngredient] = useState('');
     const [currentCategory, setCurrentCategory] = useState('');
     const [editingDishId, setEditingDishId] = useState(null);
+    const [isDishOpen, setDishIsOpen] = useState(false);
+    const [isCategoryOpen, setCategoryIsOpen] = useState(false);
+    const [isIngredientOpen, setIngredientIsOpen] = useState(false);
+    const [isDishIngredientOpen, setDishIngredientIsOpen] = useState(false);
+    const [selectedDishId, setSelectedDishId] = useState(null);
+    const [selectedIngredientId, setSelectedIngredientId] = useState(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [selectedDishIngredientId, setSelectedDishIngredientId] = useState(null);
 
     useEffect(() => {
         fetchData();
@@ -128,7 +137,7 @@ const RestEdit = () => {
 
             fetchData();
             fetchAllCategories();
-            
+
         } catch (error) {
             if (error.response && error.response.status === 422) {
                 toaster.create({
@@ -229,11 +238,19 @@ const RestEdit = () => {
     };
 
     const handleExcludeDish = async (dishId) => {
-        const confirmed = window.confirm("Quer mesmo excluir esse prato?");
-        if (!confirmed) return;
         const token = localStorage.getItem('authToken');
+
+        if (!dishId) {
+            toaster.create({
+                title: "Prato inválido.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        }
+
         try {
-            const response = await axios.delete(`http://localhost:8080/api/menuItem/${dishId}`, {
+            await axios.delete(`http://localhost:8080/api/menuItem/${dishId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -242,7 +259,10 @@ const RestEdit = () => {
                 type: "success",
                 duration: 3000,
             })
-            fetchData();
+
+            await fetchData();
+            setDishIsOpen(false);
+            setSelectedDishId(null);
         } catch (error) {
             toaster.create({
                 title: "Erro ao excluir prato: " + error.message,
@@ -476,21 +496,33 @@ const RestEdit = () => {
     };
 
     const handleRemoveIngredient = async (ingredientId) => {
-        const confirmed = window.confirm("Quer mesmo excluir esse ingrediente?");
-        if (!confirmed) return;
         const token = localStorage.getItem('authToken');
+
+        if (!ingredientId) {
+            toaster.create({
+                title: "Ingrediente inválido.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        }
+
         try {
-            const response = await axios.delete(`http://localhost:8080/api/ingredients/${ingredientId}`, {
+            await axios.delete(`http://localhost:8080/api/ingredients/${ingredientId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             fetchAllIngredients();
             setCurrentIngredient('');
+            setCategoryIsOpen(false);
+            setSelectedCategoryId(null);
             toaster.create({
                 title: "Ingrediente excluído com sucesso!",
                 type: "success",
                 duration: 3000,
             });
+
+            setSelectedIngredientId(null);
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 toaster.create({
@@ -508,16 +540,25 @@ const RestEdit = () => {
     }
 
     const handleRemoveCategory = async (categoryId) => {
-        const confirmed = window.confirm("Quer mesmo excluir essa categoria?");
-        if (!confirmed) return;
+        if (!categoryId) {
+            toaster.create({
+                title: "Categoria inválida.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        }
+
         const token = localStorage.getItem('authToken');
         try {
-            const response = await axios.delete(`http://localhost:8080/api/categories/${categoryId}`, {
+            await axios.delete(`http://localhost:8080/api/categories/${categoryId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             fetchAllCategories();
             setCurrentCategory('');
+            setCategoryIsOpen(false);
+            setSelectedCategoryId(null);
             toaster.create({
                 title: "Categoria removida com sucesso!",
                 type: "success",
@@ -542,6 +583,22 @@ const RestEdit = () => {
 
     const handleAddIngredientsToDish = async (dishId, newIngredients) => {
         const token = localStorage.getItem('authToken');
+
+        if (!dishId) {
+            toaster.create({
+                title: "Erro ao adicionar ingredientes: não foi possível encontrar o prato.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        } else if (newIngredients.length === 0) {
+            toaster.create({
+                title: "Insira ao menos um ingrediente.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        }
 
         try {
             const { data: currentDish } = await axios.get(`http://localhost:8080/api/menuItem/${dishId}`, {
@@ -580,9 +637,23 @@ const RestEdit = () => {
     };
 
     const RemoveIngredientToDish = async (dishId, ingredientIdToRemove) => {
-        const confirmed = window.confirm("Quer mesmo remover esse ingrediente do prato?");
-        if (!confirmed) return;
         const token = localStorage.getItem('authToken');
+
+        if (!dishId) {
+            toaster.create({
+                title: "Prato inválido.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        } else if (!ingredientIdToRemove) {
+            toaster.create({
+                title: "Ingrediente inválido.",
+                type: "error",
+                duration: 3000,
+            });
+            return;
+        }
 
         try {
             const { data: currentDish } = await axios.get(`http://localhost:8080/api/menuItem/${dishId}`, {
@@ -602,7 +673,9 @@ const RestEdit = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            fetchData();
+            await fetchData();
+            setDishIngredientIsOpen(false);
+            setSelectedDishIngredientId(null);
 
             toaster.create({
                 title: "Ingrediente removido do prato com sucesso!",
@@ -684,7 +757,7 @@ const RestEdit = () => {
                                         backgroundColor="#2D2C31"
                                         minH={400}
                                         maxH="auto"
-                                        m={'auto'}
+                                        mt={20} mr={8} ml={8} mb={20}
                                         className="DialogContent"
                                         p={4}
                                     >
@@ -1020,10 +1093,14 @@ const RestEdit = () => {
                                                                 backgroundColor={'#2D2C31'}
                                                                 color={'white'}
                                                                 size="sm"
-                                                                onClick={() => handleRemoveIngredient(currentIngredient)}
+                                                                onClick={() => {
+                                                                    setSelectedIngredientId(currentIngredient);
+                                                                    setIngredientIsOpen(true);
+                                                                }}
                                                             >
                                                                 <FaCheck />
                                                             </Button>
+                                                            <DialogExclude isOpen={isIngredientOpen} onClose={() => setIngredientIsOpen(false)} onConfirm={() => handleRemoveIngredient(selectedIngredientId)} />
                                                         </Dialog.Body>
                                                     </Accordion.ItemBody>
                                                 </Accordion.ItemContent>
@@ -1079,10 +1156,14 @@ const RestEdit = () => {
                                                                 backgroundColor={'#2D2C31'}
                                                                 color={'white'}
                                                                 size="sm"
-                                                                onClick={() => handleRemoveCategory(currentCategory)}
+                                                                onClick={() => {
+                                                                    setSelectedCategoryId(currentCategory);
+                                                                    setCategoryIsOpen(true);
+                                                                }}
                                                             >
                                                                 <FaCheck />
                                                             </Button>
+                                                            <DialogExclude isOpen={isCategoryOpen} onClose={() => setCategoryIsOpen(false)} onConfirm={() => handleRemoveCategory(selectedCategoryId)} />
                                                         </Dialog.Body>
                                                     </Accordion.ItemBody>
                                                 </Accordion.ItemContent>
@@ -1118,7 +1199,7 @@ const RestEdit = () => {
                                         <Portal>
                                             <Dialog.Backdrop />
                                             <Dialog.Positioner>
-                                                <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                <Dialog.Content mt={20} mr={8} ml={8} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
                                                     <Dialog.Header mt={2} className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
                                                         <Dialog.Title className="DialogTitle">Editar Categoria</Dialog.Title>
                                                         <Dialog.ActionTrigger asChild position={"absolute"} top={2} right={2} mt={2}>
@@ -1139,9 +1220,9 @@ const RestEdit = () => {
                                                     />
                                                     <Dialog.Footer mt={4} className="DialogFooter">
                                                         <Dialog.ActionTrigger asChild>
-                                                            <Button variant="outline" size="md" p={2}>Cancel</Button>
+                                                            <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'} p={2}>Cancelar</Button>
                                                         </Dialog.ActionTrigger>
-                                                        <Button variant="outline" size="md" onClick={() => handleSaveCategory(category.categoryId, categoria)}>
+                                                        <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'} onClick={() => handleSaveCategory(category.categoryId, categoria)}>
                                                             <FaCheck />
                                                         </Button>
                                                     </Dialog.Footer>
@@ -1178,15 +1259,22 @@ const RestEdit = () => {
                                                                 <FaEdit color="#2D2C31" />
                                                             </Button>
                                                         </Dialog.Trigger>
-                                                        <Button size={'sm'} background={'none'} onClick={() => handleExcludeDish(dish.menuItemId)}>
+                                                        <Button
+                                                            size={'sm'}
+                                                            background={'none'}
+                                                            onClick={() => {
+                                                                setSelectedDishId(dish.menuItemId);
+                                                                setDishIsOpen(true);
+                                                            }}
+                                                        >
                                                             <FaTrash color="#A10808" />
                                                         </Button>
-
+                                                        <DialogExclude isOpen={isDishOpen} onClose={() => setDishIsOpen(false)} onConfirm={() => handleExcludeDish(selectedDishId)} />
                                                     </Box>
                                                     <Portal>
                                                         <Dialog.Backdrop />
                                                         <Dialog.Positioner>
-                                                            <Dialog.Content m={20} minH={200} maxH={'auto'} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                            <Dialog.Content mt={20} mr={8} ml={8} minH={200} maxH={'auto'} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
                                                                 <Dialog.Header className="DialogHeader" display={'flex'} justifyContent={'space-between'}>
                                                                     <Dialog.Title mt={4} className="DialogTitle">Editar Prato</Dialog.Title>
                                                                     <Dialog.ActionTrigger asChild>
@@ -1248,12 +1336,12 @@ const RestEdit = () => {
                                                                     <NativeSelect.Indicator />
                                                                 </NativeSelect.Root>
                                                                 <Dialog.Footer className="DialogFooter" mt={4}>
+                                                                    <Dialog.ActionTrigger asChild>
+                                                                        <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}>Cancelar</Button>
+                                                                    </Dialog.ActionTrigger>
                                                                     <Button variant="outline" size="sm" onClick={handleLocalSave} border={'1px solid #A10808'} color={'white'} style={{ padding: '2px', color: '#fff', backgroundColor: '#2D2C31' }}>
                                                                         <FaCheck />
                                                                     </Button>
-                                                                    <Dialog.ActionTrigger asChild>
-                                                                        <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}>Cancel</Button>
-                                                                    </Dialog.ActionTrigger>
                                                                 </Dialog.Footer>
                                                             </Dialog.Content>
                                                         </Dialog.Positioner>
@@ -1277,7 +1365,7 @@ const RestEdit = () => {
                                                     <Portal>
                                                         <Dialog.Backdrop />
                                                         <Dialog.Positioner>
-                                                            <Dialog.Content backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
+                                                            <Dialog.Content mt={20} mr={8} ml={8} backgroundColor={"#2D2C31"} className="DialogContent" p={4} borderRadius="md" borderWidth="1px" borderColor="#A10808">
                                                                 <Dialog.Header className="DialogHeader">
                                                                     <Dialog.Title className="DialogTitle">Adicionar Ingrediente</Dialog.Title>
                                                                 </Dialog.Header>
@@ -1303,10 +1391,9 @@ const RestEdit = () => {
                                                                         <Button
                                                                             ml={2}
                                                                             onClick={addIngredientDish}
-                                                                            size="sm"
-                                                                            variant="ghost"
+                                                                            variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}
                                                                         >
-                                                                            <FaCheck />
+                                                                            <FaPlus />
                                                                         </Button>
                                                                     </Box>
 
@@ -1330,12 +1417,11 @@ const RestEdit = () => {
 
                                                                 <Dialog.Footer className="DialogFooter">
                                                                     <Dialog.ActionTrigger asChild>
-                                                                        <Button variant="outline">Cancelar</Button>
+                                                                        <Button variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}>Cancelar</Button>
                                                                     </Dialog.ActionTrigger>
 
                                                                     <Button
-                                                                        variant="outline"
-                                                                        size="sm"
+                                                                        variant="outline" size="sm" p={2} border={'1px solid #A10808'} color={'white'}
                                                                         onClick={() => handleAddIngredientsToDish(editingDishId, selectedIngredients)}
                                                                     >
                                                                         <FaCheck />
@@ -1347,20 +1433,39 @@ const RestEdit = () => {
                                                     </Portal>
                                                 </Dialog.Root>
                                             </Box>
-                                            <VStack >
+                                            <VStack>
                                                 {dish.ingredients.map((ing, ingIndex) => (
-                                                    <HStack key={ingIndex} width="100%" justifyContent="space-between" >
+                                                    <HStack key={ingIndex} width="100%" justifyContent="space-between">
                                                         <Text fontSize={14}>{ing.ingredient}</Text>
                                                         <Dialog.Root>
                                                             <Box>
+                                                                {/* Botão de Editar Ingrediente - Mantido como está */}
                                                                 <Dialog.Trigger asChild>
                                                                     <Button size="sm" background={'none'} color={'#2D2C31'} border={'none'} onClick={() => { setIngredient('') }}>
                                                                         <FaEdit />
                                                                     </Button>
                                                                 </Dialog.Trigger>
-                                                                <Button background={'none'} size={'sm'}>
-                                                                    <FaTrash color={"#A10808"} onClick={() => RemoveIngredientToDish(dish.menuItemId, ing.ingredientId)} />
+
+                                                                {/* Botão de Excluir Ingrediente */}
+                                                                <Button
+                                                                    background={'none'}
+                                                                    size={'sm'}
+                                                                    onClick={() => {
+                                                                        setSelectedDishIngredientId({
+                                                                            dishId: dish.menuItemId,
+                                                                            ingredientId: ing.ingredientId,
+                                                                        });
+                                                                        setDishIngredientIsOpen(true); // Abre o diálogo de exclusão
+                                                                    }}
+                                                                >
+                                                                    <FaTrash color={"#A10808"} />
                                                                 </Button>
+
+                                                                {/*
+                        O DialogExclude NÃO deve ficar aqui dentro do map.
+                        Ele deve ser movido para fora do loop de mapeamento de ingredientes.
+                        A sua visibilidade será controlada pelo estado isDishIngredientOpen.
+                    */}
                                                             </Box>
                                                             <Portal>
                                                                 <Dialog.Backdrop />
@@ -1399,6 +1504,18 @@ const RestEdit = () => {
                                                     </HStack>
                                                 ))}
                                             </VStack>
+
+                                            {isDishIngredientOpen && ( 
+                                                <DialogExclude
+                                                    isOpen={isDishIngredientOpen}
+                                                    onClose={() => setDishIngredientIsOpen(false)}
+                                                    onConfirm={() => RemoveIngredientToDish(
+                                                        selectedDishIngredientId.dishId,
+                                                        selectedDishIngredientId.ingredientId
+                                                    )}
+                                                />
+                                            )}
+
                                         </Box>
                                     ))}
                             </Box>

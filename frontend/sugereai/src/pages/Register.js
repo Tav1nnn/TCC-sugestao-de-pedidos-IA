@@ -25,7 +25,7 @@ import "../styles/Register.css";
 import { useState } from "react";
 import axios from "axios";
 import { IoMdLock } from "react-icons/io";
-import { cpf } from 'cpf-cnpj-validator'; 
+import { cpf } from 'cpf-cnpj-validator';
 
 const UserRegistration = () => {
   const navigate = useNavigate();
@@ -93,9 +93,7 @@ const UserRegistration = () => {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if ((!emailRegex.test(formData.email))
-      && formData.email === ""
-      && formData.email.length < 100) {
+    if (!emailRegex.test(formData.email)) {
       setInvalidFields(["email"]);
       setStatus("error");
       setMessage("Por favor, insira um e-mail válido.");
