@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingAnimation from '../components/LoadingAnimation';
 import "../styles/Restaurant.css";
 import { Box, Button, Dialog, Portal, Text } from "@chakra-ui/react";
-import { FaAddressCard, FaCheck, FaEdit, FaInfoCircle, FaLocationArrow, FaPhone, FaRobot } from "react-icons/fa";
+import { FaEdit, FaInfoCircle, FaLocationArrow, FaPhone, FaRobot } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -133,7 +133,7 @@ const Restaurant = () => {
                                                 <Text display={'flex'} gap={2}><FaPhone /> {restaurantData?.phone}</Text>
                                                 <Text display={'flex'} gap={2}><FaLocationArrow />{restaurantData?.address}</Text>
                                             </Box>
-                                            <Text display={'flex'} gap={2} textAlign={'justify'}><FaLocationArrow />{restaurantData?.description}</Text>
+                                            <Text display={'flex'} gap={2} textAlign={'justify'}>{restaurantData?.description}</Text>
                                         </Dialog.Body>
                                     </Dialog.Content>
                                 </Dialog.Positioner>

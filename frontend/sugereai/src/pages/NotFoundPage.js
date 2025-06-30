@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Image, VStack, Button } from '@chakra-ui/react';
+import { Text, Image, VStack, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo preta escrita.png';
 
